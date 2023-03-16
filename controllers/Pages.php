@@ -37,7 +37,7 @@ class PagesController extends Controller {
 
 
     public function error(
-        string $type = '500 Server Error', 
+        string $type = '404 Not Found', 
         string $message = 'There was an error.'
     ) {
         $data = (object) [

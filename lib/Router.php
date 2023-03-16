@@ -126,8 +126,8 @@ class Router
 
 		// Check if current route exists in routes
 		if(!array_key_exists( $this->url, $this->routes )) {
-			echo '404';
-			return;
+			header('Location: /error');
+			die();
 		}
 
 		return $this->routes[$this->url]();

@@ -21,8 +21,20 @@ class Controller {
 
     public function model($model)
     {
-        // require model file
-        // return instance of model class
+        $model_file = './models/' . ucwords($model) . '.php';
+        $model_class = ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
+
+        if (file_exists($model_file) ) {
+            require_once($model_file);
+        } else {
+            die("Model File $model_file not Found");
+        }
+
+        if ( class_exists($model_class) ) {
+            return new $model_class;
+        } else {
+            die("Model Class $model_class not found");
+        }
     }
 
 

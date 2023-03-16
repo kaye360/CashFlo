@@ -18,3 +18,7 @@ body {
     font-family: 'Hanken Grotesk', Helvetica, Arial, sans-serif;
 }
 
+.form-input {
+    border : 1px solid #333;
+}
+
