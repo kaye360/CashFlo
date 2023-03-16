@@ -1,5 +1,10 @@
 <?php
 namespace Controller;
+
+use Template\Template;
+
+require_once './lib/Template.php';
+
 /**
  * 
  * MVC base controller class
@@ -24,6 +29,31 @@ class Controller {
 
     public function view(string $view, object $data)
     {
-        // require view file
+        ob_start();
+
+        if( !is_object($data) ){
+            echo '$data must be an object';
+            return;
+        }
+
+        if (file_exists('./views/' . $view . '.php') ) {
+
+            require_once './views/' . $view . '.php';
+
+        } else {
+
+            $data = (object) [
+                'type' => '500',
+                'message' => 'View file does not exist',
+            ];
+            
+            require_once './views/error.php';
+
+        }
+
+        Template::apply($data);
+
     }
+
+
 }
