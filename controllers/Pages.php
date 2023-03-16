@@ -31,7 +31,7 @@ class PagesController extends Controller {
         $data = (object) [
             'title' => 'About Spendly',
         ];
-        echo $data->title;
+        $this->view('about', $data);
     }
 
 

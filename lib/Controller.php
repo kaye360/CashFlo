@@ -1,9 +1,9 @@
 <?php
 namespace Controller;
 
-use Template\Template;
+use TemplateEngine\TemplateEngine;
 
-require_once './lib/Template.php';
+require_once './lib/TemplateEngine.php';
 
 /**
  * 
@@ -31,7 +31,8 @@ class Controller {
     {
         ob_start();
 
-        if( !is_object($data) ){
+        if( !is_object($data) )
+        {
             echo '$data must be an object';
             return;
         }
@@ -43,16 +44,17 @@ class Controller {
         } else {
 
             $data = (object) [
-                'type' => '500',
+                'type' => '404',
                 'message' => 'View file does not exist',
             ];
-            
-            require_once './views/error.php';
 
+            require_once './views/error.php';
         }
 
-        Template::apply($data);
-
+        $view = ob_get_contents();
+        $view = TemplateEngine::apply(view: $view, data: $data);
+        ob_end_clean();
+        echo $view;
     }
 
 
