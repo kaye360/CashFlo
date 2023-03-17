@@ -34,7 +34,6 @@ class UsersController extends Controller {
         $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST') {
-
             $user = $this->model('User');
 
             $data->username = trim($_POST['username']);
@@ -44,11 +43,14 @@ class UsersController extends Controller {
             $data = $this->validate_sign_up_form($data, $user);
 
             if( !$data->errors ) {
+
                 $new_user = $user->create($data);
 
                 if( $new_user->error ) {
+
                     $data->errors = true;
                     $data->error_with_query = true;
+
                 } else {
                     $data->success = true;
                 }
@@ -67,7 +69,6 @@ class UsersController extends Controller {
 
     private function validate_sign_up_form(object $data, object $user)
     {
-
 
         if( $user->is_taken( column: 'username', value: $data->username, table: 'users' )) {
             $data->errors = true;

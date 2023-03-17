@@ -1,4 +1,3 @@
-<?php require_once 'layout/header.php'; ?>
 
 <section class="flex flex-col items-start gap-4">
     
@@ -12,5 +11,3 @@
         Sign In
     </a>
 </section>
-
-<?php require_once 'layout/footer.php'; ?>

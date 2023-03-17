@@ -49,6 +49,8 @@ class Controller {
             return;
         }
 
+        require_once './views/layout/header.php';
+
         if (file_exists('./views/' . $view . '.php') ) {
 
             require_once './views/' . $view . '.php';
@@ -62,6 +64,8 @@ class Controller {
 
             require_once './views/error.php';
         }
+
+        require_once './views/layout/footer.php';
 
         $view = ob_get_contents();
         $view = TemplateEngine::apply(view: $view, data: $data);
