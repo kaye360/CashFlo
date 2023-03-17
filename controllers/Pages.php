@@ -2,6 +2,7 @@
 namespace PagesController;
 
 use Controller\Controller;
+use stdClass;
 
 require_once './lib/Controller.php';
 
@@ -45,5 +46,24 @@ class PagesController extends Controller {
             'message' => $message,
         ];
         $this->view('error', $data);
+    }
+
+
+
+    public function unauthorized()
+    {
+        $data = new stdClass();
+        $data->title = 'Unauthorized request';
+        $this->view('unauthorized', $data);
+    }
+
+
+
+    public function dashboard()
+    {
+        $data = new stdClass();
+        $data->title = 'Dashboard';
+
+        $this->view('dashboard', $data);
     }
 }

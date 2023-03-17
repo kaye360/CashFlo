@@ -62,7 +62,10 @@ class Router
 	 */
 	private function register_route($req_method, $route, $method)
 	{
-		if($_SERVER['REQUEST_METHOD'] !== $req_method) return;
+		if(
+			$req_method !== 'ANY' &&
+			$req_method !== $_SERVER['REQUEST_METHOD']
+		) return;
 
 		$route = trim($route, '/');
 		if(empty($route)) $route = '/';
@@ -70,6 +73,16 @@ class Router
 		$route = str_replace(':', '_', $route);
 		
 		$this->routes[$route] = $method;
+	}
+
+
+
+	/**
+	 * Register a route that will work on any http method
+	 */
+	public function any($route, $method)
+	{
+		$this->register_route('ANY', $route, $method);
 	}
 
 

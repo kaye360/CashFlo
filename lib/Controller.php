@@ -70,4 +70,30 @@ class Controller {
     }
 
 
+
+    public function auth()
+    {
+        if( !isset($_COOKIE['session']) ) {
+            header('Location: /unauthorized');
+            die();
+        }
+
+        $user = $this->model('User');
+
+        $is_user_authorized_query = $user->table('users')
+            ->select('*')
+            ->where("session = '$_COOKIE[session]' ")
+            ->count();
+            
+        $is_user_authorized = $is_user_authorized_query['data'] !== 0;
+
+        if( !$is_user_authorized ) {
+            header('Location: /unauthorized');
+            die();
+        }
+
+        return $this;
+    }
+
+
 }

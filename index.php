@@ -20,17 +20,27 @@ $route = new Router();
 
 $route->get('/', function() 
 {
-    (new PagesController())->home() ;
+    (new PagesController())->home();
 });
 
 $route->get('/about', function() 
 {
-    (new PagesController())->about() ;
+    (new PagesController())->about();
 });
 
 $route->get('/error', function() 
 {
-    (new PagesController())->error() ;
+    (new PagesController())->error();
+});
+
+$route->get('/unauthorized', function() 
+{
+    (new PagesController())->unauthorized();
+});
+
+$route->get('/dashboard', function()
+{
+    (new PagesController())->auth()->dashboard();
 });
 
 /**
@@ -39,18 +49,19 @@ $route->get('/error', function()
  * 
  */
 
-$route->get('/signin', function() 
+$route->any('/signin', function() 
 {
-    (new UsersController())->sign_in() ;
+    (new UsersController())->sign_in();
 });
 
-$route->get('/signup', function() 
+$route->any('/signup', function() 
 {
-    (new UsersController())->sign_up() ;
+    (new UsersController())->sign_up();
 });
-$route->post('/signup', function() 
+
+$route->any('/signout', function()
 {
-    (new UsersController())->sign_up() ;
+    (new UsersController())->sign_out();
 });
 
 $route->response();

@@ -49,7 +49,7 @@ class UserModel extends Database {
 
 
 
-	private function validate_password(
+	public function validate_password(
 		string $username,
 		string $password
 	) {
@@ -74,7 +74,7 @@ class UserModel extends Database {
 
 
 
-    private function make_UUID()
+    public function make_UUID()
 	{
 		// Found Here: https://stackoverflow.com/questions/2040240/php-function-to-generate-v4-uuid
 		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));

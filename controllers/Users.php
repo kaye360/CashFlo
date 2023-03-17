@@ -18,16 +18,6 @@ class UsersController extends Controller {
     
 
 
-    public function sign_in() 
-    {
-        $data = (object) [
-            'title' => 'Sign In'
-        ];
-        $this->view('signin', $data);
-    }
-
-
-
     public function sign_up()
     {
         $data = new stdClass();
@@ -47,11 +37,11 @@ class UsersController extends Controller {
 
             $user = $this->model('User');
 
-            $data->username = $_POST['username'];
-            $data->password = $_POST['password'];
-            $data->confirm_password = $_POST['confirm_password'];
+            $data->username = trim($_POST['username']);
+            $data->password = trim($_POST['password']);
+            $data->confirm_password = trim($_POST['confirm_password']);
 
-            $data = $this->validate_sign_in_form($data, $user);
+            $data = $this->validate_sign_up_form($data, $user);
 
             if( !$data->errors ) {
                 $new_user = $user->create($data);
@@ -75,7 +65,7 @@ class UsersController extends Controller {
 
 
 
-    private function validate_sign_in_form(object $data, object $user)
+    private function validate_sign_up_form(object $data, object $user)
     {
 
 
@@ -110,5 +100,68 @@ class UsersController extends Controller {
         }
         
         return $data;
+    }
+
+
+
+    public function sign_in() 
+    {
+        $data = new stdClass();
+        $data->title = 'Sign In to Spendly';
+        $data->errors = false;
+        $data->error_invalid_username_password = false;
+        $data->success = false;
+        
+        if( $_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $user = $this->model('User');
+
+            $data->username = trim($_POST['username']);
+            $data->username = htmlspecialchars($data->username);
+            $data->password = trim($_POST['password']);
+            $data->password = htmlspecialchars($data->password);
+
+            if( !$user->validate_password($data->username, $data->password)) {
+                $data->errors = true;
+                $data->error_invalid_username_password = true;
+            }
+
+            if( !$data->errors) {
+                $data->success =  true;
+                $session = $user->make_UUID();
+
+                $user->table('users')
+                    ->set("session = '$session' ")
+                    ->where("username = '$data->username' ")
+                    ->update();
+
+                setcookie('session', $session, strtotime( '+30 days' ));
+            }
+
+            
+        } else { // GET REQUEST
+
+            $data->username = '';
+            
+        }
+
+        $this->view('signin', $data);
+    }
+
+
+
+    public function sign_out()
+    {
+        $data = new stdClass();
+        $data->title = 'Sign Out';
+        $data->success = false;
+
+        if( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+            $data->success = true;
+            setcookie('session', '', 1);
+            unset($_COOKIE['session']);
+        }
+
+        $this->view('signout', $data);
     }
 }
