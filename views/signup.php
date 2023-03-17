@@ -67,14 +67,16 @@
             </span>
         <?php endif; ?>
 
-        <input type="submit" value="Create an account" class="inline-block px-4 py-2 bg-blue-100" />
+        <?php if($data->error_with_query): ?>
+            <span class="block text-red-500">
+                Error with query.
+            </span>
+        <?php endif; ?>
 
+        <input type="submit" value="Create an account" class="inline-block px-4 py-2 bg-blue-100" />
 
     </form>
     
-    <pre>
-        <?php var_dump($data); ?>
-    </pre>
 </section>
 
 <?php require_once 'layout/footer.php'; ?>

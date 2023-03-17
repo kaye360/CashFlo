@@ -40,6 +40,7 @@ class UsersController extends Controller {
         $data->error_passwords_dont_match = false;
         $data->error_password_too_short = false;
         $data->error_inputs_missing = false;
+        $data->error_with_query = false;
         $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -53,8 +54,14 @@ class UsersController extends Controller {
             $data = $this->validate_sign_in_form($data, $user);
 
             if( !$data->errors ) {
-                $user->create($data);
-                $data->success = true;
+                $new_user = $user->create($data);
+
+                if( $new_user->error ) {
+                    $data->errors = true;
+                    $data->error_with_query = true;
+                } else {
+                    $data->success = true;
+                }
             }
 
         } else { // GET REQUEST
