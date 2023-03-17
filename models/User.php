@@ -1,7 +1,7 @@
 <?php
-namespace UserModel;
+namespace model\UserModel;
 
-use Database\Database;
+use lib\Database\Database;
 
 require_once './lib/Database.php';
 

@@ -1,7 +1,7 @@
 <?php
-namespace PagesController;
+namespace controllers\PagesController;
 
-use Controller\Controller;
+use lib\Controller\Controller;
 use stdClass;
 
 require_once './lib/Controller.php';

@@ -1,7 +1,7 @@
 <?php
-namespace Controller;
+namespace lib\Controller;
 
-use TemplateEngine\TemplateEngine;
+use lib\TemplateEngine\TemplateEngine;
 
 require_once './lib/TemplateEngine.php';
 
@@ -22,7 +22,7 @@ class Controller {
     public function model($model)
     {
         $model_file = './models/' . ucwords($model) . '.php';
-        $model_class = ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
+        $model_class = 'model\\' . ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
 
         if (file_exists($model_file) ) {
             require_once($model_file);

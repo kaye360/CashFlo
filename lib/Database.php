@@ -1,5 +1,5 @@
 <?php
-namespace Database;
+namespace lib\Database;
 
 use \DB_USER;
 /**
@@ -7,7 +7,7 @@ use \DB_USER;
  * Database utility methods
  * @author Josh Kaye
  * https://joshkaye.dev
- * 
+ * W
  */
 
 

@@ -1,14 +1,10 @@
 <?php
 
-use Router\Router;
-use PagesController\PagesController;
-use UsersController\UsersController;
+require_once './bootstrap.php';
 
-require_once './config.php';
-require_once './lib/Router.php';
-require_once './controllers/Pages.php';
-require_once './controllers/Users.php';
-
+use lib\Router\Router;
+use controllers\PagesController\PagesController;
+use controllers\UsersController\UsersController;
 
 $route = new Router();
 

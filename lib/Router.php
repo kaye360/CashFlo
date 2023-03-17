@@ -1,5 +1,5 @@
 <?php
-namespace Router;
+namespace lib\Router;
 /**
  * 
  * Custom API router

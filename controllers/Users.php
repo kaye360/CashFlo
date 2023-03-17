@@ -1,7 +1,7 @@
 <?php
-namespace UsersController;
+namespace controllers\UsersController;
 
-use Controller\Controller;
+use lib\Controller\Controller;
 use stdClass;
 
 /**
@@ -34,6 +34,7 @@ class UsersController extends Controller {
         $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST') {
+            
             $user = $this->model('User');
 
             $data->username = trim($_POST['username']);
@@ -104,7 +105,13 @@ class UsersController extends Controller {
     }
 
 
-
+    /**
+     * 
+     * @todo before login, check if cookie 'session' is set.
+     * If so, destroy it and remove it from the db so not extra
+     * sessions are remaining
+     * 
+     */
     public function sign_in() 
     {
         $data = new stdClass();

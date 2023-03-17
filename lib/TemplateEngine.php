@@ -1,5 +1,5 @@
 <?php
-namespace TemplateEngine;
+namespace lib\TemplateEngine;
 
 /**
  * 
