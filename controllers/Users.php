@@ -2,6 +2,7 @@
 namespace controllers\UsersController;
 
 use lib\Controller\Controller;
+use model\UserModel\UserModel;
 use stdClass;
 
 /**
@@ -166,10 +167,26 @@ class UsersController extends Controller {
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
             $data->success = true;
-            setcookie('session', '', 1);
-            unset($_COOKIE['session']);
+
         }
 
         $this->view('signout', $data);
+    }
+
+
+
+    private function destroy_session()
+    {
+        if( !isset($_COOKIE['session'])) return;
+
+        $session = $_COOKIE['session'];
+        setcookie('session', '', 1);
+        unset($_COOKIE['session']);
+
+        $users = new UserModel();
+        $users->table('users')
+              ->set("session = ''")
+              ->where("session = '$session' ")
+              ->update();
     }
 }
