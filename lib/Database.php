@@ -1,19 +1,39 @@
 <?php
-namespace lib\Database;
-
-use \DB_USER;
 /**
  * 
- * Database utility methods
+ * Database utility class
+ * 
  * @author Josh Kaye
  * https://joshkaye.dev
- * W
+ * 
+ * Section 1: 
+ * - DB setup
+ * - request, error methods
+ * 
+ * Section 2:
+ * - SQL query builder methods
+ * 
+ * Section 3:
+ * - SQL exectution action methods
+ * 
+ * How to use
+ * 
+ * Extend this class for a model and chain the instance with 
+ * SQL query builder methods. Finalize with an action method.
+ * 
+ * Example:
+ * $model->table('users')
+ *       ->select('username, email')   
+ *       ->where('online = true')
+ *       ->list()   
+ * 
  */
+namespace lib\Database;
 
 
 
- class Database
- {
+class Database
+{
  
      /**
       * 
@@ -357,6 +377,10 @@ use \DB_USER;
      * select('column1, column2')
      * table('table_name')
      * 
+     * Optional local methods:
+     * 
+     * where()
+     * 
      */
     public function count() {
         try {
@@ -375,70 +399,18 @@ use \DB_USER;
 
             $count = $this->stmt->fetchColumn();
 
-            return [ 'success' => true, 'data' => $count ];
+            return $count;
 
         } catch (\Exception $error) {
             return $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
  
-    /**
-     * 
-    * @method is value of column already taken. For unique columns
-    * 
-    * @return bool
-    * 
-    */
-    public function is_taken(
-        string $column,
-        string $value,
-        string $table
-    ) {
 
-        $sql = "SELECT $column, id from $table WHERE $column = '$value'";
-        $this->stmt = $this->dbh->prepare($sql);
-        $this->stmt->execute();
-
-        $result = $this->stmt->fetch(\PDO::FETCH_ASSOC);
-
-        return empty($result) ? false : true;
-    }
  
-    /** 
-     * 
-    * @method checks if array of strings has forbidden characters
-    * 
-    * @return bool
-    * 
-    */
-    public function has_forbidden_chars(
-        array $values,
-        string $regex = null
-    ) {
 
-        $has_forbidden_chars = null;
-
-        foreach ($values as $value) {
-            $tester = $regex
-                ? preg_match($regex, $value)
-                : preg_match('/^[a-zA-Z0-9_\-]+$/', $value);
-            if (!(bool) $tester) $has_forbidden_chars = true;
-        }
-
-        return $has_forbidden_chars;
-    }
  
-    /**
-     * 
-    * @method checks if string too long
-    * 
-    * @return bool
-    * 
-    */
-    public function has_too_many_chars(string $string, int $limit)
-    {
-        return strlen($string) > $limit;
-    }
+
 
     /**
      * 
@@ -462,4 +434,4 @@ use \DB_USER;
         return $validated;
     }
  
- }
+}

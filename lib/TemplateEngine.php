@@ -25,7 +25,9 @@ class TemplateEngine
      */
     public static function apply(string $view, object $data)
     {
+
         foreach( $data as $key => $value ) {
+            if( !is_string($value) ) continue;
             $view = str_replace('{{' . $key . '}}', $value, $view);
         }
 

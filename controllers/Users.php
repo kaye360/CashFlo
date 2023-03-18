@@ -2,7 +2,8 @@
 namespace controllers\UsersController;
 
 use lib\Controller\Controller;
-use model\UserModel\UserModel;
+use lib\InputHandler\InputHandler;
+use models\UserModel\UserModel;
 use stdClass;
 
 /**
@@ -19,20 +20,57 @@ class UsersController extends Controller {
     
 
 
+    // public function sign_up()
+    // {
+    //     $data = new stdClass();
+
+    //     $data->title = 'Sign Up';
+    //     $data->errors = false;
+    //     $data->error_username_is_taken = false;
+    //     $data->error_username_has_forbidden_chars = false;
+    //     $data->error_username_has_too_many_chars = false;
+    //     $data->error_passwords_dont_match = false;
+    //     $data->error_password_too_short = false;
+    //     $data->error_inputs_missing = false;
+    //     $data->error_with_query = false;
+    //     $data->success = false;
+
+    //     if( $_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+    //         $user = $this->model('User');
+
+    //         $data->username = trim($_POST['username']);
+    //         $data->password = trim($_POST['password']);
+    //         $data->confirm_password = trim($_POST['confirm_password']);
+
+    //         $data = $this->validate_sign_up_form($data, $user);
+
+    //         if( !$data->errors ) {
+
+    //             $new_user = $user->create($data);
+
+    //             if( $new_user->error ) {
+
+    //                 $data->errors = true;
+    //                 $data->error_with_query = true;
+
+    //             } else {
+    //                 $data->success = true;
+    //             }
+    //         }
+
+    //     } else { // GET REQUEST
+    //         $data->username = '';
+    //         $data->password = '';
+    //         $data->confirm_password = '';
+    //     }
+
+    //     $this->view('signup', $data);
+    // }
     public function sign_up()
     {
         $data = new stdClass();
-
         $data->title = 'Sign Up';
-        $data->errors = false;
-        $data->error_username_is_taken = false;
-        $data->error_username_has_forbidden_chars = false;
-        $data->error_username_has_too_many_chars = false;
-        $data->error_passwords_dont_match = false;
-        $data->error_password_too_short = false;
-        $data->error_inputs_missing = false;
-        $data->error_with_query = false;
-        $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST') {
             
@@ -41,22 +79,15 @@ class UsersController extends Controller {
             $data->username = trim($_POST['username']);
             $data->password = trim($_POST['password']);
             $data->confirm_password = trim($_POST['confirm_password']);
+            $data->validator = InputHandler::validate([
+                'username' => ['required', 'unique', 'max:10', 'min:6'],
+                'password' => ['required', 'min:6', 'confirm_password']
+            ]);
 
-            $data = $this->validate_sign_up_form($data, $user);
+            // echo '<pre>';
+            // var_dump($data);
+            // echo '</pre>';
 
-            if( !$data->errors ) {
-
-                $new_user = $user->create($data);
-
-                if( $new_user->error ) {
-
-                    $data->errors = true;
-                    $data->error_with_query = true;
-
-                } else {
-                    $data->success = true;
-                }
-            }
 
         } else { // GET REQUEST
             $data->username = '';
@@ -123,6 +154,8 @@ class UsersController extends Controller {
         
         if( $_SERVER['REQUEST_METHOD'] === 'POST') {
 
+            $this->destroy_current_session();
+
             $user = $this->model('User');
 
             $data->username = trim($_POST['username']);
@@ -167,7 +200,7 @@ class UsersController extends Controller {
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
             $data->success = true;
-
+            $this->destroy_current_session();
         }
 
         $this->view('signout', $data);
@@ -175,7 +208,7 @@ class UsersController extends Controller {
 
 
 
-    private function destroy_session()
+    private function destroy_current_session()
     {
         if( !isset($_COOKIE['session'])) return;
 
@@ -185,7 +218,7 @@ class UsersController extends Controller {
 
         $users = new UserModel();
         $users->table('users')
-              ->set("session = ''")
+              ->set("session = null")
               ->where("session = '$session' ")
               ->update();
     }

@@ -1,5 +1,5 @@
 <?php
-namespace model\UserModel;
+namespace models\UserModel;
 
 use lib\Database\Database;
 
@@ -47,30 +47,6 @@ class UserModel extends Database {
         ];
     }
 
-
-
-	public function validate_password(
-		string $username,
-		string $password
-	) {
-
-		$user = $this->table('users')
-			->select('username, password, id')
-			->where("username = '$username'")
-			->single();
-
-		/**
-		 * @todo make this return a one liner
-		 */
-		if (
-			$user['success'] && 
-			password_verify($password, $user['data']['password'])
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 
 

@@ -22,7 +22,7 @@ class Controller {
     public function model($model)
     {
         $model_file = './models/' . ucwords($model) . '.php';
-        $model_class = 'model\\' . ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
+        $model_class = 'models\\' . ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
 
         if (file_exists($model_file) ) {
             require_once($model_file);
