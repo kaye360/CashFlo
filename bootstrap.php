@@ -3,12 +3,25 @@
  * 
  * App Boostrap file for:
  * - autoloading classes 
+ * - set up Auth
  * - config file.
  * - DB connection
  * 
  */
 
+use lib\Auth\Auth;
 use lib\DBConnect\DBConnect;
+
+
+ 
+/**
+ * 
+ * App Config file
+ * 
+ */
+require_once './config.php';
+
+
 
  /*
  * 
@@ -24,17 +37,6 @@ use lib\DBConnect\DBConnect;
  * of a file name Controller.php
  * 
  */
-
- 
-/**
- * 
- * App Config file
- * 
- */
-require_once './config.php';
-
-
-
 spl_autoload_register( function($class)
 {
     $class_array = explode('\\', $class);
@@ -60,3 +62,13 @@ spl_autoload_register( function($class)
  * 
  */
 define('DB_CONNECTION', DBConnect::connect() );
+
+
+
+/**
+ * 
+ * Auth
+ * 
+ */
+define('AUTH', Auth::init());
+

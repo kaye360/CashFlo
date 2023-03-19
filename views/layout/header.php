@@ -25,6 +25,12 @@
         } ?>
     </div>
 
+    <div>
+        <?php if( AUTH->is_logged_in() ): ?>
+            You are logged in as <?php AUTH->username(); ?> with the ID of <?php AUTH->user_id(); ?>.
+        <?php endif; ?>
+    </div>
+
     <ul class="flex flex-col gap-2">
         <li><a href="/">Home</a></li>
         <li><a href="/dashboard">Dashboard</a></li>
