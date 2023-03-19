@@ -73,6 +73,14 @@ class UsersController extends Controller {
         $data->username = '';
         $data->password = '';
         $data->confirm_password = '';
+
+        $data->success = false;
+        $data->errors = new stdClass();
+        $data->errors->username = new StdClass();
+        $data->errors->username->has_error = false;
+        $data->errors->password = new stdClass();
+        $data->errors->password->has_error = false;
+        $data->errors->query = false;
         $this->view('signup', $data);
     }
 

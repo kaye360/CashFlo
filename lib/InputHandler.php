@@ -283,12 +283,14 @@ class InputHandler {
     private static function is_invalid_username_password( string $username, string $password )
     {
         $db = new Database();
-        $user = $db->select('username, password')
-                   ->table('users')
-                   ->where("username = '$username' ")
-                   ->single();
+        $user = $db->select('username, password, salt')
+            ->table('users')
+            ->where("username = '$username' ")
+            ->single();
 
-        return !( $user['success'] && password_verify($password, $user['data']['password']) );
+        if( !$user['success'] ) return false;
+        $salted_password = $password . $user['data']['salt'];
+        return !( password_verify($password, $salted_password) );
     }
 
 

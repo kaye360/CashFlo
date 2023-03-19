@@ -27,11 +27,13 @@ class UserModel extends Database {
 
     public function create(object $data)
     {
-        $data->hashed_password = password_hash($data->password, PASSWORD_DEFAULT);
+        $salt = substr(uniqid(), -5);
+        $salted_password = $data->password . $salt;
+        $salted_hashed_password = password_hash($salted_password, PASSWORD_DEFAULT);
 
         $create_new_user = $this->table('users')
-            ->cols('username, password')
-            ->values(" '$data->username', '$data->hashed_password' ")
+            ->cols('username, password, salt')
+            ->values(" '$data->username', '$salted_hashed_password', '$salt' ")
             ->new();
 
         if( !$create_new_user ) {
@@ -46,7 +48,6 @@ class UserModel extends Database {
             'data' => $data,
         ];
     }
-
 
 
 
