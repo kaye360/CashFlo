@@ -30,7 +30,7 @@
  */
 namespace lib\Database;
 
-
+use lib\DBConnect\DBConnect;
 
 class Database
 {
@@ -66,22 +66,7 @@ class Database
      */
     public function __construct()
     {
-        // Set Connection Options
-        $options = array(
-            \PDO::ATTR_PERSISTENT => true,
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-        );
-
-        // Connect to DB
-        try {
-            $this->dbh = new \PDO($this->dsn, DB_USER, DB_PASS, $options);
-        } catch (\PDOException $err) {
-            // http_response_code(500);
-            return [
-                'success' => false,
-                'message' => 'Failed PDO connection'
-            ];
-        }
+        $this->dbh = DB_CONNECTION->connection();
     }
  
     /**

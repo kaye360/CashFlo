@@ -21,9 +21,11 @@
         <input type="password" id="password" name="password" class="form-input" />
     </label>
 
-    <?php if($data->error_invalid_username_password): ?>
+    <?php if($data->errors->password->has_error): ?>
         <span class="text-red-500">
-            Incorrect username or password.
+            <?php if($data->errors->password->user_pass_verify): ?>
+                Incorrect username or password.
+            <?php endif; ?>
         </span>
     <?php endif; ?>
 

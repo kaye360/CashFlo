@@ -286,11 +286,13 @@ class InputHandler {
         $user = $db->select('username, password, salt')
             ->table('users')
             ->where("username = '$username' ")
+        
             ->single();
-
+            
         if( !$user['success'] ) return false;
+
         $salted_password = $password . $user['data']['salt'];
-        return !( password_verify($password, $salted_password) );
+        return !( password_verify($salted_password, $user['data']['password']) );
     }
 
 

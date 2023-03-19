@@ -43,10 +43,6 @@ class UsersController extends Controller {
         $data->errors->query = false;
         $data->success = $validator->success;
 
-        // echo '<pre>';
-        // var_dump($data->errors);
-        // echo '</pre>';
-        
         if( $data->success ) {
             
             $userModel = $this->model('User');
@@ -90,47 +86,55 @@ class UsersController extends Controller {
      * 
      * 
      */
-    public function sign_in() 
+    public function sign_in_get() 
     {
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
-        $data->errors = false;
-        $data->error_invalid_username_password = false;
+        $data->errors = new stdClass();
+        $data->errors->password = new stdClass();
+        $data->errors->password->has_error = false;
         $data->success = false;
-        
-        if( $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data->username = '';
 
-            $this->destroy_current_session();
+        $this->view('signin', $data);
+    }
 
-            $user = $this->model('User');
 
-            $data->username = trim($_POST['username']);
-            $data->username = htmlspecialchars($data->username);
-            $data->password = trim($_POST['password']);
-            $data->password = htmlspecialchars($data->password);
 
-            if( !$user->validate_password($data->username, $data->password)) {
-                $data->errors = true;
-                $data->error_invalid_username_password = true;
-            }
+    public function sign_in_post()
+    {
 
-            if( !$data->errors) {
-                $data->success =  true;
-                $session = $user->make_UUID();
+        if( $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /signup');
+            exit();
+        }
 
-                $user->table('users')
-                    ->set("session = '$session' ")
-                    ->where("username = '$data->username' ")
-                    ->update();
+        $this->destroy_current_session();
 
-                setcookie('session', $session, strtotime( '+30 days' ));
-            }
+        $data = new stdClass();
+        $data->title = 'Sign In to Spendly';
+        $data->username = '';
 
-            
-        } else { // GET REQUEST
+        $data->username = InputHandler::sanitize('username');
+        $data->password = InputHandler::sanitize('password');
 
-            $data->username = '';
-            
+        $validator = InputHandler::validate([
+            'password' => ['user_pass_verify']
+        ]);
+
+        $data->errors = $validator->errors;
+        $data->success = $validator->success;
+
+        if( $data->success) {
+            $userModel = $this->model('User');
+            $session = $userModel->make_UUID();
+
+            $userModel->table('users')
+                ->set("session = '$session' ")
+                ->where("username = '$data->username' ")
+                ->update();
+
+            setcookie('session', $session, strtotime( '+30 days' ));
         }
 
         $this->view('signin', $data);

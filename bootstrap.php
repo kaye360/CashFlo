@@ -1,7 +1,18 @@
 <?php
 /**
  * 
- * App Boostrap file for autoloading classes and config file.
+ * App Boostrap file for:
+ * - autoloading classes 
+ * - config file.
+ * - DB connection
+ * 
+ */
+
+use lib\DBConnect\DBConnect;
+
+ /*
+ * 
+ * Class autoloader function
  * 
  * Note:
  * The strings 'Controller' and 'Model' are removed from namespaced class name,
@@ -13,6 +24,16 @@
  * of a file name Controller.php
  * 
  */
+
+ 
+/**
+ * 
+ * App Config file
+ * 
+ */
+require_once './config.php';
+
+
 
 spl_autoload_register( function($class)
 {
@@ -31,4 +52,11 @@ spl_autoload_register( function($class)
     require_once $class_file_path;
 });
 
-require_once './config.php';
+
+
+/**
+ * 
+ * Database PDO connection
+ * 
+ */
+define('DB_CONNECTION', DBConnect::connect() );

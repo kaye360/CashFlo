@@ -45,9 +45,14 @@ $route->get('/dashboard', function()
  * 
  */
 
-$route->any('/signin', function() 
+$route->get('/signin', function() 
 {
-    (new UsersController())->sign_in();
+    (new UsersController())->sign_in_get();
+});
+
+$route->post('/signin', function() 
+{
+    (new UsersController())->sign_in_post();
 });
 
 $route->get('/signup', function() 
