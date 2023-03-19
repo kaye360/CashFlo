@@ -20,11 +20,22 @@ class InputHandler {
 
     /**
      * 
+     * @method Sanitize a $_POST variable and return new value.
+     * 
+     * Also sanitize the $_POST var itself in case it is used
+     * later on in the app.
+     * 
      */
-    public static function sanitize(array $inputs) 
+    public static function sanitize(string $input) 
     {
+        if( empty($_POST[$input])  ) return null;
 
+        $_POST[$input] = trim($_POST[$input]);
+        $_POST[$input] = htmlspecialchars($_POST[$input]);
+        return $_POST[$input];
     }
+
+
 
     /**
      * 
@@ -66,6 +77,7 @@ class InputHandler {
         {
             // Error container for current $input
             $validator->errors->$input = new stdClass();
+            $validator->errors->$input->has_error = false;
 
 
             /**
@@ -73,10 +85,11 @@ class InputHandler {
              */
             
 
-            // Has forbidden chars
+            // Has forbidden characters
             if( self::has_forbidden_chars($_POST[$input]) ) {
 
                 $validator->errors->$input->has_forbidden_chars = true;
+                $validator->errors->$input->has_error = true;
                 $validator->success = false;
             } else {
                 $validator->errors->$input->has_forbidden_chars = false;
@@ -93,6 +106,7 @@ class InputHandler {
 
                 if( empty( $_POST[$input])) {
                     $validator->errors->$input->required = true;
+                    $validator->errors->$input->has_error = true;
                     $validator->success = false;
                 } else {
                     $validator->errors->$input->required = false;
@@ -106,6 +120,7 @@ class InputHandler {
 
                 if( self::is_not_unique($_POST[$input]) ) {
                     $validator->errors->$input->unique = true;
+                    $validator->errors->$input->has_error = true;
                     $validator->success = false;
                 } else {
                     $validator->errors->$input->unique = false;
@@ -123,6 +138,7 @@ class InputHandler {
                     self::has_too_many_chars( $_POST[$input], $param )
                 ) {
                     $validator->errors->$input->max = true;
+                    $validator->errors->$input->has_error = true;
                     $validator->success = false;
                 } else {
                     $validator->errors->$input->max = false;
@@ -140,6 +156,7 @@ class InputHandler {
                     self::has_too_few_chars( $_POST[$input], $param )
                 ) {
                     $validator->errors->$input->min = true;
+                    $validator->errors->$input->has_error = true;
                     $validator->success = false;
                 } else {
                     $validator->errors->$input->min = false;
@@ -155,6 +172,7 @@ class InputHandler {
                     password: $_POST['password']
                 ) ) {
                     $validator->errors->$input->user_pass_verify = true;
+                    $validator->errors->$input->has_error = true;
                     $validator->success = false;
                 } else {
                     $validator->errors->$input->user_pass_verify = false;
@@ -170,6 +188,7 @@ class InputHandler {
                     confirm_password: $_POST['confirm_password']
                 ) ) {
                     $validator->errors->$input->confirm_password = true;
+                    $validator->errors->$input->has_error = true;
                     $validator->success = false;
                 } else {
                     $validator->errors->$input->confirm_password = false;

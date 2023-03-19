@@ -20,128 +20,66 @@ class UsersController extends Controller {
     
 
 
-    // public function sign_up()
-    // {
-    //     $data = new stdClass();
-
-    //     $data->title = 'Sign Up';
-    //     $data->errors = false;
-    //     $data->error_username_is_taken = false;
-    //     $data->error_username_has_forbidden_chars = false;
-    //     $data->error_username_has_too_many_chars = false;
-    //     $data->error_passwords_dont_match = false;
-    //     $data->error_password_too_short = false;
-    //     $data->error_inputs_missing = false;
-    //     $data->error_with_query = false;
-    //     $data->success = false;
-
-    //     if( $_SERVER['REQUEST_METHOD'] === 'POST') {
+    public function sign_up_post()
+    {
+        
+        if( $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /signup');
+            exit();
+        }
             
-    //         $user = $this->model('User');
+        $data = new stdClass();
+        $data->title = 'Sign Up';
+        $data->username = InputHandler::sanitize('username');
+        $data->password = trim($_POST['password']);
+        $data->confirm_password = trim($_POST['confirm_password']);
 
-    //         $data->username = trim($_POST['username']);
-    //         $data->password = trim($_POST['password']);
-    //         $data->confirm_password = trim($_POST['confirm_password']);
+        $validator = InputHandler::validate([
+            'username' => ['required', 'unique', 'max:15', 'min:6'],
+            'password' => ['required', 'min:6', 'confirm_password']
+        ]);
 
-    //         $data = $this->validate_sign_up_form($data, $user);
+        $data->errors = $validator->errors;
+        $data->errors->query = false;
+        $data->success = $validator->success;
 
-    //         if( !$data->errors ) {
+        // echo '<pre>';
+        // var_dump($data->errors);
+        // echo '</pre>';
+        
+        if( $data->success ) {
+            
+            $userModel = $this->model('User');
+            $new_user = $userModel->create($data);
+            
+            if( $new_user->error ) {
+                
+                $data->success = false;
+                $data->errors->query = true;
 
-    //             $new_user = $user->create($data);
+            } else {
+                $data->success = true;
+            }
+        }
 
-    //             if( $new_user->error ) {
 
-    //                 $data->errors = true;
-    //                 $data->error_with_query = true;
-
-    //             } else {
-    //                 $data->success = true;
-    //             }
-    //         }
-
-    //     } else { // GET REQUEST
-    //         $data->username = '';
-    //         $data->password = '';
-    //         $data->confirm_password = '';
-    //     }
-
-    //     $this->view('signup', $data);
-    // }
-    public function sign_up()
+        $this->view('signup', $data);
+    }
+    
+    public function sign_up_get()
     {
         $data = new stdClass();
         $data->title = 'Sign Up';
-
-        if( $_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            $user = $this->model('User');
-
-            $data->username = trim($_POST['username']);
-            $data->password = trim($_POST['password']);
-            $data->confirm_password = trim($_POST['confirm_password']);
-            $data->validator = InputHandler::validate([
-                'username' => ['required', 'unique', 'max:10', 'min:6'],
-                'password' => ['required', 'min:6', 'confirm_password']
-            ]);
-
-            // echo '<pre>';
-            // var_dump($data);
-            // echo '</pre>';
-
-
-        } else { // GET REQUEST
-            $data->username = '';
-            $data->password = '';
-            $data->confirm_password = '';
-        }
-
+        $data->username = '';
+        $data->password = '';
+        $data->confirm_password = '';
         $this->view('signup', $data);
     }
 
 
 
-    private function validate_sign_up_form(object $data, object $user)
-    {
-
-        if( $user->is_taken( column: 'username', value: $data->username, table: 'users' )) {
-            $data->errors = true;
-            $data->error_username_is_taken = true;
-        }
-
-        if( $user->has_forbidden_chars([$data->username])) {
-            $data->errors = true;
-            $data->error_username_has_forbidden_chars = true;
-        }
-
-        if( $user->has_too_many_chars($data->username, 15)) {
-            $data->errors = true;
-            $data->error_username_has_too_many_chars = true;
-        }
-
-        if( $data->password !== $data->confirm_password) {
-            $data->errors = true;
-            $data->error_passwords_dont_match = true;
-        }
-
-        if( strlen($data->password) < 6) {
-            $data->errors = true;
-            $data->error_password_too_short = true;
-        }
-
-        if( empty($data->username) || empty($data->password) || empty($data->confirm_password) ) {
-            $data->errors = true;
-            $data->error_inputs_missing = true;
-        }
-        
-        return $data;
-    }
-
-
     /**
      * 
-     * @todo before login, check if cookie 'session' is set.
-     * If so, destroy it and remove it from the db so not extra
-     * sessions are remaining
      * 
      */
     public function sign_in() 

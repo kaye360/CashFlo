@@ -50,9 +50,14 @@ $route->any('/signin', function()
     (new UsersController())->sign_in();
 });
 
-$route->any('/signup', function() 
+$route->get('/signup', function() 
 {
-    (new UsersController())->sign_up();
+    (new UsersController())->sign_up_get();
+});
+
+$route->post('/signup', function() 
+{
+    (new UsersController())->sign_up_post();
 });
 
 $route->any('/signout', function()

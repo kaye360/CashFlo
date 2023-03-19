@@ -3,7 +3,7 @@
 
     <h1 class="text-2xl">Sign Up to Spendly</h1>
 
-    <?php if($data->validator->success): ?>
+    <?php if($data->success): ?>
         <span class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
             Account successfully created. {{username}} you may now <a href="/signin" class="underline">Sign In</a>.
         </span>
@@ -14,22 +14,26 @@
         <label>
             <div>Username:</div>
 
-            <?php if($data->validator->errors->username->unique): ?>
-                <span class="block text-red-500">
-                    This username is already taken.
-                </span>
-            <?php endif; ?>
+            <?php if($data->errors->username->has_error): ?>
+                <div class="flex flex-col items-start gap-0 text-red-500">
+                    <?php if($data->errors->username->unique): ?>
+                        <span>
+                            This username is already taken.
+                        </span>
+                    <?php endif; ?>
 
-            <?php if($data->validator->errors->username->has_forbidden_chars): ?>
-                <span class="block text-red-500">
-                    Username may only include letters, numbers, underscores (_), and dashes (-).
-                </span>
-            <?php endif; ?>
+                    <?php if($data->errors->username->has_forbidden_chars): ?>
+                        <span>
+                            Username may only include letters, numbers, underscores (_), and dashes (-).
+                        </span>
+                    <?php endif; ?>
 
-            <?php if($data->validator->errors->username->max): ?>
-                <span class="block text-red-500">
-                    Username may be maximum 15 characters in length.
-                </span>
+                    <?php if($data->errors->username->max): ?>
+                        <span>
+                            Username may be maximum 15 characters in length.
+                        </span>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
 
 
@@ -39,16 +43,20 @@
         <label>
             <div>Password:</div>
 
-            <?php if($data->validator->errors->password->confirm_password): ?>
-                <span class="block text-red-500">
-                    Password and confirmed password do not match.
-                </span>
-            <?php endif; ?>
+            <?php if($data->errors->password->has_error): ?>
+                <div class="flex flex-col items-start gap-0 text-red-500">
+                    <?php if($data->errors->password->confirm_password): ?>
+                        <span>
+                            Password and confirmed password do not match.
+                        </span>
+                    <?php endif; ?>
 
-            <?php if($data->validator->errors->password->min): ?>
-                <span class="block text-red-500">
-                    Password must be at least 6 characters.
-                </span>
+                    <?php if($data->errors->password->min): ?>
+                        <span>
+                            Password must be at least 6 characters.
+                        </span>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
             
             <input type="password" id="password" name="password" class="form-input" />
@@ -60,6 +68,12 @@
         </label>
 
         <input type="submit" value="Create an account" class="inline-block px-4 py-2 bg-blue-100" />
+
+        <?php if($data->errors->query): ?>
+            <span class="block text-red-500">
+                Error with query.
+            </span>
+        <?php endif; ?>
 
     </form>
     
