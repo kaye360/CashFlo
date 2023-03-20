@@ -7,7 +7,7 @@
  * https://joshkaye.dev
  * 
  */
-namespace utils\general;
+namespace utils\GenericUtils;
 
 
 class GenericUtils {

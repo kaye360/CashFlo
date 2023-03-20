@@ -14,7 +14,7 @@ namespace controllers\UsersController;
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
 use models\UserModel\UserModel;
-use utils\general\GenericUtils;
+use utils\GenericUtils\GenericUtils;
 use stdClass;
 
 
