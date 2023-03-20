@@ -23,7 +23,11 @@
 
     <?php if($data->errors->password->has_error): ?>
         <span class="text-red-500">
-            <?php if($data->errors->password->user_pass_verify): ?>
+            <?php if(
+                $data->errors->password->user_pass_verify ||
+                $data->errors->password->required || 
+                $data->errors->username->required
+            ): ?>
                 Incorrect username or password.
             <?php endif; ?>
         </span>

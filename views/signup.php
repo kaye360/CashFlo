@@ -15,10 +15,18 @@
             <div>Username:</div>
 
             <?php if($data->errors->username->has_error): ?>
+
                 <div class="flex flex-col items-start gap-0 text-red-500">
+                    
                     <?php if($data->errors->username->unique): ?>
                         <span>
                             This username is already taken.
+                        </span>
+                    <?php endif; ?>
+
+                    <?php if($data->errors->username->required): ?>
+                        <span>
+                            Username is required.
                         </span>
                     <?php endif; ?>
 
@@ -28,12 +36,17 @@
                         </span>
                     <?php endif; ?>
 
-                    <?php if($data->errors->username->max): ?>
+                    <?php if(
+                        $data->errors->username->max ||
+                        $data->errors->username->min
+                    ): ?>
                         <span>
-                            Username may be maximum 15 characters in length.
+                            Username must be 6-15 characters in length.
                         </span>
                     <?php endif; ?>
+
                 </div>
+
             <?php endif; ?>
 
 
@@ -44,10 +57,18 @@
             <div>Password:</div>
 
             <?php if($data->errors->password->has_error): ?>
+
                 <div class="flex flex-col items-start gap-0 text-red-500">
+
                     <?php if($data->errors->password->confirm_password): ?>
                         <span>
                             Password and confirmed password do not match.
+                        </span>
+                    <?php endif; ?>
+
+                    <?php if($data->errors->password->required): ?>
+                        <span>
+                            Password is required.
                         </span>
                     <?php endif; ?>
 
@@ -56,7 +77,9 @@
                             Password must be at least 6 characters.
                         </span>
                     <?php endif; ?>
+
                 </div>
+
             <?php endif; ?>
             
             <input type="password" id="password" name="password" class="form-input" />
@@ -64,6 +87,22 @@
 
         <label>
             <div>Confirm Password:</div>
+
+            <?php if($data->errors->confirm_password->has_error): ?>
+
+                <div class="flex flex-col items-start gap-0 text-red-500">
+
+                    <?php if($data->errors->confirm_password->required): ?>
+                        <span>
+                            Confirm Password is required.
+                        </span>
+                    <?php endif; ?>
+
+                </div>
+
+            <?php endif; ?>
+
+            
             <input type="password" id="confirm_password" name="confirm_password" class="form-input" />
         </label>
 

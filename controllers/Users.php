@@ -43,7 +43,8 @@ class UsersController extends Controller {
 
         $validator = InputHandler::validate([
             'username' => ['required', 'unique', 'max:15', 'min:6'],
-            'password' => ['required', 'min:6', 'confirm_password']
+            'password' => ['required', 'min:6', 'confirm_password'],
+            'confirm_password' => ['required']
         ]);
 
         $data->errors = $validator->errors;
@@ -87,6 +88,8 @@ class UsersController extends Controller {
         $data->errors->username->has_error = false;
         $data->errors->password = new stdClass();
         $data->errors->password->has_error = false;
+        $data->errors->confirm_password = new stdClass();
+        $data->errors->confirm_password->has_error = false;
         $data->errors->query = false;
         $this->view('signup', $data);
     }
@@ -133,7 +136,8 @@ class UsersController extends Controller {
         $data->password = InputHandler::sanitize('password');
 
         $validator = InputHandler::validate([
-            'password' => ['user_pass_verify']
+            'username' => ['required'],
+            'password' => ['required', 'user_pass_verify']
         ]);
 
         $data->errors = $validator->errors;

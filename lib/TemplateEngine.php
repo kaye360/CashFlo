@@ -27,7 +27,8 @@ class TemplateEngine
     {
         foreach( $data as $key => $value ) 
         {
-            if( !is_string($value) ) continue;
+            if( !is_string($value) && !is_null($value) ) continue;
+            if( is_null($value) ) $value = '';
             $view = str_replace('{{' . $key . '}}', $value, $view);
         }
         return $view;
