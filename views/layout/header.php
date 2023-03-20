@@ -19,17 +19,11 @@
         Spendly
     </div>
 
-    <div>
-        <?php if(isset($_COOKIE['session'])) {
-            echo $_COOKIE['session']; 
-        } ?>
-    </div>
-
-    <div>
-        <?php if( AUTH->is_logged_in() ): ?>
+    <?php if( AUTH->is_logged_in() ): ?>
+        <div class="border border-slate-300 px-2 py-1">
             You are logged in as <?php AUTH->username(); ?> with the ID of <?php AUTH->user_id(); ?>.
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 
     <ul class="flex flex-col gap-2">
         <li><a href="/">Home</a></li>

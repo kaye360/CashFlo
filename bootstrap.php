@@ -11,21 +11,17 @@
 
 use lib\Auth\Auth;
 use lib\DBConnect\DBConnect;
-
-
  
 /**
  * 
- * App Config file
+ * @global Config file constants
  * 
  */
 require_once './config.php';
 
-
-
- /*
+/**
  * 
- * Class autoloader function
+ * @method Class autoloader function
  * 
  * Note:
  * The strings 'Controller' and 'Model' are removed from namespaced class name,
@@ -41,11 +37,13 @@ spl_autoload_register( function($class)
 {
     $class_array = explode('\\', $class);
      
-    if( $class_array[1] !== 'Controller') {
+    if( $class_array[1] !== 'Controller') 
+    {
         $class_array[1] = str_replace('Controller' , '', $class_array[1]);
     }
      
-    if( $class_array[1] !== 'Model') {
+    if( $class_array[1] !== 'Model') 
+    {
         $class_array[1] = str_replace('Model' , '', $class_array[1]);
     }
 
@@ -54,11 +52,9 @@ spl_autoload_register( function($class)
     require_once $class_file_path;
 });
 
-
-
 /**
  * 
- * Database PDO connection
+ * @var Database PDO connection
  * 
  */
 define('DB_CONNECTION', DBConnect::connect() );
@@ -67,7 +63,7 @@ define('DB_CONNECTION', DBConnect::connect() );
 
 /**
  * 
- * Auth
+ * @var Auth object
  * 
  */
 define('AUTH', Auth::init());

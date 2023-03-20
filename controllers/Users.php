@@ -1,29 +1,36 @@
 <?php
-namespace controllers\UsersController;
-
-use lib\Controller\Controller;
-use lib\InputHandler\InputHandler;
-use models\UserModel\UserModel;
-use stdClass;
-
 /**
  * 
  * Users Controller
  * 
  * @author Josh Kaye
  * https://joshkaye.dev
+ * 
+ * Used for pages relative to the 'users' table
+ * 
  */
+namespace controllers\UsersController;
+
+use lib\Controller\Controller;
+use lib\InputHandler\InputHandler;
+use models\UserModel\UserModel;
+use utils\general\GenericUtils;
+use stdClass;
 
 
 
 class UsersController extends Controller {
-    
 
-
+    /**
+     * 
+     * @method Sign up a user 
+     * 
+     */
     public function sign_up_post()
     {
         
-        if( $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
+        {
             header('Location: /signup');
             exit();
         }
@@ -43,13 +50,13 @@ class UsersController extends Controller {
         $data->errors->query = false;
         $data->success = $validator->success;
 
-        if( $data->success ) {
-            
+        if( $data->success ) 
+        {
             $userModel = $this->model('User');
             $new_user = $userModel->create($data);
             
-            if( $new_user->error ) {
-                
+            if( $new_user->error ) 
+            {
                 $data->success = false;
                 $data->errors->query = true;
 
@@ -58,10 +65,14 @@ class UsersController extends Controller {
             }
         }
 
-
         $this->view('signup', $data);
     }
     
+    /**
+     * 
+     * @method Sign up form
+     * 
+     */
     public function sign_up_get()
     {
         $data = new stdClass();
@@ -80,10 +91,9 @@ class UsersController extends Controller {
         $this->view('signup', $data);
     }
 
-
-
     /**
      * 
+     * @method Sign in form
      * 
      */
     public function sign_in_get() 
@@ -99,12 +109,16 @@ class UsersController extends Controller {
         $this->view('signin', $data);
     }
 
-
-
+    /**
+     * 
+     * @method Sign in a user
+     * 
+     */
     public function sign_in_post()
     {
 
-        if( $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
+        {
             header('Location: /signup');
             exit();
         }
@@ -125,9 +139,10 @@ class UsersController extends Controller {
         $data->errors = $validator->errors;
         $data->success = $validator->success;
 
-        if( $data->success) {
+        if( $data->success) 
+        {
             $userModel = $this->model('User');
-            $session = $userModel->make_UUID();
+            $session = GenericUtils::make_UUID();
 
             $userModel->table('users')
                 ->set("session = '$session' ")
@@ -140,15 +155,19 @@ class UsersController extends Controller {
         $this->view('signin', $data);
     }
 
-
-
+    /**
+     * 
+     * @method Sign out a user form and sign out user
+     * 
+     */
     public function sign_out()
     {
         $data = new stdClass();
         $data->title = 'Sign Out';
         $data->success = false;
 
-        if( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+        if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
+        {
             $data->success = true;
             $this->destroy_current_session();
         }
@@ -156,8 +175,12 @@ class UsersController extends Controller {
         $this->view('signout', $data);
     }
 
-
-
+    /**
+     * 
+     * @method Destroy a current sign in session
+     * Destroys both cookie and session in DB
+     * 
+     */
     private function destroy_current_session()
     {
         if( !isset($_COOKIE['session'])) return;

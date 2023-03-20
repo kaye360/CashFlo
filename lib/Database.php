@@ -6,62 +6,52 @@
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Section 1: 
- * - DB setup
- * - request, error methods
+ * Used to build MYSQL queries
+ * This class is to be extended by and model Class. It may also
+ * be called on its own when a query is needed on the fly
  * 
- * Section 2:
- * - SQL query builder methods
+ * This class includeds query builder methods (select, table, where,
+ * limit, etc) and action methods (single, list, destroy etc.). Action
+ * methods are chained at the end
  * 
- * Section 3:
- * - SQL exectution action methods
- * 
- * How to use
- * 
- * Extend this class for a model and chain the instance with 
- * SQL query builder methods. Finalize with an action method.
- * 
- * Example:
- * $model->table('users')
- *       ->select('username, email')   
- *       ->where('online = true')
- *       ->list()   
+ * @example
+ * $users = $this->select('username, id)    // Query Builder
+ *  ->table('users')                        // Query Builder
+ *  ->where('id = 10')                      // Query Builder
+ *  ->single();                             // Action
  * 
  */
 namespace lib\Database;
 
-use lib\DBConnect\DBConnect;
 
 class Database
 {
  
-     /**
-      * 
-      * @var $dsn $dbh $stmt - db connection/PDO variables
-      * 
-      */
-     private $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
-     public $dbh;
-     public $stmt;
+    /**
+    * 
+    * @var PDO vars
+    * 
+    */
+    public $dbh;
+    public $stmt;
  
-     /**
-      * 
-      * @var Query prep vars
-      * 
-      */
-     private $select = '*';
-     private $table;
-     private $where;
-     private $order = 'id DESC';
-     private $limit;
-     private $cols;
-     private $values;
-     private $set;
- 
+    /**
+    * 
+    * @var Query Builder vars
+    * 
+    */
+    private $select = '*';
+    private $table;
+    private $where;
+    private $order = 'id DESC';
+    private $limit;
+    private $cols;
+    private $values;
+    private $set;
  
     /**
      * 
-     * Create PDO and set up db connection
+     * Call singleton db connection
      * 
      */
     public function __construct()
@@ -79,9 +69,6 @@ class Database
         return json_decode(file_get_contents('php://input'), true);
     }
 
-
-
-
     /**
      * 
     * @method return an error array
@@ -90,19 +77,15 @@ class Database
     public function error(string $message) {
         return ['success' => false, 'message' => $message];
     }
- 
-
 
     /**
      * 
      * Query Prep Methods
      * 
-     * Methods chained off the object, ended with an Action method
      * Used to build a sql query
+     * Methods chained off the instance. Chain must ende with an Action method
      * 
     */
-
-
 
     public function select(string $select='*')
     {
@@ -151,23 +134,18 @@ class Database
         $this->set = $set;
         return $this;
     }
- 
-
 
     /**
      * 
-     * Query Execute Methods
+     * Query Action Methods
      * 
      * Methods at the end of the chain that call the final mysql query
      * 
     */
-
-
  
     /**
      * 
-     * @method Select single rows action query
-     * Executes a sql select of a single row
+     * @method SQL Select single row action query
      * 
      * Requires the following local methods to be pre-chained:
      * 
@@ -181,9 +159,10 @@ class Database
      * 
      */
     public function single() {
-        try {
-
-            if( is_null($this->select) || is_null($this->table) ) {
+        try 
+        {
+            if( is_null($this->select) || is_null($this->table) ) 
+            {
                 return $this->error('$select, $table are required in single method');
             }
 
@@ -193,7 +172,8 @@ class Database
             if( isset($this->order) ) $sql .= " ORDER BY $this->order";
             $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) {
+            if( !$this->stmt->execute() ) 
+            {
                 return $this->error('Failed to execute query');
             }
 
@@ -208,8 +188,7 @@ class Database
  
     /**
      * 
-     * @method Select multiple rows action query
-     * Executes a sql select of multiple rows
+     * @method SQL Select multiple rows action query
      * 
      * Requires the following local methods to be pre-chained:
      * 
@@ -224,9 +203,10 @@ class Database
      * 
      */
     public function list() {
-        try {
-
-            if( is_null($this->select) || is_null($this->table) ) {
+        try 
+        {
+            if( is_null($this->select) || is_null($this->table) ) 
+            {
                 return $this->error('$select, $table are required in list method');
             }
 
@@ -253,8 +233,7 @@ class Database
  
     /**
      * 
-     * @method Create new row action query
-     * Executes a sql create row
+     * @method SQL Create new row action query
      * 
      * Requires the following local methods to be pre-chained:
      * 
@@ -264,16 +243,18 @@ class Database
      * 
      */
     public function new() {
-        try {
-
-            if( is_null($this->table) || is_null($this->cols) || is_null($this->values) ) {
+        try 
+        {
+            if( is_null($this->table) || is_null($this->cols) || is_null($this->values) ) 
+            {
                 return $this->error('$table, $where, $values are required in destroy method.');
             }
 
             $sql = " INSERT INTO $this->table ($this->cols) VALUES ($this->values)";
             $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) {
+            if( !$this->stmt->execute() ) 
+            {
                 return $this->error('Failed to execute query');
             }
 
@@ -288,8 +269,7 @@ class Database
  
     /**
      * 
-     * @method Destroy action query
-     * Executes a sql delete row
+     * @method SQL Destroy action query
      * 
      * Requires the following local methods to be pre-chained:
      * 
@@ -298,16 +278,18 @@ class Database
      * 
      */
     public function destroy() {
-        try {
-
-            if( is_null($this->table) || is_null($this->where) ) {
+        try 
+        {
+            if( is_null($this->table) || is_null($this->where) ) 
+            {
                 return $this->error('$table, $where are required in destroy method.');
             }
 
             $sql = " DELETE FROM $this->table WHERE $this->where";
             $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) {
+            if( !$this->stmt->execute() ) 
+            {
                 return $this->error('Failed to execute query');
             }
 
@@ -317,12 +299,10 @@ class Database
             return $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
-     
 
     /**
      * 
-     * @method Update action query
-     * Executes a sql update row
+     * @method SQL Update action query
      * 
      * Requires the following local methods to be pre-chained:
      * 
@@ -334,14 +314,16 @@ class Database
     public function update() {
         try {
 
-            if( is_null($this->table) || is_null($this->set) || is_null($this->where) ) {
+            if( is_null($this->table) || is_null($this->set) || is_null($this->where) ) 
+            {
                 return $this->error('$table, $set, $where are required in update method.');
             }
 
             $sql = " UPDATE $this->table SET $this->set WHERE $this->where";
             $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) {
+            if( !$this->stmt->execute() ) 
+            {
                 return $this->error('Failed to execute query');
             }
 
@@ -354,8 +336,7 @@ class Database
  
     /**
      * 
-     * @method Count action query
-     * Executes a count of a given table
+     * @method SQL Count action query
      * 
      * Requires the following local methods to be pre-chained:
      * 
@@ -370,7 +351,8 @@ class Database
     public function count() {
         try {
 
-            if( is_null($this->table) || is_null($this->select) ) {
+            if( is_null($this->table) || is_null($this->select) ) 
+            {
                 return $this->error('$table, $select, $where are required in update method.');
             }
 
@@ -378,45 +360,39 @@ class Database
             if( isset($this->where) ) $sql .= " WHERE $this->where";
             $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) {
+            if( !$this->stmt->execute() ) 
+            {
                 return $this->error('Failed to execute query');
             }
 
             $count = $this->stmt->fetchColumn();
-
             return $count;
 
         } catch (\Exception $error) {
             return $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
- 
-
- 
-
- 
-
 
     /**
-     * 
+    * @todo verify if this is dead code
     * @method validates are request inputs are specified
     * 
     * @return bool
     * 
     */
-    public function is_valid_request(array|null $request, array $required_keys) 
-    {
-        if( !is_array($request) || !is_array($required_keys) ) return false;
+    // public function is_valid_request(array|null $request, array $required_keys) 
+    // {
+    //     if( !is_array($request) || !is_array($required_keys) ) return false;
 
-        $validated = true;
+    //     $validated = true;
 
-        foreach($required_keys as $key) {
-            if( !array_key_exists($key, $request) ) {
-                $validated = false;
-            }
-        }
+    //     foreach($required_keys as $key) {
+    //         if( !array_key_exists($key, $request) ) {
+    //             $validated = false;
+    //         }
+    //     }
 
-        return $validated;
-    }
+    //     return $validated;
+    // }
  
 }

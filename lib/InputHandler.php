@@ -2,10 +2,11 @@
 /**
  * 
  * User Input Handling Class
- * Used for validating, filtering, and sanitizing user input data
  * 
  * @author Josh Kaye
  * https://joshkaye.dev
+ * 
+ * Used for validating, filtering, and sanitizing user input data
  * 
  */
 namespace lib\InputHandler;
@@ -16,7 +17,6 @@ use stdClass;
 
 
 class InputHandler {
-
 
     /**
      * 
@@ -35,34 +35,32 @@ class InputHandler {
         return $_POST[$input];
     }
 
-
-
     /**
      * 
      * @method Validate user input with defined rules
      * 
      * @param input (array) 
-     * - must be in the form of ASSOC array
-     * - inputs must align with $_POST keys
      * [
-     *      'input1' => [rule list],
-     *      'input2' => [rule_list],
+     *      'input1' => [rule list],    // aligns with $_POST['input1']
+     *      'input2' => [rule_list],    // aligns with $_POST['input2']
      * ]
      * 
      * Some rules in [rule_list] may have params
-     * ['max:15'] = max 15 characters
-     * ['min:6'] = min 6 characters
+     * ['max:15']   // max 15 characters
+     * ['min:6']    // min 6 characters
      * 
-     * @return validtor (object)
+     * @return validator object
      * {
      *      success: true|false
      *      errors: {
-     *          group1: [is_unique, has_too_few, username_password_validate]
-     *          group2: [password_confirm, required]
+     *          input1: {is_unique, has_too_few, username_password_validate}    // aligns with $_POST['input1']
+     *          input2: {password_confirm, required}                            // aligns with $_POST['input2']
      *      }
      * }
      * 
-     * Each error can be handled in the UI separately
+     * Each @var errors->input->abc is (bool)
+     * Each error can be handled in the UI separately or as a group.
+     * Each input with have a @var has_errors (bool) property 
      * 
      */
     public static function validate(array $inputs)
@@ -86,8 +84,8 @@ class InputHandler {
             
 
             // Has forbidden characters
-            if( self::has_forbidden_chars($_POST[$input]) ) {
-
+            if( self::has_forbidden_chars($_POST[$input]) ) 
+            {
                 $validator->errors->$input->has_forbidden_chars = true;
                 $validator->errors->$input->has_error = true;
                 $validator->success = false;
@@ -102,8 +100,8 @@ class InputHandler {
 
 
             // Required
-            if( self::is_rule('required', $rules) ) {
-
+            if( self::is_rule('required', $rules) ) 
+            {
                 if( empty( $_POST[$input])) {
                     $validator->errors->$input->required = true;
                     $validator->errors->$input->has_error = true;
@@ -116,9 +114,10 @@ class InputHandler {
 
             // Unique
             // Note: This currently only works for username in table users
-            if( self::is_rule('unique', $rules) ) {
-
-                if( self::is_not_unique($_POST[$input]) ) {
+            if( self::is_rule('unique', $rules) ) 
+            {
+                if( self::is_not_unique($_POST[$input]) ) 
+                {
                     $validator->errors->$input->unique = true;
                     $validator->errors->$input->has_error = true;
                     $validator->success = false;
@@ -129,8 +128,8 @@ class InputHandler {
 
 
             // Max character length
-            if( self::is_rule('max', $rules) ) {
-
+            if( self::is_rule('max', $rules) ) 
+            {
                 $param = self::get_rule_param('max', $rules);
 
                 if( 
@@ -147,8 +146,8 @@ class InputHandler {
             
 
             // Min character length
-            if( self::is_rule('min', $rules) ) {
-
+            if( self::is_rule('min', $rules) ) 
+            {
                 $param = self::get_rule_param('min', $rules);
 
                 if( 
@@ -165,12 +164,12 @@ class InputHandler {
 
 
             // Username, password verification
-            if( self::is_rule('user_pass_verify', $rules) ) {
-
+            if( self::is_rule('user_pass_verify', $rules) ) 
+            {
                 if( self::is_invalid_username_password(
                     username: $_POST['username'],
                     password: $_POST['password']
-                ) ) {
+                )) {
                     $validator->errors->$input->user_pass_verify = true;
                     $validator->errors->$input->has_error = true;
                     $validator->success = false;
@@ -181,12 +180,12 @@ class InputHandler {
             
 
             // Password, confirm password verification
-            if( self::is_rule('confirm_password', $rules) ) {
-
+            if( self::is_rule('confirm_password', $rules) ) 
+            {
                 if( self::is_invalid_confirm_password(
                     password: $_POST['password'],
                     confirm_password: $_POST['confirm_password']
-                ) ) {
+                )) {
                     $validator->errors->$input->confirm_password = true;
                     $validator->errors->$input->has_error = true;
                     $validator->success = false;
@@ -212,7 +211,7 @@ class InputHandler {
 
     /** 
      * 
-    * @method checks if array of strings has forbidden characters
+    * @method check if string has forbidden characters
     * 
     * @return bool
     * 
@@ -223,10 +222,9 @@ class InputHandler {
         return !preg_match('/^[a-zA-Z0-9_\-]+$/', $input);
     }
 
-
     /**
     * 
-    * @method checks if string too long
+    * @method check if string too long
     * 
     * @return bool
     * 
@@ -236,11 +234,9 @@ class InputHandler {
         return strlen($string) > $limit;
     }
 
-
-
     /**
     * 
-    * @method checks if string too short
+    * @method check if string too short
     * 
     * @return bool
     * 
@@ -250,11 +246,9 @@ class InputHandler {
         return strlen($string) < $limit;
     }
 
-
-
     /**
      * 
-    * @method is value of column already taken. For unique columns
+    * @method check if username already taken
     * 
     * @return bool
     * 
@@ -270,8 +264,6 @@ class InputHandler {
 
         return $user_count >= 1;
     }
-
-
 
     /**
      * 
@@ -295,11 +287,9 @@ class InputHandler {
         return !( password_verify($salted_password, $user['data']['password']) );
     }
 
-
-
     /**
      * 
-     * @method invalid confirmed password
+     * @method invalid password/confirmed password
      * 
      * @return bool
      * 
@@ -317,7 +307,6 @@ class InputHandler {
      */
 
 
-
     /**
      * 
      * @method Check if rule is set on an input rule list
@@ -327,14 +316,11 @@ class InputHandler {
     {
         foreach($input_rule_list as $input_rule)
         {
-            if( str_contains($input_rule, $rule) ) {
-                return true;
-            }
+            if( str_contains($input_rule, $rule) ) return true;
         }
 
         return false;
     }
-
 
     /**
      * 
@@ -345,12 +331,11 @@ class InputHandler {
     {
         foreach($input_rule_list as $input_rule)
         {
-            if( str_contains($input_rule, $rule) ) {
+            if( str_contains($input_rule, $rule) ) 
+            {
                 $input_rule_to_array = explode(':', $input_rule);
 
-                if( !empty($input_rule_to_array[1]) ) {
-                    return $input_rule_to_array[1];
-                }
+                if( !empty($input_rule_to_array[1]) ) return $input_rule_to_array[1];
             }
         }
 

@@ -1,6 +1,4 @@
 <?php
-namespace lib\TemplateEngine;
-
 /**
  * 
  * Custom Templating Engine
@@ -8,29 +6,30 @@ namespace lib\TemplateEngine;
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
+ * Used to place dynamic strings in the UI
+ * Any {{string}} will show the value of $data->string, if
+ * $data->string is set.
+ * 
  */
-
+namespace lib\TemplateEngine;
 
 
 class TemplateEngine
 {
 
-
-
     /**
      * 
-     * Search and replace any instance of {{var}} with $data->var
+     * @method Replace any instance of {{var}} with $data->var
      * in a template file
      * 
      */
     public static function apply(string $view, object $data)
     {
-
-        foreach( $data as $key => $value ) {
+        foreach( $data as $key => $value ) 
+        {
             if( !is_string($value) ) continue;
             $view = str_replace('{{' . $key . '}}', $value, $view);
         }
-
         return $view;
     }
 }

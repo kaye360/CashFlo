@@ -1,30 +1,37 @@
 <?php
-namespace models\UserModel;
-
-use lib\Database\Database;
-
-require_once './lib/Database.php';
-
 /**
+ * 
+ * User Model
  * 
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
+ * Stores database actions relating to the 'users' table
+ * 
  */
+namespace models\UserModel;
+
+use lib\Database\Database;
 
 
 
 class UserModel extends Database {
 
-
-
+    /**
+     * 
+     * @method create the PDO object
+     * 
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
-
-
+    /**
+     * 
+     * @method create a new user
+     * 
+     */
     public function create(object $data)
     {
         $salt = substr(uniqid(), -5);
@@ -36,7 +43,8 @@ class UserModel extends Database {
             ->values(" '$data->username', '$salted_hashed_password', '$salt' ")
             ->new();
 
-        if( !$create_new_user ) {
+        if( !$create_new_user ) 
+        {
             return (object) [
                 'error' => true, 
                 'data' => null
@@ -48,13 +56,5 @@ class UserModel extends Database {
             'data' => $data,
         ];
     }
-
-
-
-    public function make_UUID()
-	{
-		// Found Here: https://stackoverflow.com/questions/2040240/php-function-to-generate-v4-uuid
-		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
-	}
 
 }
