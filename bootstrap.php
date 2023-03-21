@@ -68,3 +68,14 @@ define('DB_CONNECTION', DBConnect::connect() );
  */
 define('AUTH', Auth::init());
 
+/**
+ * 
+ * @method For development debugging. 
+ * 
+ */
+function q($var)
+{
+    echo '<pre>';
+    var_dump($var);
+    echo '</pre>';
+}

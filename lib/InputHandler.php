@@ -183,8 +183,8 @@ class InputHandler {
             if( self::is_rule('confirm_password', $rules) ) 
             {
                 if( self::is_invalid_confirm_password(
-                    password: $_POST['password'],
-                    confirm_password: $_POST['confirm_password']
+                    password: $_POST['confirm_password_1'],
+                    confirm_password: $_POST['confirm_password_2']
                 )) {
                     $validator->errors->$input->confirm_password = true;
                     $validator->errors->$input->has_error = true;

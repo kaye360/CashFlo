@@ -26,7 +26,7 @@ class UsersController extends Controller {
      * @method Sign up a user 
      * 
      */
-    public function sign_up_post()
+    public function sign_up()
     {
         
         if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
@@ -38,13 +38,13 @@ class UsersController extends Controller {
         $data = new stdClass();
         $data->title = 'Sign Up';
         $data->username = InputHandler::sanitize('username');
-        $data->password = trim($_POST['password']);
-        $data->confirm_password = trim($_POST['confirm_password']);
+        $data->password = trim($_POST['confirm_password_1']);
+        $data->confirm_password = trim($_POST['confirm_password_2']);
 
         $validator = InputHandler::validate([
             'username' => ['required', 'unique', 'max:15', 'min:6'],
-            'password' => ['required', 'min:6', 'confirm_password'],
-            'confirm_password' => ['required']
+            'confirm_password_1' => ['required', 'min:6', 'confirm_password'],
+            'confirm_password_2' => ['required']
         ]);
 
         $data->errors = $validator->errors;
@@ -74,7 +74,7 @@ class UsersController extends Controller {
      * @method Sign up form
      * 
      */
-    public function sign_up_get()
+    public function sign_up_form()
     {
         $data = new stdClass();
         $data->title = 'Sign Up';
@@ -86,10 +86,10 @@ class UsersController extends Controller {
         $data->errors = new stdClass();
         $data->errors->username = new StdClass();
         $data->errors->username->has_error = false;
-        $data->errors->password = new stdClass();
-        $data->errors->password->has_error = false;
-        $data->errors->confirm_password = new stdClass();
-        $data->errors->confirm_password->has_error = false;
+        $data->errors->confirm_password_1 = new stdClass();
+        $data->errors->confirm_password_1->has_error = false;
+        $data->errors->confirm_password_2 = new stdClass();
+        $data->errors->confirm_password_2->has_error = false;
         $data->errors->query = false;
         $this->view('signup', $data);
     }
@@ -99,7 +99,7 @@ class UsersController extends Controller {
      * @method Sign in form
      * 
      */
-    public function sign_in_get() 
+    public function sign_in_form() 
     {
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
@@ -117,7 +117,7 @@ class UsersController extends Controller {
      * @method Sign in a user
      * 
      */
-    public function sign_in_post()
+    public function sign_in()
     {
 
         if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
@@ -177,6 +177,58 @@ class UsersController extends Controller {
         }
 
         $this->view('signout', $data);
+    }
+
+    /**
+     * 
+     * @method User settings form
+     * 
+     */
+    public function settings()
+    {
+        $data = new stdClass();
+        $data->title = 'Settings';
+        $data->success = false;
+        $data->errors = new stdClass();
+        $data->errors->password = new stdClass();
+        $data->errors->password->has_error = false;
+        $data->errors->confirm_password_1 = new stdClass();
+        $data->errors->confirm_password_1->has_error = false;
+
+        $this->view('settings', $data);
+    }
+
+    /**
+     * 
+     * @method Update user settings 
+     * 
+     */
+    public function update_settings()
+    {
+        $data = new stdClass();
+        $data->title = 'Settings';
+        $data->success = false;
+
+        $data->username = InputHandler::sanitize('username');
+        $data->password = InputHandler::sanitize('password');
+        $data->confirm_password_1 = InputHandler::sanitize('confirm_password_1');
+        $data->confirm_password_2 = InputHandler::sanitize('confirm_password_2');
+
+        $validator = InputHandler::validate([
+            'password' => ['user_pass_verify'],
+            'confirm_password_1' => ['confirm_password', 'min:6']
+        ]);
+
+        $data->errors = $validator->errors;
+        $data->success = $validator->success;
+
+        if( $data->success )
+        {
+            $userModel = $this->model('user');
+            $userModel->update_settings($data);
+        }
+
+        $this->view('settings', $data);
     }
 
     /**

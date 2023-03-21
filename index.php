@@ -47,27 +47,37 @@ $route->get('/dashboard', function()
 
 $route->get('/signin', function() 
 {
-    (new UsersController())->sign_in_get();
+    (new UsersController())->sign_in_form();
 });
 
 $route->post('/signin', function() 
 {
-    (new UsersController())->sign_in_post();
+    (new UsersController())->sign_in();
 });
 
 $route->get('/signup', function() 
 {
-    (new UsersController())->sign_up_get();
+    (new UsersController())->sign_up_form();
 });
 
 $route->post('/signup', function() 
 {
-    (new UsersController())->sign_up_post();
+    (new UsersController())->sign_up();
 });
 
 $route->any('/signout', function()
 {
     (new UsersController())->sign_out();
+});
+
+$route->get('/settings', function()
+{
+    (new UsersController())->settings();
+});
+
+$route->post('/settings', function()
+{
+    (new UsersController())->update_settings();
 });
 
 $route->response();

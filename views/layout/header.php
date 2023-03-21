@@ -20,16 +20,17 @@
     </div>
 
     <?php if( AUTH->is_logged_in() ): ?>
-        <div class="border border-slate-300 px-2 py-1">
-            You are logged in as <?php AUTH->username(); ?> with the ID of <?php AUTH->user_id(); ?>.
-        </div>
+        <ul class="flex flex-col gap-2">
+            <li class="font-bold"><?php AUTH->username(); ?>, id: <?php AUTH->user_id(); ?></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/signout">Logout</a></li>
+        </ul>
     <?php endif; ?>
 
     <ul class="flex flex-col gap-2">
         <li><a href="/">Home</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/about">About</a></li>
-        <li><a href="/signout">Logout</a></li>
         <li><a href="/error">Error</a></li>
         <li><a href="/unauthorized">UnAuth</a></li>
     </ul>
