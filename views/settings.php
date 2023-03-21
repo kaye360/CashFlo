@@ -63,7 +63,7 @@
 
         <div>
             <input type="hidden" name="username" value="<?php AUTH->username() ?>" />
-            <input type="submit" value="Update settings" class="inline-block px-4 py-2 bg-green-100" />
+            <input type="submit" value="Update settings" class="<?php CSS->button_main(); ?>" />
         </div>
 
     </section>

@@ -11,7 +11,8 @@
 
 use lib\Auth\Auth;
 use lib\DBConnect\DBConnect;
- 
+use lib\CSSComponents\CSSComponents;
+
 /**
  * 
  * @global Config file constants
@@ -47,7 +48,13 @@ spl_autoload_register( function($class)
         $class_array[1] = str_replace('Model' , '', $class_array[1]);
     }
 
-    $class_file_path = './' . $class_array[0] . '/' . $class_array[1] . '.php';
+    $class_file_path = '.';
+
+    for($i = 0; $i < count($class_array) -1; $i++ )
+    {
+        $class_file_path .= '/' . $class_array[$i];
+    }
+    $class_file_path .= '.php';
 
     require_once $class_file_path;
 });
@@ -59,14 +66,19 @@ spl_autoload_register( function($class)
  */
 define('DB_CONNECTION', DBConnect::connect() );
 
-
-
 /**
  * 
  * @var Auth object
  * 
  */
 define('AUTH', Auth::init());
+
+/**
+ * 
+ * @var CSS Componet Object
+ * 
+ */
+define('CSS', CSSComponents::init() );
 
 /**
  * 

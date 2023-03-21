@@ -8,11 +8,11 @@
 
     <div>
 
-        <a href="/signin" class="inline-block px-4 py-2 bg-green-100">
+        <a href="/signin" class="<?php CSS->button_main(); ?>">
             Sign In
         </a>
 
-        <a href="/signup" class="inline-block px-4 py-2 bg-green-100">
+        <a href="/signup" class="<?php CSS->button_main(); ?>">
             Create An Account
         </a>
     </div>
