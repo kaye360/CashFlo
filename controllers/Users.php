@@ -79,19 +79,7 @@ class UsersController extends Controller {
         $data = new stdClass();
         $data->title = 'Sign Up';
         $data->h1 = 'Sign Up to Spendly';
-        $data->username = '';
-        $data->password = '';
-        $data->confirm_password = '';
 
-        $data->success = false;
-        $data->errors = new stdClass();
-        $data->errors->username = new StdClass();
-        $data->errors->username->has_error = false;
-        $data->errors->confirm_password_1 = new stdClass();
-        $data->errors->confirm_password_1->has_error = false;
-        $data->errors->confirm_password_2 = new stdClass();
-        $data->errors->confirm_password_2->has_error = false;
-        $data->errors->query = false;
         $this->view('signup', $data);
     }
 
@@ -105,11 +93,6 @@ class UsersController extends Controller {
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
         $data->h1 = 'Sign In to Spendly';
-        $data->errors = new stdClass();
-        $data->errors->password = new stdClass();
-        $data->errors->password->has_error = false;
-        $data->success = false;
-        $data->username = '';
 
         $this->view('signin', $data);
     }
@@ -208,12 +191,6 @@ class UsersController extends Controller {
         $data = new stdClass();
         $data->title = 'Settings';
         $data->h1 = 'Settings';
-        $data->success = false;
-        $data->errors = new stdClass();
-        $data->errors->password = new stdClass();
-        $data->errors->password->has_error = false;
-        $data->errors->confirm_password_1 = new stdClass();
-        $data->errors->confirm_password_1->has_error = false;
 
         $this->view('settings', $data);
     }

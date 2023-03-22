@@ -39,8 +39,6 @@ class BudgetModel extends Database {
             ->values(" '$data->name', '$data->type', '$data->amount', '" . AUTH->user_id . "' ")
             ->new();
 
-        q($create_new_budget);
-
         if( !$create_new_budget ) 
         {
             return (object) [

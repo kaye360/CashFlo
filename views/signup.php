@@ -1,7 +1,7 @@
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
 
-    <?php if($data->success): ?>
+    <?php if( @$data->success ): ?>
         <span class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
             Account successfully created. {{username}} you may now <a href="/signin" class="underline">Sign In</a>.
         </span>
@@ -12,7 +12,7 @@
         <label>
             <div>Username:</div>
 
-            <?php if($data->errors->username->has_error): ?>
+            <?php if( @$data->errors->username->has_error ): ?>
 
                 <div class="flex flex-col items-start gap-0 text-red-500">
                     
@@ -54,7 +54,7 @@
         <label>
             <div>Password:</div>
 
-            <?php if($data->errors->confirm_password_1->has_error): ?>
+            <?php if( @$data->errors->confirm_password_1->has_error ): ?>
 
                 <div class="flex flex-col items-start gap-0 text-red-500">
 
@@ -86,7 +86,7 @@
         <label>
             <div>Confirm Password:</div>
 
-            <?php if($data->errors->confirm_password_2->has_error): ?>
+            <?php if( @$data->errors->confirm_password_2->has_error ): ?>
 
                 <div class="flex flex-col items-start gap-0 text-red-500">
 
@@ -106,7 +106,7 @@
 
         <input type="submit" value="Create an account" class="inline-block px-4 py-2 bg-blue-100" />
 
-        <?php if($data->errors->query): ?>
+        <?php if( @$data->errors->query ): ?>
             <span class="block text-red-500">
                 Error with query.
             </span>

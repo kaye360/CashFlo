@@ -28,12 +28,15 @@ class TemplateEngine
     public function apply(string $view, object $data)
     {
         // Search and replace all {{vars}} with $data->var in $view
+        // If $data->var not set, set to '' and hide
         preg_match_all('/\{\{(.*?)\}\}/i', $view, $data_matches); // Find {{...}}
         foreach( $data_matches[1] as $value )
         {
-            if( is_string($data->$value) )
+            if( isset($data->$value) )
             {
                 $view = str_replace('{{' . $value . '}}', $data->$value, $view);
+            } else {
+                $view = str_replace('{{' . $value . '}}', '', $view);
             }
         }
 

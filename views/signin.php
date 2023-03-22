@@ -1,7 +1,7 @@
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
 
-    <?php if($data->success): ?>
+    <?php if( @$data->success ): ?>
         <span class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
             Logged in successfully. <a href="/dashboard" class="underline">Continue to Dashboard</a>.
         </span>
@@ -19,7 +19,7 @@
         <input type="password" id="password" name="password" class="form-input" />
     </label>
 
-    <?php if($data->errors->password->has_error): ?>
+    <?php if( @$data->errors->password->has_error ): ?>
         <span class="text-red-500">
             <?php if(
                 $data->errors->password->user_pass_verify ||

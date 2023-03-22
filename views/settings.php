@@ -2,7 +2,7 @@
 
 <form method="POST" action="/settings" class="flex flex-col gap-8 my-8">
     
-            <?php if($data->success): ?>
+            <?php if( @$data->success ): ?>
                 <section class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
                     Changes saved.
                 </section>
@@ -35,8 +35,8 @@
 
 
         <?php if(
-            $data->errors->password->has_error ||
-            $data->errors->confirm_password_1->has_error
+            @$data->errors->password->has_error ||
+            @$data->errors->confirm_password_1->has_error
         ): ?>
             <div class="flex flex-col gap-2 text-red-400">
 
