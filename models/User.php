@@ -62,7 +62,7 @@ class UserModel extends Database {
      * @method Update Users settings
      * 
      */
-    public function update_settigns($data)
+    public function update_settings($data)
     {
         $new_password = $data->confirm_password_1;
         $salt = substr(uniqid(), -5);
@@ -74,7 +74,5 @@ class UserModel extends Database {
             ->set("salt = '$salt', password = '$salted_hashed_password' ")
             ->where("id = $user_id")
             ->update();
-
-        q($update_user_password);
     }
 }

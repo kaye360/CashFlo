@@ -281,7 +281,7 @@ class InputHandler {
         
             ->single();
             
-        if( !$user['success'] ) return false;
+            if( !$user['success'] ) return true;
 
         $salted_password = $password . $user['data']['salt'];
         return !( password_verify($salted_password, $user['data']['password']) );

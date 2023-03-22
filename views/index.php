@@ -6,11 +6,11 @@
     </p>
 
     <div>
-        <a href="/signin" class="<<button_main>>">
+        <a href="/signin" class="<<button>> <<button_main>>">
             Sign In
         </a>
 
-        <a href="/signup" class="<<button_main>>">
+        <a href="/signup" class="<<button>> <<button_main>>">
             Create An Account
         </a>
     </div>

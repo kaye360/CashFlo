@@ -43,7 +43,9 @@ class CSSComponents {
      * 
      */
 
-    public static $button_main = 'inline-block px-4 py-2 bg-green-100';
+    public static $button = 'inline-block px-4 py-2';
+    
+    public static $button_main = 'bg-green-100';
 
 
 
