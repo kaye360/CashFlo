@@ -1,6 +1,4 @@
 
-<h1>Dashboard - {{username}}</h1>
-
 <p>
     This page is protected
 </p>

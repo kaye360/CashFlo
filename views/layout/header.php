@@ -38,4 +38,4 @@
 
 <main class="px-4">
 
-<h1 class="text-xl font-semibold">{{h1}}</h1>
+<h1 class="mb-6 text-xl font-semibold">{{h1}}</h1>

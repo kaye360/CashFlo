@@ -1,6 +1,5 @@
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
-    <h1 class="text-2xl">Sign out of your account</h1>
 
     <p>
         Are you sure want to sign out?

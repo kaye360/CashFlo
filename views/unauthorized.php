@@ -1,8 +1,6 @@
 
 <section class="flex flex-col items-start gap-4">
     
-    <h1>Unauthorized</h1>
-    
     <p>
         This page is protected. You must be logged in to view this page.
     </p>

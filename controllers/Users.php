@@ -78,6 +78,7 @@ class UsersController extends Controller {
     {
         $data = new stdClass();
         $data->title = 'Sign Up';
+        $data->h1 = 'Sign Up to Spendly';
         $data->username = '';
         $data->password = '';
         $data->confirm_password = '';
@@ -103,6 +104,7 @@ class UsersController extends Controller {
     {
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
+        $data->h1 = 'Sign In to Spendly';
         $data->errors = new stdClass();
         $data->errors->password = new stdClass();
         $data->errors->password->has_error = false;
@@ -130,6 +132,7 @@ class UsersController extends Controller {
 
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
+        $data->h1 = 'Sign In to Spendly';
         $data->username = '';
 
         $data->username = InputHandler::sanitize('username');
@@ -168,6 +171,7 @@ class UsersController extends Controller {
     {
         $data = new stdClass();
         $data->title = 'Sign Out';
+        $data->h1 = 'Sign out of your account';
         $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
@@ -188,6 +192,7 @@ class UsersController extends Controller {
     {
         $data = new stdClass();
         $data->title = 'Settings';
+        $data->h1 = 'Settings';
         $data->success = false;
         $data->errors = new stdClass();
         $data->errors->password = new stdClass();
@@ -207,6 +212,7 @@ class UsersController extends Controller {
     {
         $data = new stdClass();
         $data->title = 'Settings';
+        $data->h1 = 'Settings';
         $data->success = false;
 
         $data->username = InputHandler::sanitize('username');

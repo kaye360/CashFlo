@@ -1,8 +1,6 @@
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
 
-    <h1 class="text-2xl">Sign In to Spendly</h1>
-
     <?php if($data->success): ?>
         <span class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
             Logged in successfully. <a href="/dashboard" class="underline">Continue to Dashboard</a>.

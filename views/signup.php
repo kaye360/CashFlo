@@ -1,8 +1,6 @@
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
 
-    <h1 class="text-2xl">Sign Up to Spendly</h1>
-
     <?php if($data->success): ?>
         <span class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
             Account successfully created. {{username}} you may now <a href="/signin" class="underline">Sign In</a>.
