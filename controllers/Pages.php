@@ -26,6 +26,7 @@ class PagesController extends Controller {
     public function home() {
         $data = (object) [
             'title' => 'Spendly App',
+            'hello' => 'Hello World'
         ];
         $this->view('index', $data);
     }

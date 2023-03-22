@@ -1,4 +1,4 @@
-<h1 class="text-2xl">Settings</h1>
+
 
 <form method="POST" action="/settings" class="flex flex-col gap-8 my-8">
     
@@ -63,7 +63,7 @@
 
         <div>
             <input type="hidden" name="username" value="<?php AUTH->username() ?>" />
-            <input type="submit" value="Update settings" class="<?php CSS->button_main(); ?>" />
+            <input type="submit" value="Update settings" class="<<button_main>>" />
         </div>
 
     </section>

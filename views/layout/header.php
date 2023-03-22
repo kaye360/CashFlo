@@ -37,3 +37,5 @@
 </nav>
 
 <main class="px-4">
+
+<h1 class="text-xl font-semibold">{{h1}}</h1>

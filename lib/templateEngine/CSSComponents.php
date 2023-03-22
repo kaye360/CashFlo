@@ -7,14 +7,14 @@
  * https://joshkaye.dev
  * 
  * Used to reuse the same list of Tailwind classes
- * Initialized in bootstrap.php as constant 'CSS'. Components can be used in
- * the UI in the following way 
  * 
- * @example
- * <a href="#" class="<?php CSS->button_main();?>">Link</a>
+ * Initialized in lib\templateEngine\TemplateEngine
+ * Define static vars as strings with tailwind classes
+ * Call these vars in the UI with <<var>>
+ * @example <button class="<<button_main>>">
  * 
  */
-namespace lib\CSSComponents;
+namespace lib\TemplateEngine\CSSComponents;
 
 class CSSComponents {
 
@@ -43,8 +43,8 @@ class CSSComponents {
      * 
      */
 
-    public static function button_main()
-    {
-        echo 'inline-block px-4 py-2 bg-green-100';
-    }
+    public static $button_main = 'inline-block px-4 py-2 bg-green-100';
+
+
+
 }

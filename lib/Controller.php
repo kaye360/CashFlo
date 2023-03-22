@@ -20,9 +20,7 @@
  */
 namespace lib\Controller;
 
-use lib\TemplateEngine\TemplateEngine;
-
-
+use lib\templateEngine\TemplateEngine\TemplateEngine;
 
 class Controller {
 
@@ -83,7 +81,8 @@ class Controller {
         require_once './views/layout/footer.php';
 
         $view = ob_get_contents();
-        $view = TemplateEngine::apply(view: $view, data: $data);
+        $template = new TemplateEngine();
+        $view = $template->apply($view, $data);
         ob_end_clean();
         echo $view;
     }

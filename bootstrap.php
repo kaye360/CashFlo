@@ -68,17 +68,10 @@ define('DB_CONNECTION', DBConnect::connect() );
 
 /**
  * 
- * @var Auth object
+ * @var Auth object constant
  * 
  */
 define('AUTH', Auth::init());
-
-/**
- * 
- * @var CSS Componet Object
- * 
- */
-define('CSS', CSSComponents::init() );
 
 /**
  * 
