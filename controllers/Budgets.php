@@ -26,6 +26,13 @@ class BudgetsController extends Controller {
         $data->title = 'Budgets';
         $data->h1 = 'Budgets';
 
+        $budgetModel = $this->model('Budget');
+        $data->budgets = $budgetModel->select('*')
+            ->table('budgets')
+            ->where("user_id = '" . AUTH->user_id . "' ")
+            ->order('name ASC')
+            ->list();
+
         $this->view('budgets', $data);
     }
 
@@ -63,7 +70,27 @@ class BudgetsController extends Controller {
             }
         }
 
+        $budgetModel = $this->model('Budget');
+        $data->budgets = $budgetModel->select('*')
+            ->table('budgets')
+            ->where("user_id = '" . AUTH->user_id . "' ")
+            ->order('name ASC')
+            ->list();
+
         $this->view('budgets', $data);
+    }
+
+    /**
+     * 
+     * @method Edit Budget Form
+     * 
+     */
+    public function edit_budget_form()
+    {
+        $data = new stdClass();
+        $data->title = 'Edit budget';
+        $data->h1 = 'Edit Budget: ';
+        $this->view('budget/edit', $data);
     }
 
 }

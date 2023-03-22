@@ -75,7 +75,7 @@ class Controller {
             return;
         }
 
-        require_once './views/layout/header.php';
+        require_once './views/_layout/header.php';
 
         if (file_exists('./views/' . $view . '.php') ) 
         {
@@ -88,7 +88,7 @@ class Controller {
             require_once './views/error.php';
         }
 
-        require_once './views/layout/footer.php';
+        require_once './views/_layout/footer.php';
 
         $view = ob_get_contents();
         $template = new TemplateEngine();

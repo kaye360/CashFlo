@@ -222,9 +222,9 @@ class Database
                 return $this->error('Failed to execute query');
             }
 
-            $rows = $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $rows = $this->stmt->fetchAll(\PDO::FETCH_OBJ);
             if($rows === false) return $this->error('No rows found');
-            return [ 'success' => true, 'data' => $rows ];
+            return (object) [ 'success' => true, 'data' => $rows ];
 
         } catch (\Exception $error) {
             return $this->error('Fatal error with query: ' . $error->getMessage());

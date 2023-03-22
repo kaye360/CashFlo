@@ -99,4 +99,9 @@ $route->post('/budgets', function()
     (new BudgetsController())->auth()->create_budget();
 });
 
+$route->get('/budget/:param/edit', function()
+{
+    (new BudgetsController())->auth()->edit_budget_form();
+});
+
 $route->response();
