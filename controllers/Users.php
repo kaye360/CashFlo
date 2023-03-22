@@ -181,7 +181,22 @@ class UsersController extends Controller {
         }
 
         $this->view('signout', $data);
-    }
+    }    
+    
+    /**
+    * 
+    * @return Dashboard Page
+    * 
+    */
+   public function dashboard()
+   {
+       $data = new stdClass();
+       $data->title = 'Dashboard';
+       $data->h1 = 'Dashboard: ' . AUTH->username;
+       $data->username = AUTH->username;
+
+       $this->view('dashboard', $data);
+   }
 
     /**
      * 

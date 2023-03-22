@@ -55,7 +55,7 @@ class PagesController extends Controller {
     ) {
         $data = (object) [
             'title' => 'Error',
-            'h1' => 'Error',
+            'h1' => 'Error 404',
             'type' => $type,
             'message' => $message,
         ];
@@ -73,20 +73,5 @@ class PagesController extends Controller {
         $data->title = 'Unauthorized request';
         $data->h1 = 'Unauthorized request';
         $this->view('unauthorized', $data);
-    }
-
-    /**
-     * 
-     * @return Dashboard Page
-     * 
-     */
-    public function dashboard()
-    {
-        $data = new stdClass();
-        $data->title = 'Dashboard';
-        $data->h1 = 'Dashboard: ' . AUTH->username;
-        $data->username = AUTH->username;
-
-        $this->view('dashboard', $data);
     }
 }

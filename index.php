@@ -2,6 +2,7 @@
 
 require_once './bootstrap.php';
 
+use controllers\BudgetsController\BudgetsController;
 use lib\Router\Router;
 use controllers\PagesController\PagesController;
 use controllers\UsersController\UsersController;
@@ -10,7 +11,7 @@ $route = new Router();
 
 /**
  * 
- * App Page Routes
+ * App Page Routes (Public)
  * 
  */
 
@@ -34,14 +35,9 @@ $route->get('/unauthorized', function()
     (new PagesController())->unauthorized();
 });
 
-$route->get('/dashboard', function()
-{
-    (new PagesController())->auth()->dashboard();
-});
-
 /**
  * 
- * User Routes
+ * User Routes (Public)
  * 
  */
 
@@ -70,14 +66,37 @@ $route->any('/signout', function()
     (new UsersController())->sign_out();
 });
 
+/**
+ * 
+ * User Routes (Auth)
+ * 
+ */
+$route->get('/dashboard', function()
+{
+    (new UsersController())->auth()->dashboard();
+});
+
 $route->get('/settings', function()
 {
-    (new UsersController())->settings();
+    (new UsersController())->auth()->settings();
 });
 
 $route->post('/settings', function()
 {
-    (new UsersController())->update_settings();
+    (new UsersController())->auth()->update_settings();
+});
+
+/**
+ * Budgets Routes
+ */
+$route->get('/budgets', function()
+{
+    (new BudgetsController())->auth()->budgets_home();
+});
+
+$route->post('/budgets', function()
+{
+    (new BudgetsController())->auth()->create_budget();
 });
 
 $route->response();

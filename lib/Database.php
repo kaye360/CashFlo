@@ -253,6 +253,7 @@ class Database
             $sql = " INSERT INTO $this->table ($this->cols) VALUES ($this->values)";
             $this->stmt = $this->dbh->prepare($sql);
             
+            
             if( !$this->stmt->execute() ) 
             {
                 return $this->error('Failed to execute query');

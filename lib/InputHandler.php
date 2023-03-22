@@ -12,6 +12,7 @@
 namespace lib\InputHandler;
 
 use lib\Database\Database;
+use NumberFormatter;
 use stdClass;
 
 
@@ -84,7 +85,12 @@ class InputHandler {
             
 
             // Has forbidden characters
-            if( self::has_forbidden_chars($_POST[$input]) ) 
+            // Allow for has_spaces exception
+            $has_forbidden_chars = self::is_rule('has_spaces', $rules)
+                ? self::has_forbidden_chars($_POST[$input], ['has_spaces'])
+                : self::has_forbidden_chars($_POST[$input]);
+
+            if( $has_forbidden_chars ) 
             {
                 $validator->errors->$input->has_forbidden_chars = true;
                 $validator->errors->$input->has_error = true;
@@ -194,10 +200,46 @@ class InputHandler {
                 }
             }
 
+            // Check if number
+            if( self::is_rule('number', $rules) )
+            {
+                if( !is_numeric($_POST[$input]) )
+                {
+                    $validator->errors->$input->number = true;
+                    $validator->errors->$input->has_error = true;
+                    $validator->success = false;
+                } else {
+                    $validator->errors->$input->number = false;
+                }
+            }
+
         }
 
         return $validator;
     }
+
+    /**
+     * 
+     * @method Format an input to CAD 
+     * 
+     */
+    public static function money($input)
+    {
+        if( !is_numeric($_POST[$input]) ) return null;
+
+        $amount = str_contains($_POST[$input], '.')
+            ?   $_POST[$input]
+            :   $_POST[$input] . '.00';
+        $amount = ltrim($amount, '0');
+
+        $amount_array = explode('.', $amount);
+        $decimal = substr($amount_array[1], 0, 2);
+
+        $formatted_amount = $amount_array[0] . '.' . $decimal;
+        $_POST[$input] = $formatted_amount;
+        return $formatted_amount;
+    }
+
 
 
 
@@ -216,10 +258,17 @@ class InputHandler {
     * @return bool
     * 
     */
-    private static function has_forbidden_chars(string $input) 
+    private static function has_forbidden_chars(string $input, $exceptions = []) 
     {
         if( empty($input) ) return false;
-        return !preg_match('/^[a-zA-Z0-9_\-]+$/', $input);
+        
+        if( in_array('has_spaces', $exceptions) )
+        {
+            return !preg_match('/^[a-zA-Z0-9 ._\-]+$/', $input);
+        }
+        
+        
+        return !preg_match('/^[a-zA-Z0-9._\-]+$/', $input);
     }
 
     /**
