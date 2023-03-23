@@ -90,6 +90,16 @@ class BudgetsController extends Controller {
         $data = new stdClass();
         $data->title = 'Edit budget';
         $data->h1 = 'Edit Budget: ';
+        $data->id = explode('/', $_SERVER['REQUEST_URI'])[2];
+
+        $budgetModel = $this->model('Budget');
+        $data->budgets = $budgetModel->select('*')
+            ->table('budgets')
+            ->where("id = '" . $data->id . "' ")
+            ->single();
+
+        q($data->budgets);
+
         $this->view('budget/edit', $data);
     }
 

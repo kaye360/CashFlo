@@ -102,7 +102,7 @@
                 <span>
                     $<?php echo $budget->amount; ?>
                 </span>
-                <a href="/budget/<?php echo $budget->id; ?>/edit" class="underline">
+                <a href="/budget/<?php echo $budget->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
                     Edit
                 </a>
             </div>

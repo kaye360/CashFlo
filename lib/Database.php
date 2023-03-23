@@ -177,12 +177,12 @@ class Database
                 return $this->error('Failed to execute query');
             }
 
-            $row = $this->stmt->fetch(\PDO::FETCH_ASSOC);
-            if($row === false) return $this->error('No rows found');
-            return [ 'success' => true, 'data' => $row ];
+            $row = $this->stmt->fetch(\PDO::FETCH_OBJ);
+            if($row === false) return (object) $this->error('No rows found');
+            return (object) [ 'success' => true, 'data' => $row ];
 
         } catch (\Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
  
@@ -223,7 +223,7 @@ class Database
             }
 
             $rows = $this->stmt->fetchAll(\PDO::FETCH_OBJ);
-            if($rows === false) return $this->error('No rows found');
+            if($rows === false) return (object) $this->error('No rows found');
             return (object) [ 'success' => true, 'data' => $rows ];
 
         } catch (\Exception $error) {
@@ -247,7 +247,7 @@ class Database
         {
             if( is_null($this->table) || is_null($this->cols) || is_null($this->values) ) 
             {
-                return $this->error('$table, $where, $values are required in destroy method.');
+                return (object) $this->error('$table, $where, $values are required in destroy method.');
             }
 
             $sql = " INSERT INTO $this->table ($this->cols) VALUES ($this->values)";
@@ -256,15 +256,15 @@ class Database
             
             if( !$this->stmt->execute() ) 
             {
-                return $this->error('Failed to execute query');
+                return (object) $this->error('Failed to execute query');
             }
 
             $data = $this->dbh->lastInsertId();
 
-            return [ 'success' => true, 'data' => $data ];
+            return (object) [ 'success' => true, 'data' => $data ];
 
         } catch (\Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
  
@@ -283,7 +283,7 @@ class Database
         {
             if( is_null($this->table) || is_null($this->where) ) 
             {
-                return $this->error('$table, $where are required in destroy method.');
+                return (object) $this->error('$table, $where are required in destroy method.');
             }
 
             $sql = " DELETE FROM $this->table WHERE $this->where";
@@ -291,13 +291,13 @@ class Database
             
             if( !$this->stmt->execute() ) 
             {
-                return $this->error('Failed to execute query');
+                return (object) $this->error('Failed to execute query');
             }
 
-            return [ 'success' => true ];
+            return (object) [ 'success' => true ];
 
         } catch (\Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
 
@@ -317,7 +317,7 @@ class Database
 
             if( is_null($this->table) || is_null($this->set) || is_null($this->where) ) 
             {
-                return $this->error('$table, $set, $where are required in update method.');
+                return (object) $this->error('$table, $set, $where are required in update method.');
             }
 
             $sql = " UPDATE $this->table SET $this->set WHERE $this->where";
@@ -325,13 +325,13 @@ class Database
             
             if( !$this->stmt->execute() ) 
             {
-                return $this->error('Failed to execute query');
+                return (object) $this->error('Failed to execute query');
             }
 
-            return [ 'success' => true ];
+            return (object) [ 'success' => true ];
 
         } catch (\Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
  
@@ -354,7 +354,7 @@ class Database
 
             if( is_null($this->table) || is_null($this->select) ) 
             {
-                return $this->error('$table, $select, $where are required in update method.');
+                return (object) $this->error('$table, $select, $where are required in update method.');
             }
 
             $sql = " SELECT COUNT($this->select) FROM $this->table";
@@ -363,14 +363,14 @@ class Database
             
             if( !$this->stmt->execute() ) 
             {
-                return $this->error('Failed to execute query');
+                return (object) $this->error('Failed to execute query');
             }
 
             $count = $this->stmt->fetchColumn();
             return $count;
 
         } catch (\Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
 

@@ -60,11 +60,11 @@ class Auth {
             ->single();
 
         if( 
-            isset($user['data']['username']) &&
-            isset($user['data']['id']) 
+            isset($user->data->username) &&
+            isset($user->data->id) 
         ) {
-            $this->username = $user['data']['username'];
-            $this->user_id = $user['data']['id'];
+            $this->username = $user->data->username;
+            $this->user_id = $user->data->id;
             $this->is_logged_in = true;
         }
     }
