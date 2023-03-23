@@ -159,11 +159,8 @@ class Router {
 	 */
 	public function response()
 	{
-		// Swap :param with requested param if GET route
-		if($_SERVER['REQUEST_METHOD'] === 'GET') 
-		{
-			$this->routes = $this->apply_params($this->routes);
-		}
+		// Swap :param with requested param
+		$this->routes = $this->apply_params($this->routes);
 
 		// Check if current route exists in routes
 		if(!array_key_exists( $this->url, $this->routes )) 

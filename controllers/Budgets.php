@@ -13,6 +13,7 @@ namespace controllers\BudgetsController;
 
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
+use models\BudgetModel\BudgetModel;
 use stdClass;
 
 
@@ -92,15 +93,82 @@ class BudgetsController extends Controller {
         $data->h1 = 'Edit Budget: ';
         $data->id = explode('/', $_SERVER['REQUEST_URI'])[2];
 
+        $data->referer = $_SERVER['HTTP_REFERER'];
+
         $budgetModel = $this->model('Budget');
-        $data->budgets = $budgetModel->select('*')
+        $budget = $budgetModel->select('*')
             ->table('budgets')
             ->where("id = '" . $data->id . "' ")
             ->single();
 
-        q($data->budgets);
+        $data->name = $budget->data->name;
+        $data->type = $budget->data->type;
+        $data->amount = $budget->data->amount;
+        
+        if( $data->id !== AUTH->user_id )
+        {
+            $data->budget = false;
+        }
 
         $this->view('budget/edit', $data);
+    }
+
+    /**
+     * 
+     * @method Edit a budget
+     * 
+     */
+    public function edit_budget()
+    {
+        $data = new stdClass();
+        $data->title = 'Edit Budget';
+        $data->h1 = 'Edit Budget';
+
+        $this->view('budget/edit', $data);
+    }
+
+    /**
+     * 
+     * @method Edit a budget
+     * 
+     */
+    public function delete_budget()
+    {
+        $data = new stdClass();
+        $data->title = 'Delete Budget';
+        $data->h1 = 'Delete Budget';
+        
+        if( empty($_POST['referer']) || empty($_POST['id']) )
+        {
+            $this->view('budget/edit', $data);
+            return;
+        }
+
+        $budget_id = $_POST['id'];
+        $referer = $_POST['referer'];
+
+        // Authorize Delete Budget
+        $budgetModel = new BudgetModel();
+        $user = $budgetModel
+            ->select('user_id')
+            ->table('budgets')
+            ->where("id = '$budget_id' ")
+            ->single();
+
+        if( $user->data->user_id !== AUTH->user_id )
+        {
+            header('Location: /error');
+            die();
+        }
+
+        // Delete Budget
+        $budgetModel->table('budgets')
+            ->where("id = '$budget_id' ")
+            ->destroy();
+
+        // Return to referer
+        header("Location: $referer ");
+        die();
     }
 
 }

@@ -104,4 +104,14 @@ $route->get('/budget/:param/edit', function()
     (new BudgetsController())->auth()->edit_budget_form();
 });
 
+$route->post('/budget/:param/edit', function()
+{
+    (new BudgetsController())->auth()->edit_budget();
+});
+
+$route->post('/budget/:param/delete', function()
+{
+    (new BudgetsController())->auth()->delete_budget();
+});
+
 $route->response();
