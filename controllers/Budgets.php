@@ -6,7 +6,7 @@
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Used for pages relative to the 'budgets' table
+ * Used for pages related to the 'budgets' table
  * 
  */
 namespace controllers\BudgetsController;
@@ -46,7 +46,7 @@ class BudgetsController extends Controller {
         $data->amount = InputHandler::sanitize('amount');
         $data->amount = InputHandler::money('amount');
         $data->type = InputHandler::sanitize('type');
-        q($data->amount);
+
         $validator = InputHandler::validate([
             'name' => ['required', 'max:20' , 'has_spaces'],
             'amount' => ['required', 'number'],
@@ -93,7 +93,9 @@ class BudgetsController extends Controller {
         $data->h1 = 'Edit Budget: ';
         $data->id = explode('/', $_SERVER['REQUEST_URI'])[2];
 
-        $data->referer = $_SERVER['HTTP_REFERER'];
+        $data->referer = isset($_SERVER['HTTP_REFERER'])
+            ? $_SERVER['HTTP_REFERER']
+            : '/budgets' ;
 
         $budgetModel = $this->model('Budget');
         $budget = $budgetModel->select('*')
@@ -123,6 +125,40 @@ class BudgetsController extends Controller {
         $data = new stdClass();
         $data->title = 'Edit Budget';
         $data->h1 = 'Edit Budget';
+
+        $data->name = InputHandler::sanitize('name');
+        $data->amount = InputHandler::sanitize('amount');
+        $data->type = InputHandler::sanitize('type');
+        $data->id = InputHandler::sanitize('id');
+        $data->referer = InputHandler::sanitize('referer');
+
+        $validator = InputHandler::validate([
+            'name' => ['required', 'max:20', 'has_spaces'],
+            'amount' => ['required', 'number'],
+            'type' => ['required']
+        ]);
+
+        $data->errors = $validator->errors;
+        $data->success = $validator->success;
+
+        // Authorize Edit Budget
+        $budgetModel = new BudgetModel();
+        $user = $budgetModel
+            ->select('user_id')
+            ->table('budgets')
+            ->where("id = '$data->id' ")
+            ->single();
+
+        if( $user->data->user_id !== AUTH->user_id)
+        {
+            header('Location: /unauthorized');
+            die();
+        }
+
+        // Edit Budget`
+        $budgetModel->set("name = '$data->name', type = '$data->type', amount = '$data->amount' ")
+            ->where("id = '$data->id' ")
+            ->update();
 
         $this->view('budget/edit', $data);
     }
@@ -157,7 +193,7 @@ class BudgetsController extends Controller {
 
         if( $user->data->user_id !== AUTH->user_id )
         {
-            header('Location: /error');
+            header('Location: /unauthorized');
             die();
         }
 

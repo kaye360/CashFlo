@@ -6,7 +6,7 @@
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Used for pages relative to the 'users' table
+ * Used for pages related to the 'users' table
  * 
  */
 namespace controllers\UsersController;
