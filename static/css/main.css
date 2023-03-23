@@ -25,3 +25,35 @@ textarea {
     border-radius: 5px;
 }
 
+.animate-prompt {
+    animation: 5s animate-prompt linear both !important;
+    overflow: hidden;
+}
+
+@keyframes animate-prompt {
+    0% {
+        opacity : 0;
+    }
+    10% {
+        opacity : 1;
+    }
+    80% {
+        opacity : 1;
+    }
+    90% {
+        opacity: 0;
+        max-height : 200px;
+        padding : 1rem 2rem;
+    }
+    99% {
+        opacity: 0;
+        max-height : 0px;
+        padding-block : 0;
+    }
+    100% {
+        opacity: 0;
+        max-height : 0px;
+        padding-block : 0;
+        display : none;
+    }
+}

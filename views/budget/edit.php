@@ -85,7 +85,7 @@
     
         <?php if( @$data->success ): ?>
             <span class="<<success_prompt>>">
-                Budget added successfully.
+                Budget saved.
             </span>
         <?php endif; ?>
 
