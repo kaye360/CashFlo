@@ -26,7 +26,7 @@ textarea {
 }
 
 .animate-prompt {
-    animation: 5s animate-prompt linear both !important;
+    animation: 5s animate-prompt linear both;
     overflow: hidden;
 }
 

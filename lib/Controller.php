@@ -30,7 +30,7 @@ class Controller {
      * @method Get a specific model while in a controller class
      * 
      */
-    public function model($model)
+    public function model(string $model)
     {
         $model_file = './models/' . ucwords($model) . '.php';
         $model_class = 'models\\' . ucwords($model) . 'Model\\' . ucwords($model) . 'Model';

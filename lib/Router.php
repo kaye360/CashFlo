@@ -87,7 +87,7 @@ class Router {
 	 * any ':' will become a '_' // For :param
 	 * 
 	 */
-	private function register_route($req_method, $route, $method)
+	private function register_route(string $req_method, string $route, callable $method)
 	{
 		if(
 			$req_method !== 'ANY' &&
@@ -107,7 +107,7 @@ class Router {
 	 * @method Register a route that will work on any http method
 	 * 
 	 */
-	public function any($route, $method)
+	public function any(string $route, callable $method)
 	{
 		$this->register_route('ANY', $route, $method);
 	}
@@ -117,7 +117,7 @@ class Router {
 	 * @method Register a Get Route
 	 * 
 	 */
-	public function get($route, $method)
+	public function get(string $route, callable $method)
 	{
 		$this->register_route('GET', $route, $method);
 	}
@@ -127,7 +127,7 @@ class Router {
 	 * @method Register a Post Route
 	 * 
 	 */
-	public function post($route, $method)
+	public function post(string $route, callable $method)
 	{
 		$this->register_route('POST', $route, $method);
 	}
@@ -137,7 +137,7 @@ class Router {
 	 * @method Register a Delete Route
 	 * 
 	 */
-	public function delete($route, $method)
+	public function delete(string $route, callable $method)
 	{
 		$this->register_route('DELETE', $route, $method);	
 	}
@@ -147,7 +147,7 @@ class Router {
 	 * @method Register a Put Route
 	 * 
 	 */
-	public function put($route, $method)
+	public function put(string $route, callable $method)
 	{
 		$this->register_route('PUT', $route, $method);
 	}
@@ -177,7 +177,7 @@ class Router {
 	 * @method Apply extracted Param to defined routes
 	 * 
 	 */
-	private function apply_params($route_methods)
+	private function apply_params(array $route_methods)
 	{
 		if( is_null($this->param) ) return $route_methods;
 
@@ -201,7 +201,7 @@ class Router {
 	 * @method Return an Error Message
 	 * 
 	 */
-	public function error($message) 
+	public function error(string $message) 
 	{
 		return ['error' => $message];
 	}

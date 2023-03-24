@@ -19,24 +19,79 @@ use stdClass;
 
 
 class BudgetsController extends Controller {
+    
+    /**
+     * 
+     * @method Get users budgets, In order by type, amount
+     * 
+     */
+    private function get_budgets()
+    {
+        $budgetModel = $this->model('Budget');
+        $budgets = $budgetModel->select('*')
+            ->table('budgets')
+            ->where("user_id = '" . AUTH->user_id . "' ")
+            ->order('type ASC, amount DESC')
+            ->list();
+        return $budgets;
+    }
 
+    /**
+     * 
+     * @method Get Total Amount of Income or Spending
+     * 
+     */
+    private function get_budget_type_total(string $type, array $array)
+    {
+        return array_reduce($array, function($i, $budget) use($type)
+        {
+            if($budget->type === $type) $i += $budget->amount;
+            return $i;
+        });
+    }
 
+    /**
+     * 
+     * @method Get Net Budget Worth
+     * 
+     */
+    private function get_budget_net_total(array $array)
+    {
+        return array_reduce($array, function($i, $budget)
+        {
+            if($budget->type === 'income') $i += $budget->amount;
+            if($budget->type === 'spending') $i -= $budget->amount;
+            return $i;
+        });
+    }
+
+    /**
+     * 
+     * @method Budget Home page
+     * 
+     */
     public function budgets_home()
     {
         $data = new stdClass();
         $data->title = 'Budgets';
         $data->h1 = 'Budgets';
-
-        $budgetModel = $this->model('Budget');
-        $data->budgets = $budgetModel->select('*')
-            ->table('budgets')
-            ->where("user_id = '" . AUTH->user_id . "' ")
-            ->order('name ASC')
-            ->list();
+        $data->budgets = $this->get_budgets();
+        $data->prompt = isset($_GET['prompt'])
+            ? $_GET['prompt']
+            : false;
+        
+        $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
+        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
+        $data->net_total = $this->get_budget_net_total($data->budgets->data);
 
         $this->view('budgets', $data);
     }
 
+    /**
+     * 
+     * @method Create a budget
+     * 
+     */
     public function create_budget()
     {
         $data = new stdClass();
@@ -71,13 +126,7 @@ class BudgetsController extends Controller {
             }
         }
 
-        $budgetModel = $this->model('Budget');
-        $data->budgets = $budgetModel->select('*')
-            ->table('budgets')
-            ->where("user_id = '" . AUTH->user_id . "' ")
-            ->order('name ASC')
-            ->list();
-
+        $data->budgets = $this->get_budgets();
         $this->view('budgets', $data);
     }
 
@@ -93,9 +142,12 @@ class BudgetsController extends Controller {
         $data->h1 = 'Edit Budget: ';
         $data->id = explode('/', $_SERVER['REQUEST_URI'])[2];
 
-        $data->referer = isset($_SERVER['HTTP_REFERER'])
-            ? $_SERVER['HTTP_REFERER']
-            : '/budgets' ;
+        $data->referer = parse_url(
+            isset($_SERVER['HTTP_REFERER'])
+                ? $_SERVER['HTTP_REFERER']
+                : '/budgets',
+            PHP_URL_PATH
+        );
 
         $budgetModel = $this->model('Budget');
         $budget = $budgetModel->select('*')
@@ -182,6 +234,7 @@ class BudgetsController extends Controller {
 
         $budget_id = $_POST['id'];
         $referer = $_POST['referer'];
+        $referer = parse_url($referer, PHP_URL_PATH);
 
         // Authorize Delete Budget
         $budgetModel = new BudgetModel();
@@ -203,7 +256,7 @@ class BudgetsController extends Controller {
             ->destroy();
 
         // Return to referer
-        header("Location: $referer ");
+        header("Location: $referer?prompt=delete_budget ");
         die();
     }
 

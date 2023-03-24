@@ -223,7 +223,7 @@ class InputHandler {
      * @method Format an input to CAD 
      * 
      */
-    public static function money($input)
+    public static function money(string $input)
     {
         if( !is_numeric($_POST[$input]) ) return null;
 
@@ -258,7 +258,7 @@ class InputHandler {
     * @return bool
     * 
     */
-    private static function has_forbidden_chars(string $input, $exceptions = []) 
+    private static function has_forbidden_chars(string $input, array $exceptions = []) 
     {
         if( empty($input) ) return false;
         
@@ -321,19 +321,18 @@ class InputHandler {
      * @return bool
      * 
      */
-    private static function is_invalid_username_password( string $username, string $password )
+    private static function is_invalid_username_password(string $username, string $password )
     {
         $db = new Database();
         $user = $db->select('username, password, salt')
             ->table('users')
             ->where("username = '$username' ")
-        
             ->single();
             
-            if( !$user['success'] ) return true;
+            if( !$user->success ) return true;
 
-        $salted_password = $password . $user['data']['salt'];
-        return !( password_verify($salted_password, $user['data']['password']) );
+        $salted_password = $password . $user->data->salt;
+        return !( password_verify($salted_password, $user->data->password) );
     }
 
     /**

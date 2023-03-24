@@ -47,7 +47,7 @@ class CSSComponents {
     
     public static $button_main = 'bg-green-100';
 
-    public static $success_prompt = 'block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100 animate-prompt';
+    public static $success_prompt = 'block my-4 px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100 animate-prompt';
 
     public static $input_error = 'flex flex-col gap-2 text-red-500';
 

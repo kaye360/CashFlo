@@ -1,4 +1,10 @@
 
+<?php if( @$data->prompt === 'delete_budget' ): ?>
+    <div class="<<success_prompt>> text-green-500 bg-green-100 border border-green 500">
+        Budget was deleted.
+    </div>
+<?php endif; ?>
+
 <section>
 
     <h2 class="text-lg font-medium">Add a budget</h2>
@@ -55,7 +61,7 @@
                     </span>
                 <?php endif; ?>
 
-                <input type="number" name="amount" value="{{amount}}" step="0.01" class="border " />
+                <input type="number" name="amount" value="{{amount}}" class="border " />
             </label>
         </div>
 
@@ -94,19 +100,28 @@
             </div>
         <?php endif; ?>
 
-        <?php foreach($data->budgets->data as $budget): ?>
-            <div class="flex items-end gap-4">
+        <div>
+            Income: {{income_total}} <br>
+            Spending: {{spending_total}} <br>
+            Net: {{net_total}}
+        </div>
+
+        <div class="grid grid-cols-3 items-end gap-4 w-fit">
+            <?php foreach($data->budgets->data as $budget): ?>
                 <span class="font-bold text-xl">
                     <?php echo $budget->name; ?>
                 </span>
-                <span>
+                <span class="
+                    <?php echo $budget->type === 'spending' ? 'text-red-500' : 'text-green-500'; ?>
+                ">
+                    <?php echo $budget->type === 'spending' ? '-' : '+'; ?>
                     $<?php echo $budget->amount; ?>
                 </span>
                 <a href="/budget/<?php echo $budget->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
                     Edit
                 </a>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
 
 </section>

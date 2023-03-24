@@ -62,7 +62,7 @@ class UserModel extends Database {
      * @method Update Users settings
      * 
      */
-    public function update_settings($data)
+    public function update_settings(object $data)
     {
         $new_password = $data->confirm_password_1;
         $salt = substr(uniqid(), -5);
