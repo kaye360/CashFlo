@@ -9,6 +9,7 @@
  * Used for pages that don't require a model
  * 
  */
+declare(strict_types=1);
 namespace controllers\PagesController;
 
 use lib\Controller\Controller;
@@ -23,7 +24,8 @@ class PagesController extends Controller {
      * @return Home Page
      * 
      */
-    public function home() {
+    public function home() : void
+    {
         $data = (object) [
             'title' => 'Spendly App',
             'h1' => 'Welcome to Spendly'
@@ -36,7 +38,8 @@ class PagesController extends Controller {
      * @return About Page
      * 
      */
-    public function about() {
+    public function about() : void
+    {
         $data = (object) [
             'title' => 'About Spendly',
             'h1' => 'About Spendly'
@@ -52,7 +55,8 @@ class PagesController extends Controller {
     public function error(
         string $type = '404 Not Found', 
         string $message = 'There was an error.'
-    ) {
+    ) : void {
+
         $data = (object) [
             'title' => 'Error',
             'h1' => 'Error 404',
@@ -67,7 +71,7 @@ class PagesController extends Controller {
      * @return Unauthorized Page
      * 
      */
-    public function unauthorized()
+    public function unauthorized() : void
     {
         $data = new stdClass();
         $data->title = 'Unauthorized request';

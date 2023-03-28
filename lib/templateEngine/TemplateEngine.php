@@ -13,9 +13,12 @@
  * To access a CSSComponent, use class="<<cmpnt_name>>"
  * 
  */
+declare(strict_types=1);
 namespace lib\TemplateEngine\TemplateEngine;
 
 use lib\TemplateEngine\CSSComponents\CSSComponents;
+
+
 
 class TemplateEngine
 {
@@ -32,7 +35,7 @@ class TemplateEngine
         preg_match_all('/\{\{(.*?)\}\}/i', $view, $data_matches); // Find {{...}}
         foreach( $data_matches[1] as $value )
         {
-            if( isset($data->$value) )
+            if( isset($data->value) )
             {
                 $view = str_replace('{{' . $value . '}}', $data->$value, $view);
             } else {

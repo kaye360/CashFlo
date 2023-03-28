@@ -23,6 +23,7 @@
  * 	  current route via response().
  * 
  */
+declare(strict_types=1);
 namespace lib\Router;
 
 

@@ -14,6 +14,7 @@
  * @example <button class="<<button_main>>">
  * 
  */
+declare(strict_types=1);
 namespace lib\TemplateEngine\CSSComponents;
 
 class CSSComponents {

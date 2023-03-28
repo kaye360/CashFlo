@@ -13,6 +13,7 @@
  * when needed.
  * 
  */
+declare(strict_types=1);
 namespace lib\DBConnect;
 
 use PDO;

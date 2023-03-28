@@ -11,6 +11,7 @@
  * It can be accessed globally through the AUTH constant
  * 
  */
+declare(strict_types=1);
 namespace lib\Auth;
 
 use lib\Database\Database;

@@ -21,6 +21,7 @@
  *  ->single();                             // Action
  * 
  */
+declare(strict_types=1);
 namespace lib\Database;
 
 
@@ -374,26 +375,4 @@ class Database
         }
     }
 
-    /**
-    * @todo verify if this is dead code
-    * @method validates are request inputs are specified
-    * 
-    * @return bool
-    * 
-    */
-    // public function is_valid_request(array|null $request, array $required_keys) 
-    // {
-    //     if( !is_array($request) || !is_array($required_keys) ) return false;
-
-    //     $validated = true;
-
-    //     foreach($required_keys as $key) {
-    //         if( !array_key_exists($key, $request) ) {
-    //             $validated = false;
-    //         }
-    //     }
-
-    //     return $validated;
-    // }
- 
 }

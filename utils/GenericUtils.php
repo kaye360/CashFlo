@@ -7,6 +7,7 @@
  * https://joshkaye.dev
  * 
  */
+declare(strict_types=1);
 namespace utils\GenericUtils;
 
 

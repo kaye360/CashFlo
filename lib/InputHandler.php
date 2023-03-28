@@ -9,10 +9,10 @@
  * Used for validating, filtering, and sanitizing user input data
  * 
  */
+declare(strict_types=1);
 namespace lib\InputHandler;
 
 use lib\Database\Database;
-use NumberFormatter;
 use stdClass;
 
 

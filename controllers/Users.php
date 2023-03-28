@@ -9,11 +9,11 @@
  * Used for pages related to the 'users' table
  * 
  */
+declare(strict_types=1);
 namespace controllers\UsersController;
 
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
-use models\UserModel\UserModel;
 use utils\GenericUtils\GenericUtils;
 use stdClass;
 
@@ -26,7 +26,7 @@ class UsersController extends Controller {
      * @method Sign up a user 
      * 
      */
-    public function sign_up()
+    public function sign_up() : void
     {
         
         if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
@@ -74,7 +74,7 @@ class UsersController extends Controller {
      * @method Sign up form
      * 
      */
-    public function sign_up_form()
+    public function sign_up_form() : void
     {
         $data = new stdClass();
         $data->title = 'Sign Up';
@@ -88,7 +88,7 @@ class UsersController extends Controller {
      * @method Sign in form
      * 
      */
-    public function sign_in_form() 
+    public function sign_in_form() : void
     {
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
@@ -102,7 +102,7 @@ class UsersController extends Controller {
      * @method Sign in a user
      * 
      */
-    public function sign_in()
+    public function sign_in() : void
     {
 
         if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
@@ -111,7 +111,8 @@ class UsersController extends Controller {
             exit();
         }
 
-        $this->destroy_current_session();
+        $userModel = $this->model('User');
+        $userModel->destroy_current_session();
 
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
@@ -131,14 +132,8 @@ class UsersController extends Controller {
 
         if( $data->success) 
         {
-            $userModel = $this->model('User');
             $session = GenericUtils::make_UUID();
-
-            $userModel->table('users')
-                ->set("session = '$session' ")
-                ->where("username = '$data->username' ")
-                ->update();
-
+            $userModel->update_session(session: $session, username: $data->username);
             setcookie('session', $session, strtotime( '+30 days' ));
         }
 
@@ -150,7 +145,7 @@ class UsersController extends Controller {
      * @method Sign out a user form and sign out user
      * 
      */
-    public function sign_out()
+    public function sign_out() : void
     {
         $data = new stdClass();
         $data->title = 'Sign Out';
@@ -160,7 +155,8 @@ class UsersController extends Controller {
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
         {
             $data->success = true;
-            $this->destroy_current_session();
+            $userModel = $this->model('User');
+            $userModel->destroy_current_session();
         }
 
         $this->view('signout', $data);
@@ -171,7 +167,7 @@ class UsersController extends Controller {
     * @return Dashboard Page
     * 
     */
-   public function dashboard()
+   public function dashboard() : void
    {
        $data = new stdClass();
        $data->title = 'Dashboard';
@@ -186,7 +182,7 @@ class UsersController extends Controller {
      * @method User settings form
      * 
      */
-    public function settings()
+    public function settings() : void
     {
         $data = new stdClass();
         $data->title = 'Settings';
@@ -200,7 +196,7 @@ class UsersController extends Controller {
      * @method Update user settings 
      * 
      */
-    public function update_settings()
+    public function update_settings() : void
     {
         $data = new stdClass();
         $data->title = 'Settings';
@@ -218,7 +214,7 @@ class UsersController extends Controller {
         ]);
 
         $data->errors = $validator->errors;
-        $data->success = $validator->success;
+        $data->success = $validator->success; 
 
         if( $data->success )
         {
@@ -229,24 +225,4 @@ class UsersController extends Controller {
         $this->view('settings', $data);
     }
 
-    /**
-     * 
-     * @method Destroy a current sign in session
-     * Destroys both cookie and session in DB
-     * 
-     */
-    private function destroy_current_session()
-    {
-        if( !isset($_COOKIE['session'])) return;
-
-        $session = $_COOKIE['session'];
-        setcookie('session', '', 1);
-        unset($_COOKIE['session']);
-
-        $users = new UserModel();
-        $users->table('users')
-              ->set("session = null")
-              ->where("session = '$session' ")
-              ->update();
-    }
 }

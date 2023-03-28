@@ -9,31 +9,23 @@
  * Used for pages related to the 'budgets' table
  * 
  */
+declare(strict_types=1);
 namespace controllers\BudgetsController;
 
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
-use models\BudgetModel\BudgetModel;
 use stdClass;
 
 
 
 class BudgetsController extends Controller {
+
+    private $budgetModel;
     
-    /**
-     * 
-     * @method Get users budgets, In order by type, amount
-     * 
-     */
-    private function get_budgets()
+
+    public function __construct()
     {
-        $budgetModel = $this->model('Budget');
-        $budgets = $budgetModel->select('*')
-            ->table('budgets')
-            ->where("user_id = '" . AUTH->user_id . "' ")
-            ->order('type ASC, amount DESC')
-            ->list();
-        return $budgets;
+        $this->budgetModel = $this->model('Budget');
     }
 
     /**
@@ -41,8 +33,10 @@ class BudgetsController extends Controller {
      * @method Get Total Amount of Income or Spending
      * 
      */
-    private function get_budget_type_total(string $type, array $array)
-    {
+    private function get_budget_type_total(
+        string $type, 
+        array $array
+    ) : float {
         return array_reduce($array, function($i, $budget) use($type)
         {
             if($budget->type === $type) $i += $budget->amount;
@@ -55,7 +49,7 @@ class BudgetsController extends Controller {
      * @method Get Net Budget Worth
      * 
      */
-    private function get_budget_net_total(array $array)
+    private function get_budget_net_total(array $array) : float
     {
         return array_reduce($array, function($i, $budget)
         {
@@ -75,7 +69,7 @@ class BudgetsController extends Controller {
         $data = new stdClass();
         $data->title = 'Budgets';
         $data->h1 = 'Budgets';
-        $data->budgets = $this->get_budgets();
+        $data->budgets = $this->budgetModel->get_budgets();
         $data->prompt = isset($_GET['prompt'])
             ? $_GET['prompt']
             : false;
@@ -92,7 +86,7 @@ class BudgetsController extends Controller {
      * @method Create a budget
      * 
      */
-    public function create_budget()
+    public function create_budget() : void
     {
         $data = new stdClass();
         $data->title = 'Budgets';
@@ -113,8 +107,7 @@ class BudgetsController extends Controller {
 
         if( $data->success ) 
         {
-            $budgetModel = $this->model('Budget');
-            $new_budget = $budgetModel->create($data);
+            $new_budget = $this->budgetModel->create($data);
             
             if( $new_budget->error ) 
             {
@@ -126,7 +119,7 @@ class BudgetsController extends Controller {
             }
         }
 
-        $data->budgets = $this->get_budgets();
+        $data->budgets = $this->budgetModel->get_budgets();
         $this->view('budgets', $data);
     }
 
@@ -135,7 +128,7 @@ class BudgetsController extends Controller {
      * @method Edit Budget Form
      * 
      */
-    public function edit_budget_form()
+    public function edit_budget_form() : void
     {
         $data = new stdClass();
         $data->title = 'Edit budget';
@@ -149,11 +142,7 @@ class BudgetsController extends Controller {
             PHP_URL_PATH
         );
 
-        $budgetModel = $this->model('Budget');
-        $budget = $budgetModel->select('*')
-            ->table('budgets')
-            ->where("id = '" . $data->id . "' ")
-            ->single();
+        $budget = $this->budgetModel->get_budget(id: $data->id);
 
         $data->name = $budget->data->name;
         $data->type = $budget->data->type;
@@ -194,12 +183,7 @@ class BudgetsController extends Controller {
         $data->success = $validator->success;
 
         // Authorize Edit Budget
-        $budgetModel = new BudgetModel();
-        $user = $budgetModel
-            ->select('user_id')
-            ->table('budgets')
-            ->where("id = '$data->id' ")
-            ->single();
+        $user = $this->budgetModel->get_budget(id: $data->id);
 
         if( $user->data->user_id !== AUTH->user_id)
         {
@@ -208,9 +192,12 @@ class BudgetsController extends Controller {
         }
 
         // Edit Budget`
-        $budgetModel->set("name = '$data->name', type = '$data->type', amount = '$data->amount' ")
-            ->where("id = '$data->id' ")
-            ->update();
+        $this->budgetModel->edit(
+            name: $data->name,
+            type: $data->type,
+            amount: $data->amount,
+            id: $data->id
+        );
 
         $this->view('budget/edit', $data);
     }
@@ -237,8 +224,7 @@ class BudgetsController extends Controller {
         $referer = parse_url($referer, PHP_URL_PATH);
 
         // Authorize Delete Budget
-        $budgetModel = new BudgetModel();
-        $user = $budgetModel
+        $user = $this->budgetModel
             ->select('user_id')
             ->table('budgets')
             ->where("id = '$budget_id' ")
@@ -251,7 +237,7 @@ class BudgetsController extends Controller {
         }
 
         // Delete Budget
-        $budgetModel->table('budgets')
+        $this->budgetModel->table('budgets')
             ->where("id = '$budget_id' ")
             ->destroy();
 

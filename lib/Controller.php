@@ -18,8 +18,10 @@
  * (new UsersController())->auth()->dashboard();
  * 
  */
+declare(strict_types=1);
 namespace lib\Controller;
 
+use lib\Database\Database;
 use lib\templateEngine\TemplateEngine\TemplateEngine;
 use stdClass;
 
@@ -49,7 +51,7 @@ class Controller {
 
         if ( class_exists($model_class) ) 
         {
-            return new $model_class;
+            return new $model_class(new Database);
         } else {
             $data = new stdClass();
             $data->title = 'Error';
