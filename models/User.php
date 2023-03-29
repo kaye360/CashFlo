@@ -14,6 +14,8 @@ namespace models\UserModel;
 
 use lib\Database\Database;
 
+
+
 class UserModel {
 
     /**
@@ -23,7 +25,6 @@ class UserModel {
      */
     public function __construct(private Database $database)
     {
-        // parent::__construct();
     }
 
     /**
@@ -31,7 +32,7 @@ class UserModel {
      * @method create a new user
      * 
      */
-    public function create(object $data): object
+    public function create(object $data) : object
     {
         $salt = substr(uniqid(), -5);
         $salted_password = $data->password . $salt;
@@ -65,7 +66,7 @@ class UserModel {
     public function update_session(
         string $session, 
         string $username
-    ): object {
+    ) : object {
 
         return $this->database
             ->table('users')
@@ -80,7 +81,7 @@ class UserModel {
      * Destroys both cookie and session in DB
      * 
      */
-    protected function destroy_current_session(): void
+    public function destroy_current_session() : void
     {
         if( !isset($_COOKIE['session'])) return;
 
@@ -100,7 +101,7 @@ class UserModel {
      * @method Update Users settings
      * 
      */
-    public function update_settings(object $data): void
+    public function update_settings(object $data) : void
     {
         $new_password = $data->confirm_password_1;
         $salt = substr(uniqid(), -5);

@@ -30,22 +30,7 @@ class BudgetModel {
 
     /**
      * 
-     * @method Get users budgets, In order by type, amount
-     * 
-     */
-    public function get_budgets() : object
-    {
-        return $this->database
-            ->select('*')
-            ->table('budgets')
-            ->where("user_id = '" . AUTH->user_id . "' ")
-            ->order('type ASC, amount DESC')
-            ->list();
-    }
-
-    /**
-     * 
-     * @method create a new user
+     * @method create a new Budget
      * 
      */
     public function create(object $data): object
@@ -90,6 +75,23 @@ class BudgetModel {
 
     /**
      * 
+     * @method Get currently logged in users budgets.
+     * In order by type, then amount so that Income comes first
+     * then spending.
+     * 
+     */
+    public function get_budgets() : object
+    {
+        return $this->database
+            ->select('*')
+            ->table('budgets')
+            ->where("user_id = '" . AUTH->user_id . "' ")
+            ->order('type ASC, amount DESC')
+            ->list();
+    }
+
+    /**
+     * 
      * @method Get a Budget
      * 
      */
@@ -100,5 +102,18 @@ class BudgetModel {
             ->table('budgets')
             ->where("id = '" . $id . "' ")
             ->single();
+    }
+
+    /**
+     * 
+     * @method Destroy a budget
+     * 
+     */
+    public function destroy(int $id)
+    {
+        return $this->database
+            ->table('budgets')
+            ->where("id = '$id' ")
+            ->destroy();
     }
 }

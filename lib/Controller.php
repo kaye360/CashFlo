@@ -32,7 +32,7 @@ class Controller {
      * @method Get a specific model while in a controller class
      * 
      */
-    public function model(string $model)
+    public function model(string $model) : object | null
     {
         $model_file = './models/' . ucwords($model) . '.php';
         $model_class = 'models\\' . ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
@@ -46,6 +46,7 @@ class Controller {
             $data->h1 = 'Error 500';
             $data->message = 'Model File not found';
             $this->view('error', $data);
+            return null;
             die();
         }
 
@@ -58,8 +59,10 @@ class Controller {
             $data->h1 = 'Error 500';
             $data->message = 'Model class not found';
             $this->view('error', $data);
+            return null;
             die();
         }
+        return null;
     }
 
     /**
@@ -67,7 +70,7 @@ class Controller {
      * @method Get a specific from view while in a controller class
      * 
      */
-    public function view(string $view, object $data)
+    public function view(string $view, object $data) : void
     {
         ob_start();
 
@@ -104,7 +107,7 @@ class Controller {
      * @method Make a specific view require authorization
      * 
      */
-    public function auth()
+    public function auth() : Controller
     {
         if( !AUTH->is_logged_in() )
         {

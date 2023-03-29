@@ -70,13 +70,12 @@ class BudgetsController extends Controller {
         $data->title = 'Budgets';
         $data->h1 = 'Budgets';
         $data->budgets = $this->budgetModel->get_budgets();
-        $data->prompt = isset($_GET['prompt'])
-            ? $_GET['prompt']
-            : false;
-        
         $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
         $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
         $data->net_total = $this->get_budget_net_total($data->budgets->data);
+        $data->prompt = isset($_GET['prompt'])
+            ? $_GET['prompt']
+            : false;
 
         $this->view('budgets', $data);
     }
@@ -88,6 +87,12 @@ class BudgetsController extends Controller {
      */
     public function create_budget() : void
     {
+        $validator = InputHandler::validate([
+            'name' => ['required', 'max:20' , 'has_spaces'],
+            'amount' => ['required', 'number'],
+            'type' => ['required']
+        ]);
+
         $data = new stdClass();
         $data->title = 'Budgets';
         $data->h1 = 'Budgets';
@@ -95,13 +100,6 @@ class BudgetsController extends Controller {
         $data->amount = InputHandler::sanitize('amount');
         $data->amount = InputHandler::money('amount');
         $data->type = InputHandler::sanitize('type');
-
-        $validator = InputHandler::validate([
-            'name' => ['required', 'max:20' , 'has_spaces'],
-            'amount' => ['required', 'number'],
-            'type' => ['required']
-        ]);
-
         $data->errors = $validator->errors;
         $data->success = $validator->success;
 
@@ -133,7 +131,7 @@ class BudgetsController extends Controller {
         $data = new stdClass();
         $data->title = 'Edit budget';
         $data->h1 = 'Edit Budget: ';
-        $data->id = explode('/', $_SERVER['REQUEST_URI'])[2];
+        $data->id = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
 
         $data->referer = parse_url(
             isset($_SERVER['HTTP_REFERER'])
@@ -163,22 +161,20 @@ class BudgetsController extends Controller {
      */
     public function edit_budget()
     {
-        $data = new stdClass();
-        $data->title = 'Edit Budget';
-        $data->h1 = 'Edit Budget';
-
-        $data->name = InputHandler::sanitize('name');
-        $data->amount = InputHandler::sanitize('amount');
-        $data->type = InputHandler::sanitize('type');
-        $data->id = InputHandler::sanitize('id');
-        $data->referer = InputHandler::sanitize('referer');
-
         $validator = InputHandler::validate([
             'name' => ['required', 'max:20', 'has_spaces'],
             'amount' => ['required', 'number'],
             'type' => ['required']
         ]);
 
+        $data = new stdClass();
+        $data->title = 'Edit Budget';
+        $data->h1 = 'Edit Budget';
+        $data->name = InputHandler::sanitize('name');
+        $data->amount = InputHandler::sanitize('amount');
+        $data->type = InputHandler::sanitize('type');
+        $data->id = (int) InputHandler::sanitize('id');
+        $data->referer = InputHandler::sanitize('referer');
         $data->errors = $validator->errors;
         $data->success = $validator->success;
 
@@ -224,11 +220,7 @@ class BudgetsController extends Controller {
         $referer = parse_url($referer, PHP_URL_PATH);
 
         // Authorize Delete Budget
-        $user = $this->budgetModel
-            ->select('user_id')
-            ->table('budgets')
-            ->where("id = '$budget_id' ")
-            ->single();
+        $user = $this->budgetModel->get_budget(id: $budget_id);
 
         if( $user->data->user_id !== AUTH->user_id )
         {
@@ -237,9 +229,7 @@ class BudgetsController extends Controller {
         }
 
         // Delete Budget
-        $this->budgetModel->table('budgets')
-            ->where("id = '$budget_id' ")
-            ->destroy();
+        $this->budgetModel->destroy(id: $budget_id);
 
         // Return to referer
         header("Location: $referer?prompt=delete_budget ");

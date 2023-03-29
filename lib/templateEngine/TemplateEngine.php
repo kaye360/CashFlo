@@ -32,21 +32,27 @@ class TemplateEngine
     {
         // Search and replace all {{vars}} with $data->var in $view
         // If $data->var not set, set to '' and hide
-        preg_match_all('/\{\{(.*?)\}\}/i', $view, $data_matches); // Find {{...}}
-        foreach( $data_matches[1] as $value )
+        preg_match_all('/\{\{(.*?)\}\}/i', $view, $matches); // Find {{...}}
+        $ui_placeholders = array_unique($matches[1]);
+        unset($matches);
+
+        foreach( $ui_placeholders as $value )
         {
-            if( isset($data->value) )
+            if( isset($data->$value) )
             {
-                $view = str_replace('{{' . $value . '}}', $data->$value, $view);
+                $view = str_replace('{{' . $value . '}}', (string) $data->$value, $view);
             } else {
-                $view = str_replace('{{' . $value . '}}', '', $view);
+                $view = str_replace('{{' . $value . '}}', 'chicken', $view);
             }
         }
 
         // Search and replace all <<css_class>> classes with CSSComponents::css_class in $view
-        preg_match_all('/\<\<(.*?)\>\>/i', $view, $css_matches);  // Find <<...>>
+        preg_match_all('/\<\<(.*?)\>\>/i', $view, $matches);  // Find <<...>>
+        $css_placeholders = array_unique($matches[1]);
+        unset($matches);
         $css = CSSComponents::init();
-        foreach( $css_matches[1] as $value )
+
+        foreach( $css_placeholders as $value )
         {
             if( property_exists($css, $value) )
             {

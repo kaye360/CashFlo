@@ -18,6 +18,8 @@ namespace lib\DBConnect;
 
 use PDO;
 
+
+
 class DBConnect {
 
     /**
@@ -57,7 +59,7 @@ class DBConnect {
      * in bootstrap.php
      * 
      */
-    public static function connect()
+    public static function connect() : DBConnect
     {
         if (!self::$instance) self::$instance = new DBConnect();
         return self::$instance;
@@ -68,7 +70,7 @@ class DBConnect {
      * @method Return the PDO object
      * 
      */
-    public function connection()
+    public function connection() : PDO
     {
         return $this->connection;
     }
