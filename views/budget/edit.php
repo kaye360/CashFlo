@@ -1,3 +1,8 @@
+<?php
+$data->title = 'Edit budget';
+$data->h1 = 'Edit Budget: ';
+?>
+
 
 <a href="{{referer}}" class="inline-block mb-4 underline">
     Back to budgets

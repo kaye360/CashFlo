@@ -1,3 +1,9 @@
+<?php
+$data->title = 'Dashboard';
+$data->h1 = 'Dashboard: ' . AUTH->username;
+$data->username = AUTH->username;
+?>
+
 
 <p>
     This page is protected

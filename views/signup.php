@@ -1,3 +1,7 @@
+<?php
+$data->h1 = 'Sign up to Spendly';
+$data->title = 'Sign up to Spendly';
+?>
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
 

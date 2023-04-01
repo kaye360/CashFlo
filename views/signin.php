@@ -1,4 +1,7 @@
-
+<?php
+$data->title = 'Sign In to Spendly';
+$data->h1 = 'Sign In to Spendly';
+?>
 <section class="flex flex-col gap-6 min-h-[50vh]">
 
     <?php if( @$data->success ): ?>

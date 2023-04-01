@@ -70,7 +70,7 @@ class Controller {
      * @method Get a specific from view while in a controller class
      * 
      */
-    public function view(string $view, object $data) : void
+    public function view(string $view, object $data = new stdClass() ) : void
     {
         ob_start();
 

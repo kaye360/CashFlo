@@ -1,3 +1,7 @@
+<?php
+$data->title = 'Welcome to Spendly';
+$data->h1 = 'Welcome to Spendly';
+?>
 
 <section class="flex flex-col gap-6 min-h-[50vh]">
 

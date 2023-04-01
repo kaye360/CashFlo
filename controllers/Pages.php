@@ -26,11 +26,7 @@ class PagesController extends Controller {
      */
     public function home() : void
     {
-        $data = (object) [
-            'title' => 'Spendly App',
-            'h1' => 'Welcome to Spendly'
-        ];
-        $this->view('index', $data);
+        $this->view('index');
     }
 
     /**
@@ -40,11 +36,7 @@ class PagesController extends Controller {
      */
     public function about() : void
     {
-        $data = (object) [
-            'title' => 'About Spendly',
-            'h1' => 'About Spendly'
-        ];
-        $this->view('about', $data);
+        $this->view('about');
     }
 
     /**
@@ -57,12 +49,11 @@ class PagesController extends Controller {
         string $message = 'There was an error.'
     ) : void {
 
-        $data = (object) [
-            'title' => 'Error',
-            'h1' => 'Error 404',
-            'type' => $type,
-            'message' => $message,
-        ];
+        $data = new stdClass();
+        $data->title = 'Error';
+        $data->h1 = 'Error 404';
+        $data->type = $type;
+        $data->message = $message;
         $this->view('error', $data);
     }
 

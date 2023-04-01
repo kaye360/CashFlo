@@ -37,11 +37,7 @@ class UsersController extends Controller {
      */
     public function new() : void
     {
-        $data = new stdClass();
-        $data->title = 'Sign Up';
-        $data->h1 = 'Sign Up to Spendly';
-
-        $this->view('signup', $data);
+        $this->view('signup');
     }
 
     /**
@@ -65,7 +61,6 @@ class UsersController extends Controller {
         ]);
             
         $data = new stdClass() ;
-        $data->title = 'Sign Up';
         $data->username = InputHandler::sanitize('username');
         $data->password = trim($_POST['confirm_password_1']);
         $data->confirm_password = trim($_POST['confirm_password_2']);
@@ -97,11 +92,7 @@ class UsersController extends Controller {
      */
     public function sign_in() : void
     {
-        $data = new stdClass();
-        $data->title = 'Sign In to Spendly';
-        $data->h1 = 'Sign In to Spendly';
-
-        $this->view('signin', $data);
+        $this->view('signin');
     }
 
     /**
@@ -124,8 +115,6 @@ class UsersController extends Controller {
         ]);
         
         $data = new stdClass();
-        $data->title = 'Sign In to Spendly';
-        $data->h1 = 'Sign In to Spendly';
         $data->username = InputHandler::sanitize('username');
         $data->password = InputHandler::sanitize('password');
         $data->errors = $validator->errors;
@@ -152,8 +141,6 @@ class UsersController extends Controller {
     public function sign_out() : void
     {
         $data = new stdClass();
-        $data->title = 'Sign Out';
-        $data->h1 = 'Sign out of your account';
         $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
@@ -172,12 +159,7 @@ class UsersController extends Controller {
     */
    public function dashboard() : void
    {
-       $data = new stdClass();
-       $data->title = 'Dashboard';
-       $data->h1 = 'Dashboard: ' . AUTH->username;
-       $data->username = AUTH->username;
-
-       $this->view('dashboard', $data);
+       $this->view('dashboard');
    }
 
     /**
@@ -187,11 +169,7 @@ class UsersController extends Controller {
      */
     public function settings() : void
     {
-        $data = new stdClass();
-        $data->title = 'Settings';
-        $data->h1 = 'Settings';
-
-        $this->view('settings', $data);
+        $this->view('settings');
     }
 
     /**
@@ -207,8 +185,6 @@ class UsersController extends Controller {
         ]);
 
         $data = new stdClass();
-        $data->title = 'Settings';
-        $data->h1 = 'Settings';
         $data->success = false;
         $data->username = InputHandler::sanitize('username');
         $data->password = InputHandler::sanitize('password');

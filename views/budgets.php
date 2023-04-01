@@ -1,3 +1,8 @@
+<?php
+$data->title = 'Budgets';
+$data->h1 = 'Budgets';
+?>
+
 
 <?php if( @$data->prompt === 'delete_budget' ): ?>
     <div class="<<success_prompt>> text-green-500 bg-green-100 border border-green 500">

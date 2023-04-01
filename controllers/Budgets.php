@@ -67,15 +67,11 @@ class BudgetsController extends Controller {
     public function new()
     {
         $data = new stdClass();
-        $data->title = 'Budgets';
-        $data->h1 = 'Budgets';
         $data->budgets = $this->budgetModel->index();
         $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
         $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
         $data->net_total = $this->get_budget_net_total($data->budgets->data);
-        $data->prompt = isset($_GET['prompt'])
-            ? $_GET['prompt']
-            : false;
+        $data->prompt = $_GET['prompt'] ?? false;
 
         $this->view('budgets', $data);
     }
@@ -94,8 +90,6 @@ class BudgetsController extends Controller {
         ]);
 
         $data = new stdClass();
-        $data->title = 'Budgets';
-        $data->h1 = 'Budgets';
         $data->name = InputHandler::sanitize('name');
         $data->amount = InputHandler::sanitize('amount');
         $data->amount = InputHandler::money('amount');
@@ -129,16 +123,8 @@ class BudgetsController extends Controller {
     public function edit() : void
     {
         $data = new stdClass();
-        $data->title = 'Edit budget';
-        $data->h1 = 'Edit Budget: ';
         $data->id = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
-
-        $data->referer = parse_url(
-            isset($_SERVER['HTTP_REFERER'])
-                ? $_SERVER['HTTP_REFERER']
-                : '/budgets',
-            PHP_URL_PATH
-        );
+        $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/budgets' , PHP_URL_PATH);
 
         $budget = $this->budgetModel->show(id: $data->id);
 
@@ -168,8 +154,6 @@ class BudgetsController extends Controller {
         ]);
 
         $data = new stdClass();
-        $data->title = 'Edit Budget';
-        $data->h1 = 'Edit Budget';
         $data->name = InputHandler::sanitize('name');
         $data->amount = (float) InputHandler::sanitize('amount');
         $data->type = InputHandler::sanitize('type');
@@ -206,8 +190,6 @@ class BudgetsController extends Controller {
     public function destroy()
     {
         $data = new stdClass();
-        $data->title = 'Delete Budget';
-        $data->h1 = 'Delete Budget';
         
         if( empty($_POST['referer']) || empty($_POST['id']) )
         {

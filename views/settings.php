@@ -1,4 +1,7 @@
-
+<?php
+$data->title = 'Settings';
+$data->h1 = 'Settings';
+?>
 
 <form method="POST" action="/settings" class="flex flex-col gap-8 my-8">
     
