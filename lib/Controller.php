@@ -107,7 +107,7 @@ class Controller {
      * @method Make a specific view require authorization
      * 
      */
-    public function auth() : Controller
+    public function auth() : static
     {
         if( !AUTH->is_logged_in() )
         {

@@ -81,7 +81,7 @@ class UserModel {
      * Destroys both cookie and session in DB
      * 
      */
-    public function destroy_current_session() : void
+    public function destroy_session() : void
     {
         if( !isset($_COOKIE['session'])) return;
 

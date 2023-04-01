@@ -42,7 +42,7 @@ class TemplateEngine
             {
                 $view = str_replace('{{' . $value . '}}', (string) $data->$value, $view);
             } else {
-                $view = str_replace('{{' . $value . '}}', 'chicken', $view);
+                $view = str_replace('{{' . $value . '}}', '', $view);
             }
         }
 

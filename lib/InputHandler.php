@@ -383,7 +383,7 @@ class InputHandler {
             {
                 $input_rule_to_array = explode(':', $input_rule);
 
-                if( !empty($input_rule_to_array[1]) ) return $input_rule_to_array[1];
+                if( !empty($input_rule_to_array[1]) ) return (int) $input_rule_to_array[1];
             }
         }
 

@@ -45,22 +45,22 @@ $route->get('/unauthorized', function()
 
 $route->get('/signin', function() 
 {
-    (new UsersController())->sign_in_form();
+    (new UsersController())->sign_in();
 });
 
 $route->post('/signin', function() 
 {
-    (new UsersController())->sign_in();
+    (new UsersController())->authenticate();
 });
 
 $route->get('/signup', function() 
 {
-    (new UsersController())->sign_up_form();
+    (new UsersController())->new();
 });
 
 $route->post('/signup', function() 
 {
-    (new UsersController())->sign_up();
+    (new UsersController())->create();
 });
 
 $route->any('/signout', function()
@@ -93,27 +93,27 @@ $route->post('/settings', function()
  */
 $route->get('/budgets', function()
 {
-    (new BudgetsController())->auth()->budgets_home();
+    (new BudgetsController())->auth()->new();
 });
 
 $route->post('/budgets', function()
 {
-    (new BudgetsController())->auth()->create_budget();
+    (new BudgetsController())->auth()->create();
 });
 
 $route->get('/budget/:param/edit', function()
 {
-    (new BudgetsController())->auth()->edit_budget_form();
+    (new BudgetsController())->auth()->edit();
 });
 
 $route->post('/budget/:param/edit', function()
 {
-    (new BudgetsController())->auth()->edit_budget();
+    (new BudgetsController())->auth()->update();
 });
 
 $route->post('/budget/:param/delete', function()
 {
-    (new BudgetsController())->auth()->delete_budget();
+    (new BudgetsController())->auth()->destroy();
 });
 
 $route->response();

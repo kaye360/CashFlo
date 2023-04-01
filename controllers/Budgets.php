@@ -64,12 +64,12 @@ class BudgetsController extends Controller {
      * @method Budget Home page
      * 
      */
-    public function budgets_home()
+    public function new()
     {
         $data = new stdClass();
         $data->title = 'Budgets';
         $data->h1 = 'Budgets';
-        $data->budgets = $this->budgetModel->get_budgets();
+        $data->budgets = $this->budgetModel->index();
         $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
         $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
         $data->net_total = $this->get_budget_net_total($data->budgets->data);
@@ -85,7 +85,7 @@ class BudgetsController extends Controller {
      * @method Create a budget
      * 
      */
-    public function create_budget() : void
+    public function create() : void
     {
         $validator = InputHandler::validate([
             'name' => ['required', 'max:20' , 'has_spaces'],
@@ -117,7 +117,7 @@ class BudgetsController extends Controller {
             }
         }
 
-        $data->budgets = $this->budgetModel->get_budgets();
+        $data->budgets = $this->budgetModel->index();
         $this->view('budgets', $data);
     }
 
@@ -126,7 +126,7 @@ class BudgetsController extends Controller {
      * @method Edit Budget Form
      * 
      */
-    public function edit_budget_form() : void
+    public function edit() : void
     {
         $data = new stdClass();
         $data->title = 'Edit budget';
@@ -140,7 +140,7 @@ class BudgetsController extends Controller {
             PHP_URL_PATH
         );
 
-        $budget = $this->budgetModel->get_budget(id: $data->id);
+        $budget = $this->budgetModel->show(id: $data->id);
 
         $data->name = $budget->data->name;
         $data->type = $budget->data->type;
@@ -159,7 +159,7 @@ class BudgetsController extends Controller {
      * @method Edit a budget
      * 
      */
-    public function edit_budget()
+    public function update()
     {
         $validator = InputHandler::validate([
             'name' => ['required', 'max:20', 'has_spaces'],
@@ -171,7 +171,7 @@ class BudgetsController extends Controller {
         $data->title = 'Edit Budget';
         $data->h1 = 'Edit Budget';
         $data->name = InputHandler::sanitize('name');
-        $data->amount = InputHandler::sanitize('amount');
+        $data->amount = (float) InputHandler::sanitize('amount');
         $data->type = InputHandler::sanitize('type');
         $data->id = (int) InputHandler::sanitize('id');
         $data->referer = InputHandler::sanitize('referer');
@@ -179,7 +179,7 @@ class BudgetsController extends Controller {
         $data->success = $validator->success;
 
         // Authorize Edit Budget
-        $user = $this->budgetModel->get_budget(id: $data->id);
+        $user = $this->budgetModel->show(id: $data->id);
 
         if( $user->data->user_id !== AUTH->user_id)
         {
@@ -188,7 +188,7 @@ class BudgetsController extends Controller {
         }
 
         // Edit Budget`
-        $this->budgetModel->edit(
+        $this->budgetModel->update(
             name: $data->name,
             type: $data->type,
             amount: $data->amount,
@@ -203,7 +203,7 @@ class BudgetsController extends Controller {
      * @method Edit a budget
      * 
      */
-    public function delete_budget()
+    public function destroy()
     {
         $data = new stdClass();
         $data->title = 'Delete Budget';
@@ -215,12 +215,12 @@ class BudgetsController extends Controller {
             return;
         }
 
-        $budget_id = $_POST['id'];
+        $budget_id = (int) $_POST['id'];
         $referer = $_POST['referer'];
         $referer = parse_url($referer, PHP_URL_PATH);
 
         // Authorize Delete Budget
-        $user = $this->budgetModel->get_budget(id: $budget_id);
+        $user = $this->budgetModel->show(id: $budget_id);
 
         if( $user->data->user_id !== AUTH->user_id )
         {

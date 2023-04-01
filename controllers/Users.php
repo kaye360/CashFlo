@@ -30,14 +30,26 @@ class UsersController extends Controller {
         $this->userModel = $this->model('User');
     }
 
+    /**
+     * 
+     * @method Sign up form
+     * 
+     */
+    public function new() : void
+    {
+        $data = new stdClass();
+        $data->title = 'Sign Up';
+        $data->h1 = 'Sign Up to Spendly';
 
+        $this->view('signup', $data);
+    }
 
     /**
      * 
      * @method Sign up a user 
      * 
      */
-    public function sign_up() : void
+    public function create() : void
     {
         
         if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
@@ -52,7 +64,7 @@ class UsersController extends Controller {
             'confirm_password_2' => ['required']
         ]);
             
-        $data = new stdClass();
+        $data = new stdClass() ;
         $data->title = 'Sign Up';
         $data->username = InputHandler::sanitize('username');
         $data->password = trim($_POST['confirm_password_1']);
@@ -80,24 +92,10 @@ class UsersController extends Controller {
     
     /**
      * 
-     * @method Sign up form
-     * 
-     */
-    public function sign_up_form() : void
-    {
-        $data = new stdClass();
-        $data->title = 'Sign Up';
-        $data->h1 = 'Sign Up to Spendly';
-
-        $this->view('signup', $data);
-    }
-
-    /**
-     * 
      * @method Sign in form
      * 
      */
-    public function sign_in_form() : void
+    public function sign_in() : void
     {
         $data = new stdClass();
         $data->title = 'Sign In to Spendly';
@@ -111,7 +109,7 @@ class UsersController extends Controller {
      * @method Sign in a user
      * 
      */
-    public function sign_in() : void
+    public function authenticate() : void
     {
 
         if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
@@ -135,7 +133,7 @@ class UsersController extends Controller {
         
         if( $data->success) 
         {
-            $this->userModel->destroy_current_session();
+            $this->userModel->destroy_session();
             $session = GenericUtils::make_UUID();
             $this->userModel->update_session(
                 session: $session, username: $data->username
@@ -161,7 +159,7 @@ class UsersController extends Controller {
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
         {
             $data->success = true;
-            $this->userModel->destroy_current_session();
+            $this->userModel->destroy_session();
         }
 
         $this->view('signout', $data);

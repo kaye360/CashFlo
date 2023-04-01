@@ -25,7 +25,6 @@ class BudgetModel {
      */
     public function __construct(protected Database $database)
     {
-        // parent::__construct();
     }
 
     /**
@@ -60,7 +59,7 @@ class BudgetModel {
      * @method Edit a budget
      * 
      */
-    public function edit(
+    public function update(
         string $name,
         string $type,
         float $amount,
@@ -80,7 +79,7 @@ class BudgetModel {
      * then spending.
      * 
      */
-    public function get_budgets() : object
+    public function index() : object
     {
         return $this->database
             ->select('*')
@@ -95,7 +94,7 @@ class BudgetModel {
      * @method Get a Budget
      * 
      */
-    public function get_budget(int $id) : object
+    public function show(int $id) : object
     {
         return $this->database
             ->select('*')
