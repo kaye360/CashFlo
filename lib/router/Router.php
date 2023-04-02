@@ -24,7 +24,7 @@
  * 
  */
 declare(strict_types=1);
-namespace lib\Router;
+namespace lib\Router\Router;
 
 
 
@@ -158,7 +158,7 @@ class Router {
 	 * @method Generate response based on current route
 	 * 
 	 */
-	public function response()
+	public function render()
 	{
 		// Swap :param with requested param
 		$this->routes = $this->apply_params($this->routes);

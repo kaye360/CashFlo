@@ -79,7 +79,7 @@ class BudgetModel {
      * then spending.
      * 
      */
-    public function index() : object
+    public function get_all() : object
     {
         return $this->database
             ->select('*')
@@ -94,7 +94,7 @@ class BudgetModel {
      * @method Get a Budget
      * 
      */
-    public function show(int $id) : object
+    public function get(int $id) : object
     {
         return $this->database
             ->select('*')

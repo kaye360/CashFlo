@@ -14,13 +14,13 @@
  * 
  */
 declare(strict_types=1);
-namespace lib\TemplateEngine\TemplateEngine;
+namespace lib\Template\Template;
 
-use lib\TemplateEngine\CSSComponents\CSSComponents;
+use lib\Template\CSSComponents\CSSComponents;
 
 
 
-class TemplateEngine
+class Template
 {
 
     /**

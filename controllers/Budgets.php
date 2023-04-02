@@ -67,7 +67,7 @@ class BudgetsController extends Controller {
     public function new()
     {
         $data = new stdClass();
-        $data->budgets = $this->budgetModel->index();
+        $data->budgets = $this->budgetModel->get_all();
         $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
         $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
         $data->net_total = $this->get_budget_net_total($data->budgets->data);
@@ -94,6 +94,10 @@ class BudgetsController extends Controller {
         $data->amount = InputHandler::sanitize('amount');
         $data->amount = InputHandler::money('amount');
         $data->type = InputHandler::sanitize('type');
+        $data->budgets = $this->budgetModel->index();
+        $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
+        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
+        $data->net_total = $this->get_budget_net_total($data->budgets->data);
         $data->errors = $validator->errors;
         $data->success = $validator->success;
 
@@ -108,6 +112,8 @@ class BudgetsController extends Controller {
 
             } else {
                 $data->success = true;
+                $data->name = '';
+                $data->amount = '';
             }
         }
 
@@ -126,7 +132,7 @@ class BudgetsController extends Controller {
         $data->id = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
         $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/budgets' , PHP_URL_PATH);
 
-        $budget = $this->budgetModel->show(id: $data->id);
+        $budget = $this->budgetModel->get(id: $data->id);
 
         $data->name = $budget->data->name;
         $data->type = $budget->data->type;
@@ -163,11 +169,11 @@ class BudgetsController extends Controller {
         $data->success = $validator->success;
 
         // Authorize Edit Budget
-        $user = $this->budgetModel->show(id: $data->id);
+        $user = $this->budgetModel->get(id: $data->id);
 
         if( $user->data->user_id !== AUTH->user_id)
         {
-            header('Location: /unauthorized');
+            $this->view('unauthorized');
             die();
         }
 
@@ -202,7 +208,7 @@ class BudgetsController extends Controller {
         $referer = parse_url($referer, PHP_URL_PATH);
 
         // Authorize Delete Budget
-        $user = $this->budgetModel->show(id: $budget_id);
+        $user = $this->budgetModel->get(id: $budget_id);
 
         if( $user->data->user_id !== AUTH->user_id )
         {

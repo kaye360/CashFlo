@@ -11,6 +11,7 @@
 
 use lib\Auth\Auth;
 use lib\DBConnect\DBConnect;
+use lib\Router\Route\Route;
 
 /**
  * 
@@ -71,6 +72,14 @@ define('DB_CONNECTION', DBConnect::connect() );
  * 
  */
 define('AUTH', Auth::init() );
+
+/**
+ * 
+ * @method Define Routes and Render current request
+ * 
+ */
+Route::init();
+require_once './routes/routes.php';
 
 /**
  * 

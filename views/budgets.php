@@ -106,9 +106,14 @@ $data->h1 = 'Budgets';
         <?php endif; ?>
 
         <div>
-            Income: {{income_total}} <br>
-            Spending: {{spending_total}} <br>
-            Net: {{net_total}}
+            Income: ${{income_total}} <br>
+            Spending: ${{spending_total}} <br>
+            Net: 
+            <span class="
+                <?= $data->net_total > 0 ? 'text-green-400' : 'text-red-400'; ?>
+            ">
+                ${{net_total}}
+            </span>
         </div>
 
         <div class="grid grid-cols-3 items-end gap-4 w-fit">
