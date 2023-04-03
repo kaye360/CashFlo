@@ -10,101 +10,58 @@ use controllers\BudgetsController\BudgetsController;
 use controllers\PagesController\PagesController;
 use controllers\UsersController\UsersController;
 
-Route::get('/', function() 
-{
-    (new PagesController)->home();
-});
+/**
+ * 
+ * Static Page Routes
+ * 
+ */
 
-Route::get('/about', function() 
-{
-    (new PagesController())->about();
-});
+Route::get('/',             fn() => (new PagesController)->home() );
 
-Route::get('/error', function() 
-{
-    (new PagesController())->error();
-});
+Route::get('/about',        fn() => (new PagesController())->about() );
 
-Route::get('/unauthorized', function() 
-{
-    (new PagesController())->unauthorized();
-});
+Route::get('/error',        fn() => (new PagesController())->error() );
+
+Route::get('/unauthorized', fn() => (new PagesController())->unauthorized() );
 
 /**
  * 
-* User Routes (Public)
-* 
-*/
+ * User Routes (Public)
+ * 
+ */
 
-Route::get('/signin', function() 
-{
-    (new UsersController)->sign_in();
-});
+Route::get('/signin',   fn() => (new UsersController)->sign_in() );
 
-Route::post('/signin', function() 
-{
-    (new UsersController())->authenticate();
-});
+Route::post('/signin',  fn() => (new UsersController())->authenticate() );
 
-Route::get('/signup', function() 
-{
-    (new UsersController())->new();
-});
+Route::get('/signup',   fn() => (new UsersController())->new() );
 
-Route::post('/signup', function() 
-{
-    (new UsersController())->create();
-});
+Route::post('/signup',  fn() => (new UsersController())->create() );
 
-Route::any('/signout', function()
-{
-    (new UsersController())->sign_out();
-});
+Route::any('/signout',  fn() => (new UsersController())->sign_out() );
 
 /**
  * 
-* User Routes (Auth)
-* 
-*/
-Route::get('/dashboard', function()
-{
-    (new UsersController())->auth()->dashboard();
-});
+ * User Routes (Auth)
+ * 
+ */
+Route::get('/dashboard', fn() => (new UsersController())->auth()->dashboard() );
 
-Route::get('/settings', function()
-{
-    (new UsersController())->auth()->settings();
-});
+Route::get('/settings',  fn() => (new UsersController())->auth()->settings() );
 
-Route::post('/settings', function()
-{
-    (new UsersController())->auth()->update_settings();
-});
+Route::post('/settings', fn() => (new UsersController())->auth()->update_settings() );
 
 /**
+ * 
  * Budgets Routes
-*/
-Route::get('/budgets', function()
-{
-    (new BudgetsController)->auth()->new();
-});
+ * 
+ */
+Route::get('/budgets',               fn() => (new BudgetsController())->auth()->new() );
 
-Route::post('/budgets', function()
-{
-    (new BudgetsController())->auth()->create();
-});
+Route::post('/budgets',              fn() => (new BudgetsController())->auth()->create() );
 
-Route::get('/budget/:param/edit', function()
-{
-    (new BudgetsController())->auth()->edit();
-});
+Route::get('/budget/:param/edit',    fn() => (new BudgetsController())->auth()->edit() );
 
-Route::post('/budget/:param/edit', function()
-{
-    (new BudgetsController())->auth()->update();
-});
+Route::post('/budget/:param/edit',   fn() => (new BudgetsController())->auth()->update() );
 
-Route::post('/budget/:param/delete', function()
-{
-    (new BudgetsController())->auth()->destroy();
-});
+Route::post('/budget/:param/delete', fn() => (new BudgetsController())->auth()->destroy() );

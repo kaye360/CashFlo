@@ -37,10 +37,10 @@ class BudgetsController extends Controller {
         string $type, 
         array $array
     ) : float {
-        return array_reduce($array, function($i, $budget) use($type)
+        return array_reduce($array, function($total, $budget) use($type)
         {
-            if($budget->type === $type) $i += $budget->amount;
-            return $i;
+            if($budget->type === $type) $total += $budget->amount;
+            return $total;
         });
     }
 
@@ -53,8 +53,8 @@ class BudgetsController extends Controller {
     {
         return array_reduce($array, function($i, $budget)
         {
-            if($budget->type === 'income') $i += $budget->amount;
-            if($budget->type === 'spending') $i -= $budget->amount;
+            if ($budget->type === 'income')   $i += $budget->amount;
+            if ($budget->type === 'spending') $i -= $budget->amount;
             return $i;
         });
     }
@@ -66,13 +66,12 @@ class BudgetsController extends Controller {
      */
     public function new()
     {
-        $data = new stdClass();
-        $data->budgets = $this->budgetModel->get_all();
-        $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
+        $data                 = new stdClass();
+        $data->budgets        = $this->budgetModel->get_all();
+        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data);
         $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
-        $data->net_total = $this->get_budget_net_total($data->budgets->data);
-        $data->prompt = $_GET['prompt'] ?? false;
-
+        $data->net_total      = $this->get_budget_net_total($data->budgets->data);
+        $data->prompt         = $_GET['prompt'] ?? false;
         $this->view('budgets', $data);
     }
 
@@ -84,22 +83,22 @@ class BudgetsController extends Controller {
     public function create() : void
     {
         $validator = InputHandler::validate([
-            'name' => ['required', 'max:20' , 'has_spaces'],
+            'name'   => ['required', 'max:20' , 'has_spaces'],
             'amount' => ['required', 'number'],
-            'type' => ['required']
+            'type'   => ['required']
         ]);
 
-        $data = new stdClass();
-        $data->name = InputHandler::sanitize('name');
-        $data->amount = InputHandler::sanitize('amount');
-        $data->amount = InputHandler::money('amount');
-        $data->type = InputHandler::sanitize('type');
-        $data->budgets = $this->budgetModel->index();
-        $data->income_total = $this->get_budget_type_total('income', $data->budgets->data);
+        $data                 = new stdClass();
+        $data->name           = InputHandler::sanitize('name');
+        $data->amount         = InputHandler::sanitize('amount');
+        $data->type           = InputHandler::sanitize('type');
+        $data->amount         = InputHandler::money('amount');
+        $data->budgets        = $this->budgetModel->index();
+        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data);
         $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
-        $data->net_total = $this->get_budget_net_total($data->budgets->data);
-        $data->errors = $validator->errors;
-        $data->success = $validator->success;
+        $data->net_total      = $this->get_budget_net_total($data->budgets->data);
+        $data->errors         = $validator->errors;
+        $data->success        = $validator->success;
 
         if( $data->success ) 
         {
@@ -107,13 +106,13 @@ class BudgetsController extends Controller {
             
             if( $new_budget->error ) 
             {
-                $data->success = false;
+                $data->success       = false;
                 $data->errors->query = true;
 
             } else {
                 $data->success = true;
-                $data->name = '';
-                $data->amount = '';
+                $data->name    = '';
+                $data->amount  = '';
             }
         }
 
@@ -128,14 +127,14 @@ class BudgetsController extends Controller {
      */
     public function edit() : void
     {
-        $data = new stdClass();
-        $data->id = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
+        $data          = new stdClass();
+        $data->id      = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
         $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/budgets' , PHP_URL_PATH);
 
         $budget = $this->budgetModel->get(id: $data->id);
 
-        $data->name = $budget->data->name;
-        $data->type = $budget->data->type;
+        $data->name   = $budget->data->name;
+        $data->type   = $budget->data->type;
         $data->amount = $budget->data->amount;
         
         if( $data->id !== AUTH->user_id )
@@ -154,18 +153,18 @@ class BudgetsController extends Controller {
     public function update()
     {
         $validator = InputHandler::validate([
-            'name' => ['required', 'max:20', 'has_spaces'],
+            'name' =>   ['required', 'max:20', 'has_spaces'],
             'amount' => ['required', 'number'],
-            'type' => ['required']
+            'type' =>   ['required']
         ]);
 
-        $data = new stdClass();
-        $data->name = InputHandler::sanitize('name');
-        $data->amount = (float) InputHandler::sanitize('amount');
-        $data->type = InputHandler::sanitize('type');
-        $data->id = (int) InputHandler::sanitize('id');
+        $data          = new stdClass();
+        $data->name    = InputHandler::sanitize('name');
+        $data->amount  = (float) InputHandler::sanitize('amount');
+        $data->type    = InputHandler::sanitize('type');
+        $data->id      = (int) InputHandler::sanitize('id');
         $data->referer = InputHandler::sanitize('referer');
-        $data->errors = $validator->errors;
+        $data->errors  = $validator->errors;
         $data->success = $validator->success;
 
         // Authorize Edit Budget
@@ -179,10 +178,10 @@ class BudgetsController extends Controller {
 
         // Edit Budget`
         $this->budgetModel->update(
-            name: $data->name,
-            type: $data->type,
+            name:   $data->name,
+            type:   $data->type,
             amount: $data->amount,
-            id: $data->id
+            id:     $data->id
         );
 
         $this->view('budget/edit', $data);
@@ -204,8 +203,8 @@ class BudgetsController extends Controller {
         }
 
         $budget_id = (int) $_POST['id'];
-        $referer = $_POST['referer'];
-        $referer = parse_url($referer, PHP_URL_PATH);
+        $referer   = $_POST['referer'];
+        $referer   = parse_url($referer, PHP_URL_PATH);
 
         // Authorize Delete Budget
         $user = $this->budgetModel->get(id: $budget_id);

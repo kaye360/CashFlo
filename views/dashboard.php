@@ -1,7 +1,7 @@
 <?php
 $data->title = 'Dashboard';
-$data->h1 = 'Dashboard: ' . AUTH->username;
-$data->username = AUTH->username;
+$data->h1 = 'Dashboard: ' . AUTH->username();
+$data->username = AUTH->username();
 ?>
 
 

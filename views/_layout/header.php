@@ -21,7 +21,7 @@
 
     <?php if( AUTH->is_logged_in() ): ?>
         <ul class="flex flex-col gap-2">
-            <li class="font-bold"><?php AUTH->username(); ?>, id: <?php AUTH->user_id(); ?></li>
+            <li class="font-bold"><?= AUTH->username(); ?>, id: <?= AUTH->user_id(); ?></li>
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/budgets">Budgets</a></li>
             <li><a href="/settings">Settings</a></li>

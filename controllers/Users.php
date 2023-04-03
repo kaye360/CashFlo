@@ -47,26 +47,19 @@ class UsersController extends Controller {
      */
     public function create() : void
     {
-        
-        if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
-        {
-            header('Location: /signup');
-            exit();
-        }
-
         $validator = InputHandler::validate([
-            'username' => ['required', 'unique', 'max:15', 'min:6'],
+            'username' =>           ['required', 'unique', 'max:15', 'min:6'],
             'confirm_password_1' => ['required', 'min:6', 'confirm_password'],
             'confirm_password_2' => ['required']
         ]);
             
-        $data = new stdClass() ;
-        $data->username = InputHandler::sanitize('username');
-        $data->password = trim($_POST['confirm_password_1']);
+        $data                   = new stdClass() ;
+        $data->username         = InputHandler::sanitize('username');
+        $data->password         = trim($_POST['confirm_password_1']);
         $data->confirm_password = trim($_POST['confirm_password_2']);
-        $data->errors = $validator->errors;
-        $data->errors->query = false;
-        $data->success = $validator->success;
+        $data->errors           = $validator->errors;
+        $data->errors->query    = false;
+        $data->success          = $validator->success;
 
         if( $data->success ) 
         {
@@ -74,7 +67,7 @@ class UsersController extends Controller {
             
             if( $new_user->error ) 
             {
-                $data->success = false;
+                $data->success       = false;
                 $data->errors->query = true;
 
             } else {
@@ -102,31 +95,28 @@ class UsersController extends Controller {
      */
     public function authenticate() : void
     {
-
-        if( $_SERVER['REQUEST_METHOD'] !== 'POST') 
-        {
-            header('Location: /signup');
-            exit();
-        }
-
         $validator = InputHandler::validate([
             'username' => ['required'],
             'password' => ['required', 'user_pass_verify']
         ]);
         
-        $data = new stdClass();
+        $data           = new stdClass();
         $data->username = InputHandler::sanitize('username');
         $data->password = InputHandler::sanitize('password');
-        $data->errors = $validator->errors;
-        $data->success = $validator->success;
+        $data->errors   = $validator->errors;
+        $data->success  = $validator->success;
         
         if( $data->success) 
         {
             $this->userModel->destroy_session();
+
             $session = GenericUtils::make_UUID();
+
             $this->userModel->update_session(
-                session: $session, username: $data->username
+                session:  $session, 
+                username: $data->username
             );
+
             setcookie('session', $session, strtotime( '+30 days' ));
         }
 
@@ -136,11 +126,12 @@ class UsersController extends Controller {
     /**
      * 
      * @method Sign out a user form and sign out user
+     * GET and POST route
      * 
      */
     public function sign_out() : void
     {
-        $data = new stdClass();
+        $data          = new stdClass();
         $data->success = false;
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
@@ -184,14 +175,14 @@ class UsersController extends Controller {
             'confirm_password_1' => ['confirm_password', 'min:6']
         ]);
 
-        $data = new stdClass();
-        $data->success = false;
-        $data->username = InputHandler::sanitize('username');
-        $data->password = InputHandler::sanitize('password');
+        $data                     = new stdClass();
+        $data->success            = false;
+        $data->username           = InputHandler::sanitize('username');
+        $data->password           = InputHandler::sanitize('password');
         $data->confirm_password_1 = InputHandler::sanitize('confirm_password_1');
         $data->confirm_password_2 = InputHandler::sanitize('confirm_password_2');
-        $data->errors = $validator->errors;
-        $data->success = $validator->success; 
+        $data->errors             = $validator->errors;
+        $data->success            = $validator->success; 
 
         if( $data->success )
         {

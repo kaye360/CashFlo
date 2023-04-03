@@ -44,13 +44,13 @@ class BudgetModel {
         {
             return (object) [
                 'error' => true, 
-                'data' => null
+                'data'  => null
             ];
         }
 
         return (object) [
             'error' => false,
-            'data' => $data,
+            'data'  => $data,
         ];
     }
 
@@ -84,7 +84,7 @@ class BudgetModel {
         return $this->database
             ->select('*')
             ->table('budgets')
-            ->where("user_id = '" . AUTH->user_id . "' ")
+            ->where("user_id = '" . AUTH->user_id() . "' ")
             ->order('type ASC, amount DESC')
             ->list();
     }

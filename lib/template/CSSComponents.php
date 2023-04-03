@@ -15,7 +15,7 @@
  * 
  */
 declare(strict_types=1);
-namespace lib\TemplateEngine\CSSComponents;
+namespace lib\Template\CSSComponents;
 
 class CSSComponents {
 

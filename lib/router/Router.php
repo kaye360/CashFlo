@@ -26,7 +26,7 @@
 declare(strict_types=1);
 namespace lib\Router\Router;
 
-
+use stdClass;
 
 class Router {
 
@@ -34,7 +34,7 @@ class Router {
 	 * 
 	 * @var url stores the current REQUEST_URI
 	 * 
-	 * Formatted to be an array key. any '/' is converted to 'SLASH' 
+	 * Formatted to be an array key. any '/' is removed 
 	 * @example users/23 becomes usersSLASH23
 	 * 
 	 */
@@ -58,25 +58,34 @@ class Router {
 
 	/**
 	 * 
-	 * @method Get/set/format request url and params
+	 * @method Get/set/format request url and param
      * 
 	 */
 	public function __construct()
 	{
-		$url = trim($_SERVER['REQUEST_URI'], " \n\r\t\v\x00/");
-		$url = filter_var($url, FILTER_SANITIZE_URL);
+		$url 		 = $this->resolve_url();
+		$this->url   = $url->url;
+		$this->param = $url->param;
+	}
 
-		if( empty($url) ) $url = '/';
-
-		$url_no_query_string = explode('?', $url)[0];
-		$url_formatted_as_key = str_replace('/', 'SLASH', $url_no_query_string);
-		$this->url = $url_formatted_as_key;
-		
+	/**
+	 * 
+	 * @method Resolve URL and params
+	 * 
+	 */
+	private function resolve_url()
+	{
+		$url_trimmed     	  = trim($_SERVER['REQUEST_URI'], " \n\r\t\v\x00/");
+		$url_filtered		  = filter_var($url_trimmed, FILTER_SANITIZE_URL);
+		$url_no_query_string  = explode('?', $url_filtered)[0];
+		$url_no_slashes		  = str_replace('/', '', $url_no_query_string);
 		$url_array_by_slashes = explode('/', $url_no_query_string);
-		if( isset($url_array_by_slashes[1]) ) 
-		{
-			$this->param = $url_array_by_slashes[1];
-		} 
+		$url_param 			  = $url_array_by_slashes[1] ?? null;
+
+		return (object) [
+			'url'   => $url_no_slashes,
+			'param' => $url_param
+		];
 	}
 
 	/**
@@ -84,8 +93,8 @@ class Router {
 	 * @method Register a Route
 	 * 
 	 * Routes are formatted to be an array key to match $this->url
-	 * any '/' will become a 'SLASH'
-	 * any ':' will become a '_' // For :param
+	 * any '/' will be removed
+	 * any ':' will become a '_' (For :param)
 	 * 
 	 */
 	private function register_route(string $req_method, string $route, callable $method)
@@ -96,8 +105,7 @@ class Router {
 		) return;
 
 		$route = trim($route, '/');
-		if(empty($route)) $route = '/';
-		$route = str_replace('/', 'SLASH', $route);
+		$route = str_replace('/', '', $route);
 		$route = str_replace(':', '_', $route);
 		
 		$this->routes[$route] = $method;
@@ -162,7 +170,7 @@ class Router {
 	{
 		// Swap :param with requested param
 		$this->routes = $this->apply_params($this->routes);
-
+		
 		// Check if current route exists in routes
 		if(!array_key_exists( $this->url, $this->routes )) 
 		{
@@ -170,6 +178,7 @@ class Router {
 			die();
 		}
 
+		// Call Route Method
 		return $this->routes[$this->url]();
 	}
 	
@@ -195,16 +204,5 @@ class Router {
 		}
 
 		return $route_methods;
-	}
-	
-	/**
-	 * 
-	 * @method Return an Error Message
-	 * 
-	 */
-	public function error(string $message) 
-	{
-		return ['error' => $message];
-	}
-	
+	}	
 }

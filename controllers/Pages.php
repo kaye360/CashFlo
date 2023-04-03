@@ -21,7 +21,7 @@ class PagesController extends Controller {
 
     /**
      * 
-     * @return Home Page
+     * @method Home Page
      * 
      */
     public function home() : void
@@ -31,7 +31,7 @@ class PagesController extends Controller {
 
     /**
      * 
-     * @return About Page
+     * @method About Page
      * 
      */
     public function about() : void
@@ -41,7 +41,7 @@ class PagesController extends Controller {
 
     /**
      * 
-     * @return Error Page
+     * @method Error Page
      * 
      */
     public function error(
@@ -49,24 +49,24 @@ class PagesController extends Controller {
         string $message = 'There was an error.'
     ) : void {
 
-        $data = new stdClass();
-        $data->title = 'Error';
-        $data->h1 = 'Error 404';
-        $data->type = $type;
+        $data          = new stdClass();
+        $data->title   = 'Error';
+        $data->h1      = 'Error 404';
+        $data->type    = $type;
         $data->message = $message;
         $this->view('error', $data);
     }
 
     /**
      * 
-     * @return Unauthorized Page
+     * @method Unauthorized Page
      * 
      */
     public function unauthorized() : void
     {
-        $data = new stdClass();
+        $data        = new stdClass();
         $data->title = 'Unauthorized request';
-        $data->h1 = 'Unauthorized request';
+        $data->h1    = 'Unauthorized request';
         $this->view('unauthorized', $data);
     }
 }

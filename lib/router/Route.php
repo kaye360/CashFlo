@@ -17,6 +17,8 @@ namespace lib\Router\Route;
 
 use lib\Router\Router\Router;
 
+
+
 class Route {
 
     private static $instance = null;
@@ -59,7 +61,7 @@ class Route {
      */
     public static function post(string $route, callable $method)
     {
-        self::$router->get($route, $method);
+        self::$router->post($route, $method);
     }
 
     /**

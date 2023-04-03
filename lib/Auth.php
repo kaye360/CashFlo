@@ -35,9 +35,9 @@ class Auth {
      * Can be used if data needs to be returned, not echo'd
      * 
      */
-    public $is_logged_in;
-    public $username;
-    public $user_id;
+    private $is_logged_in;
+    private $username;
+    private $user_id;
 
     /**
      * 
@@ -55,7 +55,8 @@ class Auth {
         $userModel = new Database();
 
         // Check if there is an active session in the DB
-        $user = $userModel->table('users')
+        $user = $userModel
+            ->table('users')
             ->select('username, id')
             ->where("session = '$_COOKIE[session]' ")
             ->single();
@@ -89,7 +90,7 @@ class Auth {
      */
     public function username()
     {
-        echo $this->username;
+        return $this->username;
     }
 
     /**
@@ -100,7 +101,7 @@ class Auth {
      */
     public function user_id()
     {
-        echo $this->user_id;
+        return $this->user_id;
     }
 
     /**

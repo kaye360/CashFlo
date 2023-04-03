@@ -68,14 +68,14 @@ class InputHandler {
     {
         if( !is_array($inputs) ) return;
 
-        $validator = new stdClass();
-        $validator->errors = new stdClass();
+        $validator          = new stdClass();
+        $validator->errors  = new stdClass();
         $validator->success = true;
 
         foreach( $inputs as $input => $rules )
         {
             // Error container for current $input
-            $validator->errors->$input = new stdClass();
+            $validator->errors->$input            = new stdClass();
             $validator->errors->$input->has_error = false;
 
 
@@ -93,9 +93,11 @@ class InputHandler {
             if( $has_forbidden_chars ) 
             {
                 $validator->errors->$input->has_forbidden_chars = true;
-                $validator->errors->$input->has_error = true;
-                $validator->success = false;
+                $validator->errors->$input->has_error           = true;
+                $validator->success                             = false;
+
             } else {
+
                 $validator->errors->$input->has_forbidden_chars = false;
             }
 
@@ -108,12 +110,15 @@ class InputHandler {
             // Required
             if( self::is_rule('required', $rules) ) 
             {
-                if( empty( $_POST[$input])) {
-                    $validator->errors->$input->required = true;
+                if( empty( $_POST[$input])) 
+                {
+                    $validator->errors->$input->required  = true;
                     $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->success                   = false;
+
                 } else {
-                    $validator->errors->$input->required = false;
+
+                    $validator->errors->$input->required  = false;
                 }
             }
 
@@ -124,11 +129,13 @@ class InputHandler {
             {
                 if( self::is_not_unique($_POST[$input]) ) 
                 {
-                    $validator->errors->$input->unique = true;
+                    $validator->errors->$input->unique    = true;
                     $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->success                   = false;
+
                 } else {
-                    $validator->errors->$input->unique = false;
+
+                    $validator->errors->$input->unique    = false;
                 }
             }
 
@@ -142,11 +149,13 @@ class InputHandler {
                     is_numeric($param) && 
                     self::has_too_many_chars( $_POST[$input], $param )
                 ) {
-                    $validator->errors->$input->max = true;
+                    $validator->errors->$input->max       = true;
                     $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->success                   = false;
+
                 } else {
-                    $validator->errors->$input->max = false;
+
+                    $validator->errors->$input->max       = false;
                 }
             }
             
@@ -160,11 +169,13 @@ class InputHandler {
                     is_numeric($param) && 
                     self::has_too_few_chars( $_POST[$input], $param )
                 ) {
-                    $validator->errors->$input->min = true;
+                    $validator->errors->$input->min       = true;
                     $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->success                   = false;
+
                 } else {
-                    $validator->errors->$input->min = false;
+
+                    $validator->errors->$input->min       = false;
                 }
             }
 
@@ -177,9 +188,11 @@ class InputHandler {
                     password: $_POST['password']
                 )) {
                     $validator->errors->$input->user_pass_verify = true;
-                    $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->errors->$input->has_error        = true;
+                    $validator->success                          = false;
+
                 } else {
+
                     $validator->errors->$input->user_pass_verify = false;
                 }
             }
@@ -193,9 +206,11 @@ class InputHandler {
                     confirm_password: $_POST['confirm_password_2']
                 )) {
                     $validator->errors->$input->confirm_password = true;
-                    $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->errors->$input->has_error        = true;
+                    $validator->success                          = false;
+
                 } else {
+
                     $validator->errors->$input->confirm_password = false;
                 }
             }
@@ -205,11 +220,13 @@ class InputHandler {
             {
                 if( !is_numeric($_POST[$input]) )
                 {
-                    $validator->errors->$input->number = true;
+                    $validator->errors->$input->number    = true;
                     $validator->errors->$input->has_error = true;
-                    $validator->success = false;
+                    $validator->success                   = false;
+
                 } else {
-                    $validator->errors->$input->number = false;
+
+                    $validator->errors->$input->number    = false;
                 }
             }
 
@@ -227,16 +244,16 @@ class InputHandler {
     {
         if( !is_numeric($_POST[$input]) ) return null;
 
-        $amount = str_contains($_POST[$input], '.')
+        $amount = ltrim($_POST[$input], '0');
+        $amount = str_contains($amount, '.')
             ?   $_POST[$input]
             :   $_POST[$input] . '.00';
-        $amount = ltrim($amount, '0');
 
-        $amount_array = explode('.', $amount);
-        $decimal = substr($amount_array[1], 0, 2);
-
+        $amount_array     = explode('.', $amount);
+        $decimal          = substr($amount_array[1], 0, 2);
         $formatted_amount = $amount_array[0] . '.' . $decimal;
-        $_POST[$input] = $formatted_amount;
+        $_POST[$input]    = $formatted_amount;
+
         return $formatted_amount;
     }
 
@@ -304,12 +321,12 @@ class InputHandler {
     */
     private static function is_not_unique( string $username ) 
     {
-
-        $db = new Database();
-        $user_count = $db->table('users')
-           ->select('username')
-           ->where("username = '$username' ")
-           ->count();
+        $db         = new Database();
+        $user_count = $db
+            ->table('users')
+            ->select('username')
+            ->where("username = '$username' ")
+            ->count();
 
         return $user_count >= 1;
     }
@@ -323,15 +340,17 @@ class InputHandler {
      */
     private static function is_invalid_username_password(string $username, string $password )
     {
-        $db = new Database();
-        $user = $db->select('username, password, salt')
+        $db   = new Database();
+        $user = $db
+            ->select('username, password, salt')
             ->table('users')
             ->where("username = '$username' ")
             ->single();
             
-            if( !$user->success ) return true;
+        if( !$user->success ) return true;
 
         $salted_password = $password . $user->data->salt;
+
         return !( password_verify($salted_password, $user->data->password) );
     }
 
@@ -358,6 +377,8 @@ class InputHandler {
     /**
      * 
      * @method Check if rule is set on an input rule list
+     * Uses str_contains instead of in_array to account for params
+     * @example min:6 or max:15 etc.
      * 
      */
     private static function is_rule(string $rule, array $input_rule_list)
@@ -382,8 +403,9 @@ class InputHandler {
             if( str_contains($input_rule, $rule) ) 
             {
                 $input_rule_to_array = explode(':', $input_rule);
+                $param               = $input_rule_to_array[1] ?? null;
 
-                if( !empty($input_rule_to_array[1]) ) return (int) $input_rule_to_array[1];
+                if( !empty($param) ) return (int) $param;
             }
         }
 

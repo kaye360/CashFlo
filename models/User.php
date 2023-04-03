@@ -34,8 +34,8 @@ class UserModel {
      */
     public function create(object $data) : object
     {
-        $salt = substr(uniqid(), -5);
-        $salted_password = $data->password . $salt;
+        $salt                   = substr(uniqid(), -5);
+        $salted_password        = $data->password . $salt;
         $salted_hashed_password = password_hash($salted_password, PASSWORD_DEFAULT);
 
         $create_new_user = $this->database
@@ -48,13 +48,13 @@ class UserModel {
         {
             return (object) [
                 'error' => true, 
-                'data' => null
+                'data'  => null
             ];
         }
 
         return (object) [
             'error' => false,
-            'data' => $data,
+            'data'  => $data,
         ];
     }
     
@@ -86,6 +86,7 @@ class UserModel {
         if( !isset($_COOKIE['session'])) return;
 
         $session = $_COOKIE['session'];
+
         setcookie('session', '', 1);
         unset($_COOKIE['session']);
 
@@ -103,11 +104,11 @@ class UserModel {
      */
     public function update_settings(object $data) : void
     {
-        $new_password = $data->confirm_password_1;
-        $salt = substr(uniqid(), -5);
-        $salted_password = $new_password . $salt;
+        $new_password           = $data->confirm_password_1;
+        $salt                   = substr(uniqid(), -5);
+        $salted_password        = $new_password . $salt;
         $salted_hashed_password = password_hash($salted_password, PASSWORD_DEFAULT);
-        $user_id = AUTH->user_id;
+        $user_id                = AUTH->user_id;
 
         $this->database
             ->table('users')

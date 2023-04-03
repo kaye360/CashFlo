@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace lib\Controller;
 
 use lib\Database\Database;
-use lib\templateEngine\TemplateEngine\TemplateEngine;
+use lib\template\Template\Template;
 use stdClass;
 
 class Controller {
@@ -96,7 +96,7 @@ class Controller {
         require_once './views/_layout/footer.php';
 
         $view = ob_get_contents();
-        $template = new TemplateEngine();
+        $template = new Template();
         $view = $template->apply($view, $data);
         ob_end_clean();
         echo $view;

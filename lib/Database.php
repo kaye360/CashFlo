@@ -24,6 +24,8 @@
 declare(strict_types=1);
 namespace lib\Database;
 
+use PDO;
+use Exception;
 
 class Database
 {
@@ -67,7 +69,7 @@ class Database
     */
     public function request()
     {
-        return json_decode(file_get_contents('php://input'), true);
+        return json_decode(file_get_contents('php://input'));
     }
 
     /**
@@ -76,7 +78,7 @@ class Database
     * 
     */
     public function error(string $message) {
-        return ['success' => false, 'message' => $message];
+        return (object) ['success' => false, 'message' => $message];
     }
 
     /**
@@ -171,19 +173,20 @@ class Database
             
             if( isset($this->where) ) $sql .= " WHERE $this->where ";
             if( isset($this->order) ) $sql .= " ORDER BY $this->order";
-            $this->stmt = $this->dbh->prepare($sql);
-            
-            if( !$this->stmt->execute() ) 
-            {
-                return $this->error('Failed to execute query');
-            }
 
-            $row = $this->stmt->fetch(\PDO::FETCH_OBJ);
-            if($row === false) return (object) $this->error('No rows found');
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->stmt->execute();
+
+            $row = $this->stmt->fetch(PDO::FETCH_OBJ);
+
+            if( !$row ){
+                return  $this->error('No rows found');
+            } 
+
             return (object) [ 'success' => true, 'data' => $row ];
 
-        } catch (\Exception $error) {
-            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
+        } catch (Exception $error) {
+            return $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
  
@@ -218,16 +221,17 @@ class Database
             if( isset($this->limit) ) $sql .= " LIMIT $this->limit ";
             
             $this->stmt = $this->dbh->prepare($sql);
-            
-            if( !$this->stmt->execute() ) {
-                return $this->error('Failed to execute query');
-            }
+            $this->stmt->execute();
 
             $rows = $this->stmt->fetchAll(\PDO::FETCH_OBJ);
-            if($rows === false) return (object) $this->error('No rows found');
+
+            if( !$rows) {
+                return $this->error('No rows found');
+            }
+
             return (object) [ 'success' => true, 'data' => $rows ];
 
-        } catch (\Exception $error) {
+        } catch (Exception $error) {
             return $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
@@ -248,23 +252,19 @@ class Database
         {
             if( is_null($this->table) || is_null($this->cols) || is_null($this->values) ) 
             {
-                return (object) $this->error('$table, $where, $values are required in destroy method.');
+                return $this->error('$table, $where, $values are required in destroy method.');
             }
 
             $sql = " INSERT INTO $this->table ($this->cols) VALUES ($this->values)";
+
             $this->stmt = $this->dbh->prepare($sql);
-            
-            
-            if( !$this->stmt->execute() ) 
-            {
-                return (object) $this->error('Failed to execute query');
-            }
+            $this->stmt->execute();
 
             $data = $this->dbh->lastInsertId();
 
             return (object) [ 'success' => true, 'data' => $data ];
 
-        } catch (\Exception $error) {
+        } catch (Exception $error) {
             return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }
@@ -288,12 +288,9 @@ class Database
             }
 
             $sql = " DELETE FROM $this->table WHERE $this->where";
+
             $this->stmt = $this->dbh->prepare($sql);
-            
-            if( !$this->stmt->execute() ) 
-            {
-                return (object) $this->error('Failed to execute query');
-            }
+            $this->stmt->execute();
 
             return (object) [ 'success' => true ];
 
@@ -322,12 +319,9 @@ class Database
             }
 
             $sql = " UPDATE $this->table SET $this->set WHERE $this->where";
-            $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) 
-            {
-                return (object) $this->error('Failed to execute query');
-            }
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->stmt->execute();
 
             return (object) [ 'success' => true ];
 
@@ -360,17 +354,13 @@ class Database
 
             $sql = " SELECT COUNT($this->select) FROM $this->table";
             if( isset($this->where) ) $sql .= " WHERE $this->where";
-            $this->stmt = $this->dbh->prepare($sql);
             
-            if( !$this->stmt->execute() ) 
-            {
-                return (object) $this->error('Failed to execute query');
-            }
+            $this->stmt = $this->dbh->prepare($sql);
+            $this->stmt->execute();
 
-            $count = $this->stmt->fetchColumn();
-            return $count;
+            return $this->stmt->fetchColumn();
 
-        } catch (\Exception $error) {
+        } catch (Exception $error) {
             return (object) $this->error('Fatal error with query: ' . $error->getMessage());
         }
     }

@@ -27,13 +27,16 @@ class Template
      * 
      * @method Search and replace any view placeholders
      * 
+     * 
      */
     public function apply(string $view, object $data)
     {
         // Search and replace all {{vars}} with $data->var in $view
         // If $data->var not set, set to '' and hide
         preg_match_all('/\{\{(.*?)\}\}/i', $view, $matches); // Find {{...}}
+
         $ui_placeholders = array_unique($matches[1]);
+
         unset($matches);
 
         foreach( $ui_placeholders as $value )
@@ -48,8 +51,11 @@ class Template
 
         // Search and replace all <<css_class>> classes with CSSComponents::css_class in $view
         preg_match_all('/\<\<(.*?)\>\>/i', $view, $matches);  // Find <<...>>
+
         $css_placeholders = array_unique($matches[1]);
+
         unset($matches);
+        
         $css = CSSComponents::init();
 
         foreach( $css_placeholders as $value )

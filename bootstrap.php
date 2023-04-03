@@ -29,7 +29,7 @@ require_once './config.php';
  * but also allows the file to be called Controller.php or Model.php
  * 
  * Example:
- * Controller class name with be UsersController, but we only 
+ * User Controller class name will be UsersController, but we only 
  * want to include Users.php, while also allowing for the posssilbilty
  * of a file name Controller.php
  * 
@@ -37,17 +37,19 @@ require_once './config.php';
 spl_autoload_register( function($class)
 {
     $class_array = explode('\\', $class);
+    $file_name = $class_array[1];
      
-    if( $class_array[1] !== 'Controller') 
+    if( $file_name !== 'Controller') 
     {
-        $class_array[1] = str_replace('Controller' , '', $class_array[1]);
+        $file_name = str_replace('Controller' , '', $file_name);
     }
      
-    if( $class_array[1] !== 'Model') 
+    if( $file_name !== 'Model') 
     {
-        $class_array[1] = str_replace('Model' , '', $class_array[1]);
+        $file_name = str_replace('Model' , '', $file_name);
     }
 
+    $class_array[1] = $file_name;
     $class_file_path = '.';
 
     for($i = 0; $i < count($class_array) -1; $i++ )
@@ -75,7 +77,7 @@ define('AUTH', Auth::init() );
 
 /**
  * 
- * @method Define Routes and Render current request
+ * @method Inititialize Route Facade and include routes
  * 
  */
 Route::init();
