@@ -97,8 +97,6 @@ $data->h1 = 'Budgets';
 
     <h2 class="mb-2 p-2 text-lg font-medium bg-green-100">Your Budgets</h2>
 
-    <?php if( @$data->budgets->success ): ?>
-
         <?php if( count($data->budgets->data) === 0): ?>
             <div>
                 You have no budgets to show.
@@ -132,6 +130,5 @@ $data->h1 = 'Budgets';
                 </a>
             <?php endforeach; ?>
         </div>
-    <?php endif; ?>
 
 </section>

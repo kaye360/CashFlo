@@ -37,7 +37,7 @@ class BudgetModel {
         $create_new_budget = $this->database
             ->table('budgets')
             ->cols('name, type, amount, user_id')
-            ->values(" '$data->name', '$data->type', '$data->amount', '" . AUTH->user_id . "' ")
+            ->values(" '$data->name', '$data->type', '$data->amount', '" . AUTH->user_id() . "' ")
             ->new();
 
         if( !$create_new_budget ) 
@@ -81,12 +81,16 @@ class BudgetModel {
      */
     public function get_all() : object
     {
-        return $this->database
+        $all_budgets = $this->database
             ->select('*')
             ->table('budgets')
             ->where("user_id = '" . AUTH->user_id() . "' ")
             ->order('type ASC, amount DESC')
             ->list();
+
+        return $all_budgets->success
+            ? $all_budgets
+            : (object) ['data' => []];   
     }
 
     /**

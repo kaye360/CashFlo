@@ -207,6 +207,7 @@ class Router {
 		}
 
 		http_response_code( $current_route->response_code );
+		
 		return ($current_route->method)();
 	}
 	

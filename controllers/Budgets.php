@@ -37,11 +37,14 @@ class BudgetsController extends Controller {
         string $type, 
         array $array
     ) : float {
+
+        if( empty($array) ) return 0;
+
         return array_reduce($array, function($total, $budget) use($type)
         {
             if($budget->type === $type) $total += $budget->amount;
             return $total;
-        });
+        }) ?? 0;
     }
 
     /**
@@ -51,11 +54,13 @@ class BudgetsController extends Controller {
      */
     private function get_budget_net_total(array $array) : float
     {
-        return array_reduce($array, function($i, $budget)
+        if( empty($array )) return 0;
+
+        return array_reduce($array, function($total, $budget)
         {
-            if ($budget->type === 'income')   $i += $budget->amount;
-            if ($budget->type === 'spending') $i -= $budget->amount;
-            return $i;
+            if ($budget->type === 'income')   $total += $budget->amount;
+            if ($budget->type === 'spending') $total -= $budget->amount;
+            return $total;
         });
     }
 
@@ -64,15 +69,15 @@ class BudgetsController extends Controller {
      * @method Budget Home page
      * 
      */
-    public function new()
+    public function new() : void
     {
         $data                 = new stdClass();
         $data->budgets        = $this->budgetModel->get_all();
-        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data);
-        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
-        $data->net_total      = $this->get_budget_net_total($data->budgets->data);
+        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data ?? []);
+        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data ?? []);
+        $data->net_total      = $this->get_budget_net_total($data->budgets->data ?? []);
         $data->prompt         = $_GET['prompt'] ?? false;
-        $this->view('budgets', $data);
+        $this->view('budgets/index', $data);
     }
 
     /**
@@ -93,10 +98,6 @@ class BudgetsController extends Controller {
         $data->amount         = InputHandler::sanitize('amount');
         $data->type           = InputHandler::sanitize('type');
         $data->amount         = InputHandler::money('amount');
-        $data->budgets        = $this->budgetModel->index();
-        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data);
-        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data);
-        $data->net_total      = $this->get_budget_net_total($data->budgets->data);
         $data->errors         = $validator->errors;
         $data->success        = $validator->success;
 
@@ -115,9 +116,13 @@ class BudgetsController extends Controller {
                 $data->amount  = '';
             }
         }
-
-        $data->budgets = $this->budgetModel->index();
-        $this->view('budgets', $data);
+        
+        $data->budgets        = $this->budgetModel->get_all();
+        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data ?? []);
+        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data ?? []);
+        $data->net_total      = $this->get_budget_net_total($data->budgets->data ?? []);
+        
+        $this->view('budgets/index', $data);
     }
 
     /**
@@ -141,7 +146,7 @@ class BudgetsController extends Controller {
             $data->budget = false;
         }
 
-        $this->view('budget/edit', $data);
+        $this->view('budgets/edit', $data);
     }
 
     /**
@@ -169,7 +174,7 @@ class BudgetsController extends Controller {
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $data->id);
 
-        if( $user->data->user_id !== AUTH->user_id)
+        if( $user->data->user_id !== AUTH->user_id() )
         {
             $this->view('unauthorized');
             die();
@@ -183,7 +188,7 @@ class BudgetsController extends Controller {
             id:     $data->id
         );
 
-        $this->view('budget/edit', $data);
+        $this->view('budgets/edit', $data);
     }
 
     /**
@@ -197,7 +202,7 @@ class BudgetsController extends Controller {
         
         if( empty($_POST['referer']) || empty($_POST['id']) )
         {
-            $this->view('budget/edit', $data);
+            $this->view('budgets/edit', $data);
             return;
         }
 
@@ -208,7 +213,7 @@ class BudgetsController extends Controller {
         // Authorize Delete Budget
         $user = $this->budgetModel->get(id: $budget_id);
 
-        if( $user->data->user_id !== AUTH->user_id )
+        if( $user->data->user_id !== AUTH->user_id() )
         {
             header('Location: /unauthorized');
             die();

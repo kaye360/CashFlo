@@ -37,7 +37,7 @@ class UsersController extends Controller {
      */
     public function new() : void
     {
-        $this->view('signup');
+        $this->view('users/signup');
     }
 
     /**
@@ -75,7 +75,7 @@ class UsersController extends Controller {
             }
         }
 
-        $this->view('signup', $data);
+        $this->view('users/signup', $data);
     }
     
     /**
@@ -85,7 +85,7 @@ class UsersController extends Controller {
      */
     public function sign_in() : void
     {
-        $this->view('signin');
+        $this->view('users/signin');
     }
 
     /**
@@ -118,9 +118,12 @@ class UsersController extends Controller {
             );
 
             setcookie('session', $session, strtotime( '+30 days' ));
+
+            header('Location: /dashboard');
+            die();
         }
 
-        $this->view('signin', $data);
+        $this->view('users/signin', $data);
     }
 
     /**
@@ -140,7 +143,7 @@ class UsersController extends Controller {
             $this->userModel->destroy_session();
         }
 
-        $this->view('signout', $data);
+        $this->view('users/signout', $data);
     }    
     
     /**
@@ -150,7 +153,7 @@ class UsersController extends Controller {
     */
    public function dashboard() : void
    {
-       $this->view('dashboard');
+       $this->view('users/dashboard');
    }
 
     /**
@@ -160,7 +163,7 @@ class UsersController extends Controller {
      */
     public function settings() : void
     {
-        $this->view('settings');
+        $this->view('users/settings');
     }
 
     /**
@@ -189,7 +192,7 @@ class UsersController extends Controller {
             $this->userModel->update_settings($data);
         }
 
-        $this->view('settings', $data);
+        $this->view('users/settings', $data);
     }
 
 }
