@@ -65,7 +65,7 @@ $data->h1 = 'Settings';
         <?php endif; ?>
 
         <div>
-            <input type="hidden" name="username" value="<?php AUTH->username() ?>" />
+            <input type="hidden" name="username" value="<?= AUTH->username() ?>" />
             <input type="submit" value="Update settings" class="<<button_main>>" />
         </div>
 

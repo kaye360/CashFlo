@@ -24,7 +24,7 @@ Route::get('/error',        fn() => (new PagesController())->error(),           
 
 Route::get('/404',          fn() => (new PagesController())->error_404(),       404 );
 
-Route::get('/unauthorized', fn() => (new PagesController())->unauthorized() );
+Route::get('/unauthorized', fn() => (new PagesController())->unauthorized(),    401 );
 
 /**
  * 

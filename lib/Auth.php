@@ -115,4 +115,14 @@ class Auth {
     {
         return $this->is_logged_in;
     }
+
+    /**
+     * 
+     * @method Authorize a user action
+     * 
+     */
+    public function authorize(int $id)
+    {
+        // if id !== $this->user_id redirect and die
+    }
 }

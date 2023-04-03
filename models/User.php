@@ -108,7 +108,7 @@ class UserModel {
         $salt                   = substr(uniqid(), -5);
         $salted_password        = $new_password . $salt;
         $salted_hashed_password = password_hash($salted_password, PASSWORD_DEFAULT);
-        $user_id                = AUTH->user_id;
+        $user_id                = AUTH->user_id();
 
         $this->database
             ->table('users')

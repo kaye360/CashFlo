@@ -17,10 +17,9 @@
  * 	  callback function for each route. Typically call a
  * 	  controller class/method in each callback.
  * 3. If current REQUEST_METHOD = route request_method,
- *    format defined route and push route/method to an
- * 	  assoc array: ['route' => method]
+ * 	  save routes to array
  * 4. Call the method in the array associated with the 
- * 	  current route via response().
+ * 	  current route via render().
  * 
  */
 declare(strict_types=1);
@@ -28,6 +27,8 @@ namespace lib\Router\Router;
 
 use Exception;
 use stdClass;
+
+
 
 class Router {
 
@@ -46,7 +47,7 @@ class Router {
 	 * @var url stores the current REQUEST_URI
 	 * 
 	 * Formatted to be an array key. any '/' is removed 
-	 * @example users/23 becomes usersSLASH23
+	 * @example users/23 becomes users23
 	 * 
 	 */
 	private string $url = '';
@@ -89,12 +90,12 @@ class Router {
 		$url_trimmed     	  = trim($_SERVER['REQUEST_URI'], " \n\r\t\v\x00/");
 		$url_filtered		  = filter_var($url_trimmed, FILTER_SANITIZE_URL);
 		$url_no_query_string  = explode('?', $url_filtered)[0];
-		$url_no_slashes		  = str_replace('/', '', $url_no_query_string);
+		$url_no_query_string  = empty($url_no_query_string) ? '/' : $url_no_query_string;
 		$url_array_by_slashes = explode('/', $url_no_query_string);
 		$url_param 			  = $url_array_by_slashes[1] ?? null;
 
 		return (object) [
-			'url'   => $url_no_slashes,
+			'url'   => $url_no_query_string,
 			'param' => $url_param
 		];
 	}
@@ -103,9 +104,8 @@ class Router {
 	 * 
 	 * @method Register a Route
 	 * 
-	 * Routes are formatted to be an array key to match $this->url
-	 * any '/' will be removed
-	 * any ':' will become a '_' (For :param)
+	 * Only registers routes that match the current request method
+	 * or if the route is registered as 'ANY'. Otherwise it is ignored
 	 * 
 	 */
 	private function register_route(
@@ -114,14 +114,13 @@ class Router {
 		callable $method, 
 		int $response_code = 200
 	) : void {
+
 		if(
 			$req_method !== 'ANY' &&
 			$req_method !== $_SERVER['REQUEST_METHOD']
 		) return;
 
-		$path = trim($path, '/');
-		$path = str_replace('/', '', $path);
-		$path = str_replace(':', '_', $path);
+		$path = $path === '/' ? $path : trim($path, '/');
 
 		$route 				  = new stdClass();
 		$route->path 		  = $path;
@@ -136,7 +135,7 @@ class Router {
 	 * @method Register a route that will work on any http method
 	 * 
 	 */
-	public function any(string $route, callable $method, int $response_code)
+	public function any(string $route, callable $method, int $response_code) : void
 	{
 		$this->register_route('ANY', $route, $method, $response_code);
 	}
@@ -146,7 +145,7 @@ class Router {
 	 * @method Register a Get Route
 	 * 
 	 */
-	public function get(string $route, callable $method, int $response_code)
+	public function get(string $route, callable $method, int $response_code) : void
 	{
 		$this->register_route('GET', $route, $method, $response_code);
 	}
@@ -156,7 +155,7 @@ class Router {
 	 * @method Register a Post Route
 	 * 
 	 */
-	public function post(string $route, callable $method, int $response_code)
+	public function post(string $route, callable $method, int $response_code) : void
 	{
 		$this->register_route('POST', $route, $method, $response_code);
 	}
@@ -166,7 +165,7 @@ class Router {
 	 * @method Register a Delete Route
 	 * 
 	 */
-	public function delete(string $route, callable $method, int $response_code)
+	public function delete(string $route, callable $method, int $response_code) : void
 	{
 		$this->register_route('DELETE', $route, $method, $response_code);	
 	}
@@ -176,7 +175,7 @@ class Router {
 	 * @method Register a Put Route
 	 * 
 	 */
-	public function put(string $route, callable $method, int $response_code)
+	public function put(string $route, callable $method, int $response_code) : void
 	{
 		$this->register_route('PUT', $route, $method, $response_code);
 	}
@@ -188,9 +187,8 @@ class Router {
 	 * This will only be called after all routes are registered
 	 * 
 	 */
-	public function render()
+	public function render() : void
 	{
-		
 		if( is_null($this->error_404_route) ) 
 		{
 			throw new Exception('No error 404 route is set in Router class');
@@ -208,24 +206,25 @@ class Router {
 
 		http_response_code( $current_route->response_code );
 		
-		return ($current_route->method)();
+		($current_route->method)();
 	}
 	
 	/**
 	 * 
 	 * @method Apply extracted Param to defined routes
 	 * 
-	 * Replace every instance of _param in $this->routes with $this->param if it is set
+	 * Replace every instance of :param in $this->routes with $this->param if it is set
 	 * 
 	 */
 	private function resolve_params() : void
 	{
 		if( is_null($this->param) ) return;
 
-		foreach($this->routes as $key => $route) 
+		foreach($this->routes as &$route) 
 		{
-			$this->routes[$key]->path = str_replace('_param', $this->param, $route->path);
+			$route->path = str_replace(':param', $this->param, $route->path);
 		}
 
+		unset($route);
 	}	
 }
