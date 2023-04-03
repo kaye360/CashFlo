@@ -40,7 +40,7 @@ class Router {
 	 * If not set, this will throw an error
 	 * 
 	 */
-	private string $error_404_route = '/404';
+	private string $error_404_route = '/error/404';
 
 	/**
 	 * 
@@ -206,7 +206,8 @@ class Router {
 
 		http_response_code( $current_route->response_code );
 		
-		($current_route->method)();
+		// Call route method and pass down param
+		($current_route->method)($this->param);
 	}
 	
 	/**

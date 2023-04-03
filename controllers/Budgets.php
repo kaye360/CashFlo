@@ -23,7 +23,7 @@ class BudgetsController extends Controller {
     private $budgetModel;
     
 
-    public function __construct()
+    public function __construct(protected mixed $param = null)
     {
         $this->budgetModel = $this->model('Budget');
     }
@@ -93,13 +93,13 @@ class BudgetsController extends Controller {
             'type'   => ['required']
         ]);
 
-        $data                 = new stdClass();
-        $data->name           = InputHandler::sanitize('name');
-        $data->amount         = InputHandler::sanitize('amount');
-        $data->type           = InputHandler::sanitize('type');
-        $data->amount         = InputHandler::money('amount');
-        $data->errors         = $validator->errors;
-        $data->success        = $validator->success;
+        $data          = new stdClass();
+        $data->name    = InputHandler::sanitize('name');
+        $data->amount  = InputHandler::sanitize('amount');
+        $data->type    = InputHandler::sanitize('type');
+        $data->amount  = InputHandler::money('amount');
+        $data->errors  = $validator->errors;
+        $data->success = $validator->success;
 
         if( $data->success ) 
         {
@@ -132,7 +132,12 @@ class BudgetsController extends Controller {
      */
     public function edit() : void
     {
-        $id            = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
+        $id = (int) $this->param;
+        
+        // Authorize Edit Budget
+        $user = $this->budgetModel->get(id: $id);
+        AUTH->authorize($user->data->user_id ?? 0);
+
         $budget        = $this->budgetModel->get(id: $id);
         $data          = new stdClass();
         $data->id      = $id;
@@ -140,11 +145,6 @@ class BudgetsController extends Controller {
         $data->name    = $budget->data->name;
         $data->type    = $budget->data->type;
         $data->amount  = $budget->data->amount;
-        
-        if( $data->id !== AUTH->user_id() )
-        {
-            $data->budget = false;
-        }
 
         $this->view('budgets/edit', $data);
     }
@@ -173,12 +173,7 @@ class BudgetsController extends Controller {
 
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $data->id);
-
-        if( $user->data->user_id !== AUTH->user_id() )
-        {
-            $this->view('unauthorized');
-            die();
-        }
+        AUTH->authorize($user->data->user_id);
 
         // Edit Budget`
         $this->budgetModel->update(

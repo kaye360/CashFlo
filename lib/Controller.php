@@ -29,6 +29,13 @@ class Controller {
 
     /**
      * 
+     * @method Allow all extended classes to access URL param from Router
+     * 
+     */
+    public function __construct(protected mixed $param = null) { }
+
+    /**
+     * 
      * @method Get a specific model while in a controller class
      * 
      */
@@ -111,7 +118,7 @@ class Controller {
     {
         if( !AUTH->is_logged_in() )
         {
-            header('Location: /unauthorized');
+            header('Location: /error/401');
             die();
         }
         return $this;

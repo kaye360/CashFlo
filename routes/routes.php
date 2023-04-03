@@ -16,19 +16,17 @@ use controllers\UsersController\UsersController;
  * 
  */
 
-Route::get('/',             fn() => (new PagesController)->home() );
+Route::get('/',             fn() => (new PagesController())->home() );
 
 Route::get('/about',        fn() => (new PagesController())->about() );
 
-Route::get('/error',        fn() => (new PagesController())->error(),           400 );
+Route::get('/error',        fn() => (new PagesController())->error(), 400 );
 
-Route::get('/404',          fn() => (new PagesController())->error_404(),       404 );
-
-Route::get('/unauthorized', fn() => (new PagesController())->unauthorized(),    401 );
+Route::get('/error/:param', fn($param) => (new PagesController($param))->error() );
 
 /**
  * 
- * User Routes (Public)
+ * User Routes (Public) 
  * 
  */
 
@@ -62,7 +60,7 @@ Route::get('/budgets',               fn() => (new BudgetsController())->auth()->
 
 Route::post('/budgets',              fn() => (new BudgetsController())->auth()->create() );
 
-Route::get('/budget/:param/edit',    fn() => (new BudgetsController())->auth()->edit() );
+Route::get('/budget/:param/edit',    fn($param) => (new BudgetsController($param))->auth()->edit() );
 
 Route::post('/budget/:param/edit',   fn() => (new BudgetsController())->auth()->update() );
 

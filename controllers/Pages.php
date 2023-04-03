@@ -19,6 +19,8 @@ use stdClass;
 
 class PagesController extends Controller {
 
+
+
     /**
      * 
      * @method Home Page
@@ -44,46 +46,34 @@ class PagesController extends Controller {
      * @method Error Page
      * 
      */
-    public function error(
-        string $type = 'Error', 
-        string $message = 'There was an error.',
-        string $h1 = 'There was an Error',
-        string $title = 'Error'
-    ) : void {
-
-        $data          = new stdClass();
-        $data->title   = $title;
-        $data->h1      = $h1;
-        $data->type    = $type;
-        $data->message = $message;
-        $this->view('error', $data);
-    }
-
-    /**
-     * 
-     * @method Error 404 Page
-     * 
-     */
-    public function error_404() : void 
-    {
-        $data          = new stdClass();
-        $data->title   = 'Error 404';
-        $data->h1      = 'Error 404';
-        $data->type    = 'Error 404';
-        $data->message = 'The page you requested does not exist.';
-        $this->view('error', $data);
-    }
-
-    /**
-     * 
-     * @method Unauthorized Page
-     * 
-     */
-    public function unauthorized() : void
+    public function error() : void 
     {
         $data        = new stdClass();
-        $data->title = 'Unauthorized request';
-        $data->h1    = 'Unauthorized request';
-        $this->view('unauthorized', $data);
+        $data->title = 'Error';
+        $data->h1    = 'Something went wrong';
+        $data->type  = (int) $this->param ?? 400;
+
+        switch ($this->param)
+        {
+            case 400:
+                $data->message = 'An error occured. Please try again later.';
+                break;
+            case 401:
+                $data->message = 'You must be logged in to view this page.';
+                break;
+            case 403:
+                $data->message = 'You are not authorized to view this page.';
+                break;
+            case 404:
+                $data->message = 'This page could not be found.';
+                break;
+            default:
+                $data->type = 400;
+                $data->message = 'Please try again later.';
+                break;
+        }
+
+        $this->view('error', $data);
     }
+
 }

@@ -35,9 +35,9 @@ class Auth {
      * Can be used if data needs to be returned, not echo'd
      * 
      */
-    private $is_logged_in;
-    private $username;
-    private $user_id;
+    private bool   $is_logged_in;
+    private string $username;
+    private int    $user_id;
 
     /**
      * 
@@ -76,7 +76,7 @@ class Auth {
      * @method Initialize Auth singleton
      * 
      */
-    public static function init()
+    public static function init() : object
     {
         if (!self::$instance) self::$instance = new Auth();
         return self::$instance;
@@ -88,9 +88,9 @@ class Auth {
      * To be used in UI when username is needed
      * 
      */
-    public function username()
+    public function username() : string
     {
-        return $this->username;
+        return (string) $this->username;
     }
 
     /**
@@ -99,9 +99,9 @@ class Auth {
      * To be used in UI when user ID is needed
      * 
      */
-    public function user_id()
+    public function user_id() : int
     {
-        return $this->user_id;
+        return (int) $this->user_id;
     }
 
     /**
@@ -111,9 +111,9 @@ class Auth {
      * whether the user is logged in or not.
      * 
      */
-    public function is_logged_in()
+    public function is_logged_in() : bool
     {
-        return $this->is_logged_in;
+        return (bool) $this->is_logged_in;
     }
 
     /**
@@ -121,8 +121,12 @@ class Auth {
      * @method Authorize a user action
      * 
      */
-    public function authorize(int $id)
+    public function authorize(int $id) : void
     {
         // if id !== $this->user_id redirect and die
+        if($id !== $this->user_id) {
+            header('Location: /error/403');
+            die();
+        }
     }
 }
