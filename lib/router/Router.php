@@ -26,9 +26,20 @@
 declare(strict_types=1);
 namespace lib\Router\Router;
 
+use Exception;
 use stdClass;
 
 class Router {
+
+	/**
+	 * 
+	 * @var error_404_route
+	 * 
+	 * This sets the route to call if a request is made that is not registered.
+	 * If not set, this will throw an error
+	 * 
+	 */
+	private string $error_404_route = '/404';
 
 	/**
 	 * 
@@ -97,18 +108,27 @@ class Router {
 	 * any ':' will become a '_' (For :param)
 	 * 
 	 */
-	private function register_route(string $req_method, string $route, callable $method)
-	{
+	private function register_route(
+		string $req_method, 
+		string $path, 
+		callable $method, 
+		int $response_code = 200
+	) : void {
 		if(
 			$req_method !== 'ANY' &&
 			$req_method !== $_SERVER['REQUEST_METHOD']
 		) return;
 
-		$route = trim($route, '/');
-		$route = str_replace('/', '', $route);
-		$route = str_replace(':', '_', $route);
+		$path = trim($path, '/');
+		$path = str_replace('/', '', $path);
+		$path = str_replace(':', '_', $path);
+
+		$route 				  = new stdClass();
+		$route->path 		  = $path;
+		$route->method 		  = $method;
+		$route->response_code = $response_code;
 		
-		$this->routes[$route] = $method;
+		array_push( $this->routes, $route);
 	}
 
 	/**
@@ -116,9 +136,9 @@ class Router {
 	 * @method Register a route that will work on any http method
 	 * 
 	 */
-	public function any(string $route, callable $method)
+	public function any(string $route, callable $method, int $response_code)
 	{
-		$this->register_route('ANY', $route, $method);
+		$this->register_route('ANY', $route, $method, $response_code);
 	}
 
 	/**
@@ -126,9 +146,9 @@ class Router {
 	 * @method Register a Get Route
 	 * 
 	 */
-	public function get(string $route, callable $method)
+	public function get(string $route, callable $method, int $response_code)
 	{
-		$this->register_route('GET', $route, $method);
+		$this->register_route('GET', $route, $method, $response_code);
 	}
 
 	/**
@@ -136,9 +156,9 @@ class Router {
 	 * @method Register a Post Route
 	 * 
 	 */
-	public function post(string $route, callable $method)
+	public function post(string $route, callable $method, int $response_code)
 	{
-		$this->register_route('POST', $route, $method);
+		$this->register_route('POST', $route, $method, $response_code);
 	}
 
 	/**
@@ -146,9 +166,9 @@ class Router {
 	 * @method Register a Delete Route
 	 * 
 	 */
-	public function delete(string $route, callable $method)
+	public function delete(string $route, callable $method, int $response_code)
 	{
-		$this->register_route('DELETE', $route, $method);	
+		$this->register_route('DELETE', $route, $method, $response_code);	
 	}
 
 	/**
@@ -156,53 +176,53 @@ class Router {
 	 * @method Register a Put Route
 	 * 
 	 */
-	public function put(string $route, callable $method)
+	public function put(string $route, callable $method, int $response_code)
 	{
-		$this->register_route('PUT', $route, $method);
+		$this->register_route('PUT', $route, $method, $response_code);
 	}
 
 	/**
 	 * 
 	 * @method Generate response based on current route
 	 * 
+	 * This will only be called after all routes are registered
+	 * 
 	 */
 	public function render()
 	{
-		// Swap :param with requested param
-		$this->routes = $this->apply_params($this->routes);
 		
-		// Check if current route exists in routes
-		if(!array_key_exists( $this->url, $this->routes )) 
+		if( is_null($this->error_404_route) ) 
 		{
-			header('Location: /error');
+			throw new Exception('No error 404 route is set in Router class');
+		}
+		
+		$this->resolve_params();
+		
+		$current_route = array_filter( $this->routes, fn($route) => $route->path === $this->url );
+		$current_route = array_values($current_route)[0] ?? null;
+
+		if( empty($current_route) ) {
+			header("Location: $this->error_404_route");
 			die();
 		}
-
-		// Call Route Method
-		return $this->routes[$this->url]();
+		return ($current_route->method)();
 	}
 	
 	/**
 	 * 
 	 * @method Apply extracted Param to defined routes
 	 * 
+	 * Replace _param with with $this->param in all route->path's
+	 * 
 	 */
-	private function apply_params(array $route_methods)
+	private function resolve_params() : void
 	{
-		if( is_null($this->param) ) return $route_methods;
+		if( is_null($this->param) ) return;
 
-		// Every :param gets replaced with _param to be array key friendly
-		// replace _param with with $this->param in all routes
-		foreach($route_methods as $key => $value) 
+		foreach($this->routes as $key => $route) 
 		{
-			$new_key = str_replace('_param', $this->param, $key);
-
-			if( array_key_exists($new_key, $route_methods) ) continue;
-
-			unset($route_methods[$key]);
-			$route_methods[$new_key] = $value;
+			$this->routes[$key]->path = str_replace('_param', $this->param, $route->path);
 		}
 
-		return $route_methods;
 	}	
 }

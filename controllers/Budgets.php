@@ -127,17 +127,16 @@ class BudgetsController extends Controller {
      */
     public function edit() : void
     {
+        $id            = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
+        $budget        = $this->budgetModel->get(id: $id);
         $data          = new stdClass();
-        $data->id      = (int) explode('/', $_SERVER['REQUEST_URI'])[2];
+        $data->id      = $id;
         $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/budgets' , PHP_URL_PATH);
-
-        $budget = $this->budgetModel->get(id: $data->id);
-
-        $data->name   = $budget->data->name;
-        $data->type   = $budget->data->type;
-        $data->amount = $budget->data->amount;
+        $data->name    = $budget->data->name;
+        $data->type    = $budget->data->type;
+        $data->amount  = $budget->data->amount;
         
-        if( $data->id !== AUTH->user_id )
+        if( $data->id !== AUTH->user_id() )
         {
             $data->budget = false;
         }
@@ -153,17 +152,17 @@ class BudgetsController extends Controller {
     public function update()
     {
         $validator = InputHandler::validate([
-            'name' =>   ['required', 'max:20', 'has_spaces'],
+            'name'   => ['required', 'max:20', 'has_spaces'],
             'amount' => ['required', 'number'],
-            'type' =>   ['required']
+            'type'   => ['required']
         ]);
 
         $data          = new stdClass();
-        $data->name    = InputHandler::sanitize('name');
+        $data->name    =         InputHandler::sanitize('name');
         $data->amount  = (float) InputHandler::sanitize('amount');
-        $data->type    = InputHandler::sanitize('type');
-        $data->id      = (int) InputHandler::sanitize('id');
-        $data->referer = InputHandler::sanitize('referer');
+        $data->type    =         InputHandler::sanitize('type');
+        $data->id      = (int)   InputHandler::sanitize('id');
+        $data->referer =         InputHandler::sanitize('referer');
         $data->errors  = $validator->errors;
         $data->success = $validator->success;
 

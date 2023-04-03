@@ -49,9 +49,9 @@ class Route {
      * @method Get Request Facade
      * 
      */
-    public static function get(string $route, callable $method)
+    public static function get(string $route, callable $method, int $response_code = 200)
     {
-        self::$router->get($route, $method);
+        self::$router->get($route, $method, $response_code);
     }
 
     /**
@@ -59,9 +59,9 @@ class Route {
      * @method Post Request Facade
      * 
      */
-    public static function post(string $route, callable $method)
+    public static function post(string $route, callable $method, int $response_code = 200)
     {
-        self::$router->post($route, $method);
+        self::$router->post($route, $method, $response_code);
     }
 
     /**
@@ -69,9 +69,9 @@ class Route {
      * @method Any HTTP Request type Facade
      * 
      */
-    public static function any(string $route, callable $method)
+    public static function any(string $route, callable $method, int $response_code = 200)
     {
-        self::$router->any($route, $method);
+        self::$router->any($route, $method, $response_code);
     }
 
     /**

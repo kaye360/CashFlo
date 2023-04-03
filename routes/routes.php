@@ -22,6 +22,12 @@ Route::get('/about',        fn() => (new PagesController())->about() );
 
 Route::get('/error',        fn() => (new PagesController())->error() );
 
+Route::get('/404',          fn() => (new PagesController())->error(
+    type: 'Error 404',
+    message: 'The page you requested does not exist.',
+    h1: 'Error 404'
+), 404 );
+
 Route::get('/unauthorized', fn() => (new PagesController())->unauthorized() );
 
 /**
