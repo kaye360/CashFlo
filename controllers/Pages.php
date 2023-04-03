@@ -61,6 +61,21 @@ class PagesController extends Controller {
 
     /**
      * 
+     * @method Error 404 Page
+     * 
+     */
+    public function error_404() : void 
+    {
+        $data          = new stdClass();
+        $data->title   = 'Error 404';
+        $data->h1      = 'Error 404';
+        $data->type    = 'Error 404';
+        $data->message = 'The page you requested does not exist.';
+        $this->view('error', $data);
+    }
+
+    /**
+     * 
      * @method Unauthorized Page
      * 
      */

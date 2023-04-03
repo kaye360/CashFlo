@@ -20,13 +20,9 @@ Route::get('/',             fn() => (new PagesController)->home() );
 
 Route::get('/about',        fn() => (new PagesController())->about() );
 
-Route::get('/error',        fn() => (new PagesController())->error() );
+Route::get('/error',        fn() => (new PagesController())->error(),           400 );
 
-Route::get('/404',          fn() => (new PagesController())->error(
-    type: 'Error 404',
-    message: 'The page you requested does not exist.',
-    h1: 'Error 404'
-), 404 );
+Route::get('/404',          fn() => (new PagesController())->error_404(),       404 );
 
 Route::get('/unauthorized', fn() => (new PagesController())->unauthorized() );
 
@@ -48,7 +44,7 @@ Route::any('/signout',  fn() => (new UsersController())->sign_out() );
 
 /**
  * 
- * User Routes (Auth)
+ * User Routes (Authorized)
  * 
  */
 Route::get('/dashboard', fn() => (new UsersController())->auth()->dashboard() );
@@ -59,7 +55,7 @@ Route::post('/settings', fn() => (new UsersController())->auth()->update_setting
 
 /**
  * 
- * Budgets Routes
+ * Budgets Routes (Authorized)
  * 
  */
 Route::get('/budgets',               fn() => (new BudgetsController())->auth()->new() );

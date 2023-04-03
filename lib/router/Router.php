@@ -205,6 +205,8 @@ class Router {
 			header("Location: $this->error_404_route");
 			die();
 		}
+
+		http_response_code( $current_route->response_code );
 		return ($current_route->method)();
 	}
 	
@@ -212,7 +214,7 @@ class Router {
 	 * 
 	 * @method Apply extracted Param to defined routes
 	 * 
-	 * Replace _param with with $this->param in all route->path's
+	 * Replace every instance of _param in $this->routes with $this->param if it is set
 	 * 
 	 */
 	private function resolve_params() : void
