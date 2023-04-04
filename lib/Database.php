@@ -26,6 +26,8 @@ namespace lib\Database;
 
 use PDO;
 use Exception;
+use exceptions\DatabaseException\DatabaseException;
+use utils\GenericUtils\GenericUtils;
 
 class Database
 {
@@ -44,13 +46,13 @@ class Database
     * 
     */
     private $select = '*';
-    private $table;
-    private $where;
-    private $order = 'id DESC';
-    private $limit;
-    private $cols;
-    private $values;
-    private $set;
+    private $order  = 'id DESC';
+    private $table  = null;
+    private $where  = null;
+    private $limit  = null;
+    private $cols   = null;
+    private $values = null;
+    private $set    = null;
  
     /**
      * 
@@ -161,12 +163,13 @@ class Database
      * order('ASC')
      * 
      */
-    public function single() {
+    public function single() : object | false
+    {
         try 
         {
-            if( is_null($this->select) || is_null($this->table) ) 
+            if( !$this->select || !$this->table || !$this->where ) 
             {
-                return $this->error('$select, $table are required in single method');
+                throw DatabaseException::missingQueryMethod('select(), $table(), $where()');
             }
 
             $sql = " SELECT $this->select FROM $this->table ";
@@ -179,14 +182,11 @@ class Database
 
             $row = $this->stmt->fetch(PDO::FETCH_OBJ);
 
-            if( !$row ){
-                return  $this->error('No rows found');
-            } 
-
-            return (object) [ 'success' => true, 'data' => $row ];
+            return $row;
 
         } catch (Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            echo $error->getMessage();
+            return null;
         }
     }
  
@@ -206,12 +206,13 @@ class Database
      * limit('#')
      * 
      */
-    public function list() {
+    public function list() : array
+    {
         try 
         {
-            if( is_null($this->select) || is_null($this->table) ) 
+            if( !$this->select || !$this->table ) 
             {
-                return $this->error('$select, $table are required in list method');
+                throw DatabaseException::missingQueryMethod('select(), table()');
             }
 
             $sql = " SELECT $this->select FROM $this->table ";
@@ -223,16 +224,14 @@ class Database
             $this->stmt = $this->dbh->prepare($sql);
             $this->stmt->execute();
 
-            $rows = $this->stmt->fetchAll(\PDO::FETCH_OBJ);
+            $rows = $this->stmt->fetchAll(PDO::FETCH_OBJ);
 
-            if( !$rows) {
-                return $this->error('No rows found');
-            }
+            return $rows;
 
-            return (object) [ 'success' => true, 'data' => $rows ];
+        } catch (Exception $e) {
 
-        } catch (Exception $error) {
-            return $this->error('Fatal error with query: ' . $error->getMessage());
+            GenericUtils::render_exception($e);
+            return [];
         }
     }
  
@@ -247,12 +246,13 @@ class Database
      * values()
      * 
      */
-    public function new() {
+    public function new() : string | false
+    {
         try 
         {
-            if( is_null($this->table) || is_null($this->cols) || is_null($this->values) ) 
+            if( !$this->table || !$this->cols || !$this->values ) 
             {
-                return $this->error('$table, $where, $values are required in destroy method.');
+                throw DatabaseException::missingQueryMethod('table(), where(), values()');
             }
 
             $sql = " INSERT INTO $this->table ($this->cols) VALUES ($this->values)";
@@ -260,12 +260,13 @@ class Database
             $this->stmt = $this->dbh->prepare($sql);
             $this->stmt->execute();
 
-            $data = $this->dbh->lastInsertId();
+            $new_data = $this->dbh->lastInsertId();
+            return $new_data;
 
-            return (object) [ 'success' => true, 'data' => $data ];
+        } catch (Exception $e) {
 
-        } catch (Exception $error) {
-            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
+            GenericUtils::render_exception($e);
+            return false;
         }
     }
  
@@ -279,23 +280,25 @@ class Database
      * where('column = value')
      * 
      */
-    public function destroy() {
+    public function destroy() : bool
+    {
         try 
         {
-            if( is_null($this->table) || is_null($this->where) ) 
+            if( !$this->table || !$this->where ) 
             {
-                return (object) $this->error('$table, $where are required in destroy method.');
+                throw DatabaseException::missingQueryMethod('table(), where()');
             }
 
-            $sql = " DELETE FROM $this->table WHERE $this->where";
-
+            $sql        = " DELETE FROM $this->table WHERE $this->where";
             $this->stmt = $this->dbh->prepare($sql);
-            $this->stmt->execute();
+            $execute    = $this->stmt->execute();
 
-            return (object) [ 'success' => true ];
+            return $execute;
 
-        } catch (\Exception $error) {
-            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
+        } catch (Exception $e) {
+
+            GenericUtils::render_exception($e);
+            return false;
         }
     }
 
@@ -310,23 +313,25 @@ class Database
      * where('column = value')
      * 
      */
-    public function update() {
+    public function update() : bool
+    {
         try {
 
-            if( is_null($this->table) || is_null($this->set) || is_null($this->where) ) 
+            if( !$this->table || !$this->set || !$this->where ) 
             {
-                return (object) $this->error('$table, $set, $where are required in update method.');
+                throw DatabaseException::missingQueryMethod('table(), set(), where()');
             }
 
-            $sql = " UPDATE $this->table SET $this->set WHERE $this->where";
-            
+            $sql        = " UPDATE $this->table SET $this->set WHERE $this->where";
             $this->stmt = $this->dbh->prepare($sql);
-            $this->stmt->execute();
+            $execute    = $this->stmt->execute();
 
-            return (object) [ 'success' => true ];
+            return $execute;
 
-        } catch (\Exception $error) {
-            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
+        } catch (Exception $e) {
+
+            GenericUtils::render_exception($e);
+            return false;
         }
     }
  
@@ -344,15 +349,17 @@ class Database
      * where()
      * 
      */
-    public function count() {
+    public function count() : int
+    {
         try {
 
-            if( is_null($this->table) || is_null($this->select) ) 
+            if( !$this->table || !$this->select ) 
             {
-                return (object) $this->error('$table, $select, $where are required in update method.');
+                throw DatabaseException::missingQueryMethod('table(), select(), where()');
             }
 
             $sql = " SELECT COUNT($this->select) FROM $this->table";
+            
             if( isset($this->where) ) $sql .= " WHERE $this->where";
             
             $this->stmt = $this->dbh->prepare($sql);
@@ -360,8 +367,10 @@ class Database
 
             return $this->stmt->fetchColumn();
 
-        } catch (Exception $error) {
-            return (object) $this->error('Fatal error with query: ' . $error->getMessage());
+        } catch (Exception) {
+
+            return 0;
+
         }
     }
 

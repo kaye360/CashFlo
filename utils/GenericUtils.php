@@ -24,4 +24,21 @@ class GenericUtils {
 		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
 	}
 
+    /**
+     * 
+     * @method Render Exception
+     * 
+     */
+    public static function render_exception($e)
+    {
+        echo <<<EOT
+            <div class="p-4 max-w-3xl m-2 border border-gray-300 bg-gray-50 rounded">
+                Code: {$e->getCode()} <br>
+                Msg:  {$e->getMessage()} <br>
+                File: {$e->getFile()} <br>
+                Line: {$e->getLine()}
+            </div>
+        EOT;
+    }
+
 }

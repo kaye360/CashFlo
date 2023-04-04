@@ -52,21 +52,21 @@ class Auth {
 
         if( !isset($_COOKIE['session']) ) return;
 
-        $userModel = new Database();
-
+        $db_query = new Database();
+        
         // Check if there is an active session in the DB
-        $user = $userModel
+        $user = $db_query
             ->table('users')
             ->select('username, id')
             ->where("session = '$_COOKIE[session]' ")
             ->single();
 
         if( 
-            isset($user->data->username) &&
-            isset($user->data->id) 
+            isset($user->username) &&
+            isset($user->id) 
         ) {
-            $this->username = $user->data->username;
-            $this->user_id = $user->data->id;
+            $this->username     = $user->username;
+            $this->user_id      = $user->id;
             $this->is_logged_in = true;
         }
     }

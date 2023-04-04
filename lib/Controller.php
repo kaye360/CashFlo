@@ -77,7 +77,7 @@ class Controller {
      * @method Get a specific from view while in a controller class
      * 
      */
-    public function view(string $view, object $data = new stdClass() ) : void
+    public function view(string $view, ?object $data = new stdClass() ) : void
     {
         ob_start();
 
@@ -92,20 +92,21 @@ class Controller {
         if (file_exists('./views/' . $view . '.php') ) 
         {
             require_once './views/' . $view . '.php';
+
         } else {
-            $data = new stdClass();
-            $data->title = 'Error';
-            $data->h1 = 'Error 404';
-            $data->message = 'View not found';
-            require_once './views/error.php';
+
+            header('Location: /error/404');
+            die();
         }
 
         require_once './views/_layout/footer.php';
 
-        $view = ob_get_contents();
+        $view     = ob_get_contents();
         $template = new Template();
-        $view = $template->apply($view, $data);
+        $view     = $template->apply($view, $data);
+
         ob_end_clean();
+        
         echo $view;
     }
 

@@ -69,14 +69,14 @@ class BudgetsController extends Controller {
      * @method Budget Home page
      * 
      */
-    public function new() : void
+    public function index() : void
     {
-        $data                 = new stdClass();
-        $data->budgets        = $this->budgetModel->get_all();
-        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data ?? []);
-        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data ?? []);
-        $data->net_total      = $this->get_budget_net_total($data->budgets->data ?? []);
-        $data->prompt         = $_GET['prompt'] ?? false;
+        $data                 =         new stdClass();
+        $data->budgets        = (array) $this->budgetModel->get_all() ?? [];
+        $data->income_total   = (float) $this->get_budget_type_total('income',   $data->budgets);
+        $data->spending_total = (float) $this->get_budget_type_total('spending', $data->budgets);
+        $data->net_total      = (float) $this->get_budget_net_total($data->budgets);
+        $data->prompt         =         $_GET['prompt'] ?? false;
         $this->view('budgets/index', $data);
     }
 
@@ -136,15 +136,15 @@ class BudgetsController extends Controller {
         
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $id);
-        AUTH->authorize($user->data->user_id ?? 0);
+        AUTH->authorize($user->user_id ?? 0);
 
         $budget        = $this->budgetModel->get(id: $id);
         $data          = new stdClass();
         $data->id      = $id;
         $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/budgets' , PHP_URL_PATH);
-        $data->name    = $budget->data->name;
-        $data->type    = $budget->data->type;
-        $data->amount  = $budget->data->amount;
+        $data->name    = $budget->name;
+        $data->type    = $budget->type;
+        $data->amount  = $budget->amount;
 
         $this->view('budgets/edit', $data);
     }
@@ -173,7 +173,7 @@ class BudgetsController extends Controller {
 
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $data->id);
-        AUTH->authorize($user->data->user_id);
+        AUTH->authorize($user->user_id);
 
         // Edit Budget`
         $this->budgetModel->update(
@@ -207,12 +207,7 @@ class BudgetsController extends Controller {
 
         // Authorize Delete Budget
         $user = $this->budgetModel->get(id: $budget_id);
-
-        if( $user->data->user_id !== AUTH->user_id() )
-        {
-            header('Location: /unauthorized');
-            die();
-        }
+        AUTH->authorize($user->user_id);
 
         // Delete Budget
         $this->budgetModel->destroy(id: $budget_id);

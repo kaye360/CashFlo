@@ -86,6 +86,23 @@ require_once './routes/routes.php';
 
 /**
  * 
+ * @method Error Handler
+ * 
+ */
+set_error_handler( function(Throwable $e)
+{
+    echo <<<EOT
+        <div class="border border-gray-400 bg-red-50 p-4 m-2">
+            Error Code:  $e->getCode() <br>
+            Description: $e->getMessage() <br>
+            File:        $e->getFile <br>
+            Line:        $e->getLine()
+        </div>
+    EOT;
+}, E_ERROR);
+
+/**
+ * 
  * @method For development debugging. 
  * 
  */

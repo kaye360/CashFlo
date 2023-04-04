@@ -22,17 +22,17 @@ $data->h1 = 'Budgets';
 
                 <?php if ( @$data->errors->name->has_error ): ?>
                     <span class="<<input_error>>">
-                        <?php if ( $data->errors->name->has_forbidden_chars ): ?>
+                        <?php if ( @$data->errors->name->has_forbidden_chars ): ?>
                             <span>
                                 Budget Name must only have letters, numbers, and spaces.
                             </span>
                         <?php endif; ?>
-                        <?php if ( $data->errors->name->required ): ?>
+                        <?php if ( @$data->errors->name->required ): ?>
                             <span>
                                 Budget Name is required.
                             </span>
                         <?php endif; ?>
-                        <?php if ( $data->errors->name->max ): ?>
+                        <?php if ( @$data->errors->name->max ): ?>
                             <span>
                                 Budget name may have up to 20 characters.
                             </span>
@@ -97,7 +97,7 @@ $data->h1 = 'Budgets';
 
     <h2 class="mb-2 p-2 text-lg font-medium bg-green-100">Your Budgets</h2>
 
-        <?php if( count($data->budgets->data) === 0): ?>
+        <?php if( count($data->budgets) === 0): ?>
             <div>
                 You have no budgets to show.
             </div>
@@ -115,7 +115,7 @@ $data->h1 = 'Budgets';
         </div>
 
         <div class="grid grid-cols-3 items-end gap-4 w-fit">
-            <?php foreach($data->budgets->data as $budget): ?>
+            <?php foreach($data->budgets as $budget): ?>
                 <span class="font-bold text-xl">
                     <?php echo $budget->name; ?>
                 </span>

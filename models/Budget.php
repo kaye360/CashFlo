@@ -64,7 +64,7 @@ class BudgetModel {
         string $type,
         float $amount,
         int $id
-    ) : object {
+    ) : bool {
 
         return $this->database
             ->set("name = '$name', type = '$type', amount = '$amount' ")
@@ -79,18 +79,14 @@ class BudgetModel {
      * then spending.
      * 
      */
-    public function get_all() : object
+    public function get_all() : array | null
     {
-        $all_budgets = $this->database
+        return $this->database
             ->select('*')
             ->table('budgets')
             ->where("user_id = '" . AUTH->user_id() . "' ")
             ->order('type ASC, amount DESC')
             ->list();
-
-        return $all_budgets->success
-            ? $all_budgets
-            : (object) ['data' => []];   
     }
 
     /**
@@ -98,7 +94,7 @@ class BudgetModel {
      * @method Get a Budget
      * 
      */
-    public function get(int $id) : object
+    public function get(int $id) : object | false
     {
         return $this->database
             ->select('*')

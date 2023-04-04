@@ -56,7 +56,7 @@ Route::post('/settings', fn() => (new UsersController())->auth()->update_setting
  * Budgets Routes (Authorized)
  * 
  */
-Route::get('/budgets',               fn() => (new BudgetsController())->auth()->new() );
+Route::get('/budgets',               fn() => (new BudgetsController())->auth()->index() );
 
 Route::post('/budgets',              fn() => (new BudgetsController())->auth()->create() );
 

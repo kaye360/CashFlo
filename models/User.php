@@ -66,7 +66,7 @@ class UserModel {
     public function update_session(
         string $session, 
         string $username
-    ) : object {
+    ) : bool {
 
         return $this->database
             ->table('users')

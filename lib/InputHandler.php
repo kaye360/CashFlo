@@ -12,6 +12,7 @@
 declare(strict_types=1);
 namespace lib\InputHandler;
 
+use InvalidArgumentException;
 use lib\Database\Database;
 use stdClass;
 
@@ -27,7 +28,7 @@ class InputHandler {
      * later on in the app.
      * 
      */
-    public static function sanitize(string $input) 
+    public static function sanitize(string $input) : string
     {
         if( empty($_POST[$input])  ) return null;
 
@@ -64,14 +65,17 @@ class InputHandler {
      * Each input with have a @var has_errors (bool) property 
      * 
      */
-    public static function validate(array $inputs)
+    public static function validate(array $inputs) : object
     {
-        if( !is_array($inputs) ) return;
+        if( !is_array($inputs) ) {
+            throw new InvalidArgumentException('InputHandler::validate arguments must be an array');
+        }
 
         $validator          = new stdClass();
         $validator->errors  = new stdClass();
         $validator->success = true;
 
+        // Loop thru each <input />
         foreach( $inputs as $input => $rules )
         {
             // Error container for current $input
@@ -240,7 +244,7 @@ class InputHandler {
      * @method Format an input to CAD 
      * 
      */
-    public static function money(string $input)
+    public static function money(string $input) : string
     {
         if( !is_numeric($_POST[$input]) ) return null;
 
@@ -270,12 +274,10 @@ class InputHandler {
 
     /** 
      * 
-    * @method check if string has forbidden characters
-    * 
-    * @return bool
-    * 
-    */
-    private static function has_forbidden_chars(string $input, array $exceptions = []) 
+     * @method check if string has forbidden characters
+     * 
+     */
+    private static function has_forbidden_chars(string $input, array $exceptions = []) : bool
     {
         if( empty($input) ) return false;
         
@@ -289,37 +291,31 @@ class InputHandler {
     }
 
     /**
-    * 
-    * @method check if string too long
-    * 
-    * @return bool
-    * 
-    */
-    private static function has_too_many_chars(string $string, int $limit)
+     * 
+     * @method check if string too long
+     * 
+     */
+    private static function has_too_many_chars(string $string, int $limit) : bool
     {
         return strlen($string) > $limit;
     }
 
     /**
-    * 
-    * @method check if string too short
-    * 
-    * @return bool
-    * 
-    */
-    private static function has_too_few_chars(string $string, int $limit)
+     * 
+     * @method check if string too short
+     * 
+     */
+    private static function has_too_few_chars(string $string, int $limit) : bool
     {
         return strlen($string) < $limit;
     }
 
     /**
      * 
-    * @method check if username already taken
-    * 
-    * @return bool
-    * 
-    */
-    private static function is_not_unique( string $username ) 
+     * @method check if username already taken
+     * 
+     */
+    private static function is_not_unique( string $username ) : bool
     {
         $db         = new Database();
         $user_count = $db
@@ -335,10 +331,8 @@ class InputHandler {
      * 
      * @method invalid username and password combination
      * 
-     * @return bool
-     * 
      */
-    private static function is_invalid_username_password(string $username, string $password )
+    private static function is_invalid_username_password(string $username, string $password ) : bool
     {
         $db   = new Database();
         $user = $db
@@ -346,22 +340,20 @@ class InputHandler {
             ->table('users')
             ->where("username = '$username' ")
             ->single();
-            
-        if( !$user->success ) return true;
 
-        $salted_password = $password . $user->data->salt;
+        if( !$user ) return true;
 
-        return !( password_verify($salted_password, $user->data->password) );
+        $salted_password = $password . $user->salt;
+
+        return !( password_verify($salted_password, $user->password) );
     }
 
     /**
      * 
      * @method invalid password/confirmed password
      * 
-     * @return bool
-     * 
      */
-    private static function is_invalid_confirm_password(string $password, string $confirm_password)
+    private static function is_invalid_confirm_password(string $password, string $confirm_password) : bool
     {
         return $password !== $confirm_password;
     }
@@ -381,7 +373,7 @@ class InputHandler {
      * @example min:6 or max:15 etc.
      * 
      */
-    private static function is_rule(string $rule, array $input_rule_list)
+    private static function is_rule(string $rule, array $input_rule_list) : bool
     {
         foreach($input_rule_list as $input_rule)
         {
@@ -396,7 +388,7 @@ class InputHandler {
      * @method Get rule param
      * 
      */
-    private static function get_rule_param(string $rule, array $input_rule_list)
+    private static function get_rule_param(string $rule, array $input_rule_list) : ?int
     {
         foreach($input_rule_list as $input_rule)
         {
