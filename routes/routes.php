@@ -22,7 +22,7 @@ Route::get('/about',        fn() => (new PagesController())->about() );
 
 Route::get('/error',        fn() => (new PagesController())->error(), 400 );
 
-Route::get('/error/:param', fn($param) => (new PagesController($param))->error() );
+Route::get('/error/:param', fn($param) => (new PagesController($param))->error(), 400 );
 
 /**
  * 

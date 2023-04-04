@@ -48,30 +48,24 @@ class PagesController extends Controller {
      */
     public function error() : void 
     {
-        $data        = new stdClass();
-        $data->title = 'Error';
-        $data->h1    = 'Something went wrong';
-        $data->type  = (int) $this->param ?? 400;
+        $error_messages = [
+            400 => 'An error occured. Please try again later.',
+            401 => 'You must be <a href="/signin" class="underline">logged in</a> to view this page.',
+            403 => 'You are not authorized to view this page.',
+            404 => 'This page could not be found.',
+        ];
 
-        switch ($this->param)
-        {
-            case 400:
-                $data->message = 'An error occured. Please try again later.';
-                break;
-            case 401:
-                $data->message = 'You must be logged in to view this page.';
-                break;
-            case 403:
-                $data->message = 'You are not authorized to view this page.';
-                break;
-            case 404:
-                $data->message = 'This page could not be found.';
-                break;
-            default:
-                $data->type = 400;
-                $data->message = 'Please try again later.';
-                break;
-        }
+        $data          = new stdClass();
+        $data->title   = 'Error';
+        $data->h1      = 'Something went wrong';
+        $data->type    = array_key_exists( (int) $this->param, $error_messages)
+                            ? (int) $this->param
+                            : 400;
+        $data->message = array_key_exists($data->type, $error_messages)
+                            ? $error_messages[$data->type]
+                            : $error_messages[400];
+
+        http_response_code($data->type);
 
         $this->view('error', $data);
     }
