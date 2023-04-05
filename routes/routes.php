@@ -3,6 +3,25 @@
  * 
  * Define App Routes here
  * 
+ * 
+ * To register a route, simply use the Route Facade class
+ * 
+ * The structure is as follows:
+ * Route::{get, post, put, delete, any}('/uri/path/with/:params', callback fn(), http status code );
+ * http status code is 200 by default
+ * 
+ * @example To Register route
+ * Route::get('/user/:id', fn() => (new UsersController)->getUser() )
+ * 
+ * @example To Define a param
+ * Just use :paramName and Route::params()->paramName will be 
+ * available in the specific contoller. There can be multiple params with
+ * different names in each route
+ * 
+ * @example To require Authentication for a route
+ * The auth() method is available from the Controller Class
+ * Route::get('/example', fn() => (new ExampleController())->auth()->page() )
+ * 
  */
 
 use lib\Router\Route\Route;
@@ -16,13 +35,13 @@ use controllers\UsersController\UsersController;
  * 
  */
 
-Route::get('/',             fn() => (new PagesController())->home() );
+Route::get('/',            fn() => (new PagesController())->home() );
 
-Route::get('/about',        fn() => (new PagesController())->about() );
+Route::get('/about',       fn() => (new PagesController())->about() );
 
-Route::get('/error',        fn() => (new PagesController())->error(), 400 );
+Route::get('/error',       fn() => (new PagesController())->error(), 400 );
 
-Route::get('/error/:param', fn($param) => (new PagesController($param))->error(), 400 );
+Route::get('/error/:code', fn() => (new PagesController())->error(), 400 );
 
 /**
  * 
@@ -56,12 +75,12 @@ Route::post('/settings', fn() => (new UsersController())->auth()->update_setting
  * Budgets Routes (Authorized)
  * 
  */
-Route::get('/budgets',               fn() => (new BudgetsController())->auth()->index() );
+Route::get('/budgets',            fn() => (new BudgetsController())->auth()->index() );
 
-Route::post('/budgets',              fn() => (new BudgetsController())->auth()->create() );
+Route::post('/budgets',           fn() => (new BudgetsController())->auth()->create() );
 
-Route::get('/budget/:param/edit',    fn($param) => (new BudgetsController($param))->auth()->edit() );
+Route::get('/budget/:id/edit',    fn() => (new BudgetsController())->auth()->edit() );
 
-Route::post('/budget/:param/edit',   fn() => (new BudgetsController())->auth()->update() );
+Route::post('/budget/:id/edit',   fn() => (new BudgetsController())->auth()->update() );
 
-Route::post('/budget/:param/delete', fn() => (new BudgetsController())->auth()->destroy() );
+Route::post('/budget/:id/delete', fn() => (new BudgetsController())->auth()->destroy() );

@@ -23,6 +23,7 @@ class Route {
 
     private static $instance = null;
     private static $router;
+    private static $params = null;
 
 
     public function __construct()
@@ -76,11 +77,27 @@ class Route {
 
     /**
      * 
-     * Rendder requested route Facade
+     * @method Get Route Params Facade
      * 
      */
-    public static function render()
+    public static function params()
     {
-        self::$router->render();
+        // q(self::$params);
+        return self::$params;
     }
+
+    /**
+     * 
+     * @method Resolve route and params Facade
+     * 
+     */
+    public static function resolve()
+    {
+        self::$router->resolve();
+
+        self::$params = self::$router->get_params();
+        
+        self::$router->call_route_method();
+    }
+
 }

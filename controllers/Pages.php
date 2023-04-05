@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace controllers\PagesController;
 
 use lib\Controller\Controller;
+use lib\Router\Route\Route;
 use stdClass;
 
 
@@ -58,8 +59,8 @@ class PagesController extends Controller {
         $data          = new stdClass();
         $data->title   = 'Error';
         $data->h1      = 'Something went wrong';
-        $data->type    = array_key_exists( (int) $this->param, $error_messages)
-                            ? (int) $this->param
+        $data->type    = array_key_exists( (int) Route::params()->code, $error_messages)
+                            ? (int) Route::params()->code
                             : 400;
         $data->message = array_key_exists($data->type, $error_messages)
                             ? $error_messages[$data->type]

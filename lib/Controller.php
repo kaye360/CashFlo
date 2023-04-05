@@ -29,28 +29,21 @@ class Controller {
 
     /**
      * 
-     * @method Allow all extended classes to access URL param from Router
-     * 
-     */
-    public function __construct(protected mixed $param = null) { }
-
-    /**
-     * 
      * @method Get a specific model while in a controller class
      * 
      */
     public function model(string $model) : object | null
     {
-        $model_file = './models/' . ucwords($model) . '.php';
+        $model_file  = './models/' . ucwords($model) . '.php';
         $model_class = 'models\\' . ucwords($model) . 'Model\\' . ucwords($model) . 'Model';
 
         if (file_exists($model_file) ) 
         {
             require_once($model_file);
         } else {
-            $data = new stdClass();
-            $data->title = 'Error';
-            $data->h1 = 'Error 500';
+            $data          = new stdClass();
+            $data->title   = 'Error';
+            $data->h1      = 'Error 500';
             $data->message = 'Model File not found';
             $this->view('error', $data);
             return null;
@@ -61,9 +54,9 @@ class Controller {
         {
             return new $model_class(new Database);
         } else {
-            $data = new stdClass();
-            $data->title = 'Error';
-            $data->h1 = 'Error 500';
+            $data          = new stdClass();
+            $data->title   = 'Error';
+            $data->h1      = 'Error 500';
             $data->message = 'Model class not found';
             $this->view('error', $data);
             return null;

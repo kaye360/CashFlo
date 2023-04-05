@@ -44,7 +44,7 @@ class Router {
 
 	/**
 	 * 
-	 * @var url stores the current REQUEST_URI
+	 * /@var url stores the current REQUEST_URI
 	 * 
 	 * Formatted to be an array key. any '/' is removed 
 	 * @example users/23 becomes users23
@@ -59,7 +59,13 @@ class Router {
 	 * @example /page/param/page
 	 * 
 	 */
-	public ?string $param = null;
+	public ?object $params = null;
+
+	/**
+	 * 
+	 * 
+	 */
+	public $resolved_path_key = null;
 
 	/**
 	 * 
@@ -75,9 +81,7 @@ class Router {
 	 */
 	public function __construct()
 	{
-		$url 		 = $this->resolve_url();
-		$this->url   = $url->url;
-		$this->param = $url->param;
+		$this->url = (string) $this->resolve_url();
 	}
 
 	/**
@@ -85,19 +89,14 @@ class Router {
 	 * @method Resolve URL and params
 	 * 
 	 */
-	private function resolve_url()
+	private function resolve_url() : string
 	{
 		$url_trimmed     	  = trim($_SERVER['REQUEST_URI'], " \n\r\t\v\x00/");
 		$url_filtered		  = filter_var($url_trimmed, FILTER_SANITIZE_URL);
 		$url_no_query_string  = explode('?', $url_filtered)[0];
 		$url_no_query_string  = empty($url_no_query_string) ? '/' : $url_no_query_string;
-		$url_array_by_slashes = explode('/', $url_no_query_string);
-		$url_param 			  = $url_array_by_slashes[1] ?? null;
-
-		return (object) [
-			'url'   => $url_no_query_string,
-			'param' => $url_param
-		];
+		
+		return $url_no_query_string;
 	}
 
 	/**
@@ -182,50 +181,75 @@ class Router {
 
 	/**
 	 * 
-	 * @method Generate response based on current route
-	 * 
-	 * This will only be called after all routes are registered
+	 * @method Resolve route and params
 	 * 
 	 */
-	public function render() : void
+	public function resolve() : void
 	{
-		if( is_null($this->error_404_route) ) 
-		{
-			throw new Exception('No error 404 route is set in Router class');
-		}
-		
-		$this->resolve_params();
-		
-		$current_route = array_filter( $this->routes, fn($route) => $route->path === $this->url );
-		$current_route = array_values($current_route)[0] ?? null;
+		$request_uri 		  = explode('/', $this->url);
 
-		if( empty($current_route) ) {
-			header("Location: $this->error_404_route");
+		// Route loop Loop thru defined routes
+		foreach($this->routes as $key => $route)
+		{
+			$params 	= [];
+			$route_path = explode('/', $route->path);
+
+			// Check if route path and uri path have the same amount of uri 'sections'
+			if( count($route_path) !== count($request_uri) ) continue;
+
+			// Compare each slice of $request_uri[] with $route_path[]
+			foreach($route_path as $path_key => $path_slice)
+			{
+				// Check for param. First letter should be :
+				// If param, add to array
+				$is_param = substr($path_slice, 0, 1) === ':';
+
+				if( $is_param ) 
+				{
+					$param_key   		= substr($route_path[$path_key], 1);
+					$param_value 		= $request_uri[$path_key];
+					$params[$param_key] = $param_value;
+					$path_slice 		= $param_value;
+				}
+
+				// Check for matching slice
+				if( $path_slice !== $request_uri[$path_key]) break;
+
+				// If we are at the end of the path loop, all slices have matched
+				// We have a match!
+				if( $path_key === array_key_last($route_path) ) 
+				{
+					$this->resolved_path_key = $key;
+					$this->params 	 		 = (object) $params;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @method Get the params for the current requested route
+	 * 
+	 */
+	public function get_params() : object | null
+	{
+		return $this->params;
+	}
+
+	/**
+	 * 
+	 * @method Call the route method if it is set. Else 404
+	 * 
+	 */
+	public function call_route_method() : void
+	{
+		if( is_null($this->resolved_path_key) ) 
+		{
+			header('Location: ' . $this->error_404_route);
 			die();
 		}
 
-		http_response_code( $current_route->response_code );
-		
-		// Call route method and pass down param
-		($current_route->method)($this->param);
+		($this->routes[$this->resolved_path_key]->method)();
 	}
 	
-	/**
-	 * 
-	 * @method Apply extracted Param to defined routes
-	 * 
-	 * Replace every instance of :param in $this->routes with $this->param if it is set
-	 * 
-	 */
-	private function resolve_params() : void
-	{
-		if( is_null($this->param) ) return;
-
-		foreach($this->routes as &$route) 
-		{
-			$route->path = str_replace(':param', $this->param, $route->path);
-		}
-
-		unset($route);
-	}	
 }

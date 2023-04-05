@@ -14,6 +14,7 @@ namespace controllers\BudgetsController;
 
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
+use lib\Router\Route\Route;
 use stdClass;
 
 
@@ -132,7 +133,7 @@ class BudgetsController extends Controller {
      */
     public function edit() : void
     {
-        $id = (int) $this->param;
+        $id = (int) Route::params()->id;
         
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $id);

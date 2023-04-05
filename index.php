@@ -26,8 +26,3 @@ use lib\Router\Route\Route;
  * Bootstrap the App Essentials
  */
 require_once './bootstrap.php';
-
-/**
- * Render the requested route
- */
-Route::render();
