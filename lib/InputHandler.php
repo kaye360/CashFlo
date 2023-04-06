@@ -28,13 +28,13 @@ class InputHandler {
      * later on in the app.
      * 
      */
-    public static function sanitize(string $input) : string
+    public static function sanitize(string $input) : ?string
     {
-        if( empty($_POST[$input])  ) return null;
+        if( empty($input)  ) return null;
 
-        $_POST[$input] = trim($_POST[$input]);
-        $_POST[$input] = htmlspecialchars($_POST[$input]);
-        return $_POST[$input];
+        $sanitized_input = trim($input);
+        $sanitized_input = htmlspecialchars($input);
+        return $sanitized_input;
     }
 
     /**
@@ -256,7 +256,6 @@ class InputHandler {
         $amount_array     = explode('.', $amount);
         $decimal          = substr($amount_array[1], 0, 2);
         $formatted_amount = $amount_array[0] . '.' . $decimal;
-        $_POST[$input]    = $formatted_amount;
 
         return $formatted_amount;
     }

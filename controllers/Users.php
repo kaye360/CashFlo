@@ -101,8 +101,8 @@ class UsersController extends Controller {
         ]);
         
         $data           = new stdClass();
-        $data->username = InputHandler::sanitize('username');
-        $data->password = InputHandler::sanitize('password');
+        $data->username = InputHandler::sanitize( $_POST['username'] );
+        $data->password = InputHandler::sanitize( $_POST['password'] );
         $data->errors   = $validator->errors;
         $data->success  = $validator->success;
         

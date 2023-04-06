@@ -15,7 +15,7 @@
  * 
  * @example To Define a param
  * Just use :paramName and Route::params()->paramName will be 
- * available in the specific contoller. There can be multiple params with
+ * available thorughout the app. There can be multiple params with
  * different names in each route
  * 
  * @example To require Authentication for a route
