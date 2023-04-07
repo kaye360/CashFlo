@@ -12,6 +12,7 @@
 declare(strict_types=1);
 namespace models\BudgetModel;
 
+use lib\Auth\Auth;
 use lib\Database\Database;
 
 
@@ -37,7 +38,7 @@ class BudgetModel {
         $create_new_budget = $this->database
             ->table('budgets')
             ->cols('name, type, amount, user_id')
-            ->values(" '$data->name', '$data->type', '$data->amount', '" . AUTH->user_id() . "' ")
+            ->values(" '$data->name', '$data->type', '$data->amount', '" . Auth::user_id() . "' ")
             ->new();
 
         if( !$create_new_budget ) 
@@ -84,7 +85,7 @@ class BudgetModel {
         return $this->database
             ->select('*')
             ->table('budgets')
-            ->where("user_id = '" . AUTH->user_id() . "' ")
+            ->where("user_id = '" . Auth::user_id() . "' ")
             ->order('type ASC, amount DESC')
             ->list();
     }

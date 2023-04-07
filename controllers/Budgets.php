@@ -12,6 +12,7 @@
 declare(strict_types=1);
 namespace controllers\BudgetsController;
 
+use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
 use lib\Router\Route\Route;
@@ -137,7 +138,7 @@ class BudgetsController extends Controller {
         
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $id);
-        AUTH->authorize($user->user_id ?? 0);
+        Auth::authorize($user->user_id ?? 0);
 
         $budget        = $this->budgetModel->get(id: $id);
         $data          = new stdClass();
@@ -164,17 +165,22 @@ class BudgetsController extends Controller {
         ]);
 
         $data          = new stdClass();
-        $data->name    =         InputHandler::sanitize('name');
-        $data->amount  = (float) InputHandler::sanitize('amount');
-        $data->type    =         InputHandler::sanitize('type');
-        $data->id      = (int)   InputHandler::sanitize('id');
-        $data->referer =         InputHandler::sanitize('referer');
+        $data->name    =         InputHandler::sanitize($_POST['name']);
+        $data->amount  = (float) InputHandler::sanitize($_POST['amount']);
+        $data->type    =         InputHandler::sanitize($_POST['type']);
+        $data->id      = (int)   InputHandler::sanitize($_POST['id']);
+        $data->referer =         InputHandler::sanitize($_POST['referer']);
         $data->errors  = $validator->errors;
         $data->success = $validator->success;
 
         // Authorize Edit Budget
         $user = $this->budgetModel->get(id: $data->id);
-        AUTH->authorize($user->user_id);
+        Auth::authorize($user->user_id);
+
+        /**
+         * 
+         * @todo add validation!!
+         */
 
         // Edit Budget`
         $this->budgetModel->update(
@@ -208,7 +214,7 @@ class BudgetsController extends Controller {
 
         // Authorize Delete Budget
         $user = $this->budgetModel->get(id: $budget_id);
-        AUTH->authorize($user->user_id);
+        Auth::authorize($user->user_id);
 
         // Delete Budget
         $this->budgetModel->destroy(id: $budget_id);

@@ -35,9 +35,9 @@ class Auth {
      * Can be used if data needs to be returned, not echo'd
      * 
      */
-    private bool   $is_logged_in;
-    private string $username;
-    private int    $user_id;
+    private static bool   $is_logged_in = false;
+    private static ?string $username = null;
+    private static ?int    $user_id = null;
 
     /**
      * 
@@ -48,7 +48,7 @@ class Auth {
      */
     private function __construct()
     {
-        $this->is_logged_in = false;
+        self::$is_logged_in = false;
 
         if( !isset($_COOKIE['session']) ) return;
 
@@ -65,9 +65,9 @@ class Auth {
             isset($user->username) &&
             isset($user->id) 
         ) {
-            $this->username     = $user->username;
-            $this->user_id      = $user->id;
-            $this->is_logged_in = true;
+            self::$username     = $user->username;
+            self::$user_id      = $user->id;
+            self::$is_logged_in = true;
         }
     }
 
@@ -88,9 +88,9 @@ class Auth {
      * To be used in UI when username is needed
      * 
      */
-    public function username() : string
+    public static function username() : string
     {
-        return (string) $this->username;
+        return (string) self::$username;
     }
 
     /**
@@ -99,9 +99,9 @@ class Auth {
      * To be used in UI when user ID is needed
      * 
      */
-    public function user_id() : int
+    public static function user_id() : int
     {
-        return (int) $this->user_id;
+        return (int) self::$user_id;
     }
 
     /**
@@ -111,9 +111,9 @@ class Auth {
      * whether the user is logged in or not.
      * 
      */
-    public function is_logged_in() : bool
+    public static function is_logged_in() : bool
     {
-        return (bool) $this->is_logged_in;
+        return (bool) self::$is_logged_in;
     }
 
     /**
@@ -121,10 +121,10 @@ class Auth {
      * @method Authorize a user action
      * 
      */
-    public function authorize(int $id) : void
+    public static function authorize(int $id) : void
     {
         // if id !== $this->user_id redirect and die
-        if($id !== $this->user_id) {
+        if($id !== self::$user_id) {
             header('Location: /error/403');
             die();
         }

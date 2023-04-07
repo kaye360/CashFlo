@@ -1,3 +1,5 @@
+<?php use lib\Auth\Auth; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,18 +16,19 @@
 
 <div id="app" class="grid grid-cols-[300px_1fr] p-4">
 
-<nav class="flex flex-col gap-8">
+<nav class="flex flex-col gap-8 bg-teal-50 p-4 rounded-lg">
     <div class="text-2xl">
         Spendly
     </div>
 
-    <?php if( AUTH->is_logged_in() ): ?>
+    <?php if( Auth::is_logged_in() ): ?>
         <ul class="flex flex-col gap-2">
-            <li class="font-bold"><?= AUTH->username(); ?>, id: <?= AUTH->user_id(); ?></li>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/budgets">Budgets</a></li>
-            <li><a href="/settings">Settings</a></li>
-            <li><a href="/signout">Logout</a></li>
+            <li class="font-bold"><?= Auth::username(); ?>, id: <?= Auth::user_id(); ?></li>
+            <li><a href="/dashboard" class="hover:underline">Dashboard</a></li>
+            <li><a href="/budgets" class="hover:underline">Budgets</a></li>
+            <li><a href="/transactions" class="hover:underline">Transactions</a></li>
+            <li><a href="/settings" class="hover:underline">Settings</a></li>
+            <li><a href="/signout" class="hover:underline">Logout</a></li>
         </ul>
     <?php endif; ?>
 

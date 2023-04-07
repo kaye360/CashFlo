@@ -46,7 +46,7 @@ class CSSComponents {
 
     public static $button = 'inline-block px-4 py-2 cursor-pointer';
     
-    public static $button_main = 'bg-green-100';
+    public static $button_main = 'hover:bg-teal-700 hover:text-teal-100 bg-violet-400 text-white font-bold rounded';
 
     public static $success_prompt = 'block my-4 px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100 animate-prompt';
 

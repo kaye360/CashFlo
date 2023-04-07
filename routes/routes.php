@@ -27,6 +27,7 @@
 use lib\Router\Route\Route;
 use controllers\BudgetsController\BudgetsController;
 use controllers\PagesController\PagesController;
+use controllers\TransactionsController\TransactionsController;
 use controllers\UsersController\UsersController;
 
 /**
@@ -84,3 +85,19 @@ Route::get('/budget/:id/edit',    fn() => (new BudgetsController())->auth()->edi
 Route::post('/budget/:id/edit',   fn() => (new BudgetsController())->auth()->update() );
 
 Route::post('/budget/:id/delete', fn() => (new BudgetsController())->auth()->destroy() );
+
+/**
+ * 
+ * Transaction Routes (Authorized)
+ * 
+ */
+Route::get('/transactions',            fn() => (new TransactionsController())->auth()->index() );
+
+Route::post('/transactions',           fn() => (new TransactionsController())->auth()->create() );
+
+Route::get('/transaction/:id/edit',    fn() => (new TransactionsController())->auth()->edit() );
+
+Route::post('/transaction/:id/edit',   fn() => (new TransactionsController())->auth()->update() );
+
+Route::post('/transaction/:id/delete', fn() => (new TransactionsController())->auth()->destroy() );
+

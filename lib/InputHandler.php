@@ -232,6 +232,19 @@ class InputHandler {
                 }
             }
 
+            // Checki if valid date
+            if( self::is_rule('date', $rules) )
+            {
+                if( self::is_invalid_date($_POST[$input]) )
+                {
+                    $validator->errors->$input->date    = true;
+                    $validator->errors->$input->has_error = true;
+                    $validator->success                   = false;
+                } else {
+                    $validator->errors->$input->date    = false;
+                }
+            }
+
         }
 
         return $validator;
@@ -257,17 +270,6 @@ class InputHandler {
 
         return $formatted_amount;
     }
-
-    /**
-     * 
-     * 
-     * 
-     */
-    public static function date()
-    {
-
-    }
-
 
 
 
@@ -363,6 +365,16 @@ class InputHandler {
     private static function is_invalid_confirm_password(string $password, string $confirm_password) : bool
     {
         return $password !== $confirm_password;
+    }
+
+    /**
+     * 
+     * @method check if input is a valid date
+     * 
+     */
+    private static function is_invalid_date( string $date ) : bool
+    {
+        return !strtotime( $date ) ? true : false;
     }
 
 

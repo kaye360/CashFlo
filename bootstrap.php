@@ -74,7 +74,7 @@ define('DB_CONNECTION', DBConnect::connect() );
  * 
  */
 Auth::init();
-define('AUTH', Auth::init() );
+// define('AUTH', Auth::init() );
 
 /**
  * 

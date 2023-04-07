@@ -12,6 +12,8 @@
 declare(strict_types=1);
 namespace models\TransactionModel;
 
+use DateTimeImmutable;
+use lib\Auth\Auth;
 use lib\Database\Database;
 
 
@@ -39,8 +41,8 @@ class TransactionModel {
     {
         $create_new_transaction = $this->database
             ->table('transactions')
-            ->cols('name, budget, amount, user_id')
-            ->values(" '$data->name', '$data->budget', '$data->amount', '" . AUTH->user_id() . "' ")
+            ->cols('name, budget, amount, type, date, user_id')
+            ->values(" '$data->name', '$data->selected_budget', '$data->amount', '$data->type', '$data->date', '" . Auth::user_id() . "' ")
             ->new();
 
         if( !$create_new_transaction ) 
@@ -63,16 +65,25 @@ class TransactionModel {
      * 
      */
     public function update(
-        string $name,
-        string $budget,
-        float $amount,
+        ?string $name,
+        ?string $budget,
+        ?float $amount,
+        string $type,
         string $date,
+        int $user_id,
         int $id
     ) : bool {
 
         return $this->database
             ->table('transactions')
-            ->set("name = '$name', budget = '$budget', amount = '$amount', date = '$date' ")
+            ->set("
+                name = '$name', 
+                budget = '$budget', 
+                amount = '$amount', 
+                type = '$type', 
+                date = '$date', 
+                user_id = '$user_id' 
+            ")
             ->where("id = '$id' ")
             ->update();
     }
@@ -84,12 +95,21 @@ class TransactionModel {
      */
     public function get_all() : array | null
     {
-        return $this->database
+        $transactions = $this->database
             ->table('transactions')
             ->select('*')
-            ->where("user_id = '" . AUTH->user_id() . "' ")
-            ->order('date DESC')
+            ->where("user_id = '" . Auth::user_id() . "' ")
+            ->order('date DESC, id DESC')
             ->list();
+        
+        foreach($transactions as $transaction)
+        {
+            $date = $transaction->date;
+            $date = new DateTimeImmutable($date);
+            $transaction->date_as_words = $date->format('M d Y');
+        }
+
+        return $transactions;
     }
 
     /**

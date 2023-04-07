@@ -1,7 +1,8 @@
 <?php
+use lib\Auth\Auth;
 $data->title = 'Dashboard';
-$data->h1 = 'Dashboard: ' . AUTH->username();
-$data->username = AUTH->username();
+$data->h1 = 'Dashboard: ' . Auth::username();
+$data->username = Auth::username();
 ?>
 
 

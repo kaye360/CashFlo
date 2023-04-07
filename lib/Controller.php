@@ -21,6 +21,7 @@
 declare(strict_types=1);
 namespace lib\Controller;
 
+use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\template\Template\Template;
 use stdClass;
@@ -110,7 +111,7 @@ class Controller {
      */
     public function auth() : static
     {
-        if( !AUTH->is_logged_in() )
+        if( !Auth::is_logged_in() )
         {
             header('Location: /error/401');
             die();

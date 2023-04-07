@@ -1,15 +1,16 @@
 <?php
+use lib\Auth\Auth;
 $data->title = 'Settings';
 $data->h1 = 'Settings';
 ?>
 
 <form method="POST" action="/settings" class="flex flex-col gap-8 my-8">
     
-            <?php if( @$data->success ): ?>
-                <section class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
-                    Changes saved.
-                </section>
-            <?php endif; ?>
+    <?php if( @$data->success ): ?>
+        <section class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
+            Changes saved.
+        </section>
+    <?php endif; ?>
 
     <section class="flex flex-col gap-2 w-fit min-w-[500px]">
 
@@ -65,7 +66,7 @@ $data->h1 = 'Settings';
         <?php endif; ?>
 
         <div>
-            <input type="hidden" name="username" value="<?= AUTH->username() ?>" />
+            <input type="hidden" name="username" value="<?= Auth::username() ?>" />
             <input type="submit" value="Update settings" class="<<button_main>>" />
         </div>
 

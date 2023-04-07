@@ -48,7 +48,7 @@ $data->h1 = 'Budgets';
 
                 <?php if ( @$data->errors->amount->has_error ): ?>
                     <span class="<<input_error>>">
-                        <?php if ( $data->errors->name->has_forbidden_chars ): ?>
+                        <?php if ( $data->errors->amount->has_forbidden_chars ): ?>
                             <span>
                                 Amount must only have letters, numbers, and spaces.
                             </span>
