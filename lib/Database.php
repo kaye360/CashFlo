@@ -45,14 +45,14 @@ class Database
     * @var Query Builder vars
     * 
     */
-    private $select = '*';
-    private $order  = 'id DESC';
-    private $table  = null;
-    private $where  = null;
-    private $limit  = null;
-    private $cols   = null;
-    private $values = null;
-    private $set    = null;
+    protected ?string $select = '*';
+    protected ?string $order  = 'id DESC';
+    protected ?string $table  = null;
+    protected ?string $where  = null;
+    protected ?string $limit  = null;
+    protected ?string $cols   = null;
+    protected ?string $values = null;
+    protected ?string $set    = null;
  
     /**
      * 

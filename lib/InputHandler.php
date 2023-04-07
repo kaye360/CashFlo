@@ -22,10 +22,8 @@ class InputHandler {
 
     /**
      * 
-     * @method Sanitize a $_POST variable and return new value.
+     * @method Sanitize a variable and return new value.
      * 
-     * Also sanitize the $_POST var itself in case it is used
-     * later on in the app.
      * 
      */
     public static function sanitize(string $input) : ?string
@@ -244,20 +242,30 @@ class InputHandler {
      * @method Format an input to CAD 
      * 
      */
-    public static function money(string $input) : string
+    public static function money(string $input) : float
     {
-        if( !is_numeric($_POST[$input]) ) return null;
+        if( !is_numeric($input) ) return 0;
 
-        $amount = ltrim($_POST[$input], '0');
+        $amount = ltrim($input, '0');
         $amount = str_contains($amount, '.')
-            ?   $_POST[$input]
-            :   $_POST[$input] . '.00';
+            ?   $input
+            :   $input . '.00';
 
         $amount_array     = explode('.', $amount);
         $decimal          = substr($amount_array[1], 0, 2);
-        $formatted_amount = $amount_array[0] . '.' . $decimal;
+        $formatted_amount = floatval( $amount_array[0] . '.' . $decimal );
 
         return $formatted_amount;
+    }
+
+    /**
+     * 
+     * 
+     * 
+     */
+    public static function date()
+    {
+
     }
 
 

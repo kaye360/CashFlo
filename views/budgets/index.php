@@ -66,7 +66,8 @@ $data->h1 = 'Budgets';
                     </span>
                 <?php endif; ?>
 
-                <input type="number" name="amount" value="{{amount}}" class="border " />
+                <!-- #amount id is used in JS validation -->
+                <input type="number" name="amount" id="amount" value="{{amount}}" step="any" class="border " />
             </label>
         </div>
 
@@ -132,3 +133,20 @@ $data->h1 = 'Budgets';
         </div>
 
 </section>
+
+
+<script>
+
+window.addEventListener('DOMContentLoaded', () => 
+{
+
+    // Shorten Amount Input to 2 decimal places
+    const amountInput = document.querySelector('#amount')
+
+    amountInput.addEventListener('change', () => 
+    {
+        amountInput.value = parseFloat( amountInput.value ).toFixed(2)
+    })
+})
+
+</script>

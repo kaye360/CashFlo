@@ -6,7 +6,7 @@
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Used for pages that don't require a model
+ * Used to control routes related to Static pages
  * 
  */
 declare(strict_types=1);

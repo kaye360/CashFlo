@@ -73,7 +73,7 @@ class BudgetsController extends Controller {
     public function index() : void
     {
         $data                 =         new stdClass();
-        $data->budgets        = (array) $this->budgetModel->get_all() ?? [];
+        $data->budgets        = (array) $this->budgetModel->get_all();
         $data->income_total   = (float) $this->get_budget_type_total('income',   $data->budgets);
         $data->spending_total = (float) $this->get_budget_type_total('spending', $data->budgets);
         $data->net_total      = (float) $this->get_budget_net_total($data->budgets);
@@ -95,10 +95,10 @@ class BudgetsController extends Controller {
         ]);
 
         $data          = new stdClass();
-        $data->name    = InputHandler::sanitize('name');
-        $data->amount  = InputHandler::sanitize('amount');
-        $data->type    = InputHandler::sanitize('type');
-        $data->amount  = InputHandler::money('amount');
+        $data->name    = InputHandler::sanitize($_POST['name']);
+        $data->amount  = InputHandler::sanitize($_POST['amount']);
+        $data->type    = InputHandler::sanitize($_POST['type']);
+        $data->amount  = InputHandler::money($_POST['amount']);
         $data->errors  = $validator->errors;
         $data->success = $validator->success;
 

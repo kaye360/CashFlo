@@ -6,7 +6,7 @@
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Used for pages related to the 'users' table
+ * Used to control routes related to Users
  * 
  */
 declare(strict_types=1);
@@ -54,7 +54,7 @@ class UsersController extends Controller {
         ]);
             
         $data                   = new stdClass() ;
-        $data->username         = InputHandler::sanitize('username');
+        $data->username         = InputHandler::sanitize( $_POST['username'] );
         $data->password         = trim($_POST['confirm_password_1']);
         $data->confirm_password = trim($_POST['confirm_password_2']);
         $data->errors           = $validator->errors;
@@ -180,10 +180,10 @@ class UsersController extends Controller {
 
         $data                     = new stdClass();
         $data->success            = false;
-        $data->username           = InputHandler::sanitize('username');
-        $data->password           = InputHandler::sanitize('password');
-        $data->confirm_password_1 = InputHandler::sanitize('confirm_password_1');
-        $data->confirm_password_2 = InputHandler::sanitize('confirm_password_2');
+        $data->username           = InputHandler::sanitize( $_POST['username'] );
+        $data->password           = InputHandler::sanitize( $_POST['password'] );
+        $data->confirm_password_1 = InputHandler::sanitize( $_POST['confirm_password_1'] );
+        $data->confirm_password_2 = InputHandler::sanitize( $_POST['confirm_password_2'] );
         $data->errors             = $validator->errors;
         $data->success            = $validator->success; 
 
