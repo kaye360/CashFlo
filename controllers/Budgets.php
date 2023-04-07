@@ -177,18 +177,16 @@ class BudgetsController extends Controller {
         $user = $this->budgetModel->get(id: $data->id);
         Auth::authorize($user->user_id);
 
-        /**
-         * 
-         * @todo add validation!!
-         */
-
-        // Edit Budget`
-        $this->budgetModel->update(
-            name:   $data->name,
-            type:   $data->type,
-            amount: $data->amount,
-            id:     $data->id
-        );
+        if( $data->success )
+        {
+            // Edit Budget`
+            $this->budgetModel->update(
+                name:   $data->name,
+                type:   $data->type,
+                amount: $data->amount,
+                id:     $data->id
+            );
+        }
 
         $this->view('budgets/edit', $data);
     }

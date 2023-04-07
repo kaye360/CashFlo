@@ -14,15 +14,15 @@
 </head>
 <body>
 
-<div id="app" class="grid grid-cols-[300px_1fr] p-4">
+<div id="app" class="grid grid-cols-[auto_1fr] p-4 min-h-screen">
 
-<nav class="flex flex-col gap-8 bg-teal-50 p-4 rounded-lg">
+<nav class="flex flex-col gap-8 bg-teal-50 text-teal-900 text-xl py-8 pl-8 pr-16 rounded-lg">
     <div class="text-2xl">
         Spendly
     </div>
 
     <?php if( Auth::is_logged_in() ): ?>
-        <ul class="flex flex-col gap-2">
+        <ul class="flex flex-col gap-4">
             <li class="font-bold"><?= Auth::username(); ?>, id: <?= Auth::user_id(); ?></li>
             <li><a href="/dashboard" class="hover:underline">Dashboard</a></li>
             <li><a href="/budgets" class="hover:underline">Budgets</a></li>
@@ -39,6 +39,6 @@
     </ul>
 </nav>
 
-<main class="px-4">
+<main class="px-4 py-8">
 
-<h1 class="mb-6 text-xl font-semibold">{{h1}}</h1>
+<h1 class="mb-6 pb-2 text-3xl font-semibold border-b border-slate-200">{{h1}}</h1>

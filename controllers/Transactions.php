@@ -144,7 +144,7 @@ class TransactionsController extends Controller {
 
         $budgetsModel  = $this->model('Budget');
 
-        $data          = new stdClass();
+        $data          =         new stdClass();
         $data->name    =         InputHandler::sanitize( $_POST['name'] );
         $data->amount  = (float) InputHandler::sanitize( $_POST['amount'] );
         $data->type    =         InputHandler::sanitize( $_POST['type'] );
@@ -154,8 +154,8 @@ class TransactionsController extends Controller {
         $data->referer =         InputHandler::sanitize( $_POST['referer'] );
         $data->user_id =         Auth::user_id();
         $data->id      = (int)   Route::params()->id;
-        $data->errors  = $validator->errors;
-        $data->success = $validator->success;
+        $data->errors  =         $validator->errors;
+        $data->success =         $validator->success;
 
         // Authorize Edit Transaction
         $user = $this->transactionsModel->get(id: $data->id);
