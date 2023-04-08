@@ -195,7 +195,7 @@ $data->h1 = 'Transactions';
                         </td>
                         
                         <td class="p-2">
-                            <?= $transaction->date_as_words; ?>
+                            <?= $transaction->date_english; ?>
                         </td>
                         
                         <td class="p-2">

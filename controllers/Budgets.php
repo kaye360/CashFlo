@@ -98,6 +98,7 @@ class BudgetsController extends Controller {
         $data          = new stdClass();
         $data->name    = InputHandler::sanitize($_POST['name']);
         $data->amount  = InputHandler::sanitize($_POST['amount']);
+        $data->amount  = number_format( (float) $data->amount, 2, '.', '' );
         $data->type    = InputHandler::sanitize($_POST['type']);
         $data->amount  = InputHandler::money($_POST['amount']);
         $data->errors  = $validator->errors;

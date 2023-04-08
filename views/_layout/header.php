@@ -9,7 +9,7 @@
     <link href="/static/css/main.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>
-        {{title}}
+        {{title}} - CashFlow
     </title>
 </head>
 <body>
@@ -17,8 +17,8 @@
 <div id="app" class="grid grid-cols-[auto_1fr] p-4 min-h-screen">
 
 <nav class="flex flex-col gap-8 bg-teal-50 text-teal-900 text-xl py-8 pl-8 pr-16 rounded-lg">
-    <div class="text-2xl">
-        Spendly
+    <div class="text-2xl font-black text-teal-700">
+        <span class="text-teal-400">Cash</span>Flow
     </div>
 
     <?php if( Auth::is_logged_in() ): ?>
@@ -27,6 +27,7 @@
             <li><a href="/dashboard" class="hover:underline">Dashboard</a></li>
             <li><a href="/budgets" class="hover:underline">Budgets</a></li>
             <li><a href="/transactions" class="hover:underline">Transactions</a></li>
+            <li><a href="/trends" class="hover:underline">Trends</a></li>
             <li><a href="/settings" class="hover:underline">Settings</a></li>
             <li><a href="/signout" class="hover:underline">Logout</a></li>
         </ul>

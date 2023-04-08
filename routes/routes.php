@@ -28,6 +28,7 @@ use lib\Router\Route\Route;
 use controllers\BudgetsController\BudgetsController;
 use controllers\PagesController\PagesController;
 use controllers\TransactionsController\TransactionsController;
+use controllers\TrendsController\TrendsController;
 use controllers\UsersController\UsersController;
 
 /**
@@ -100,4 +101,20 @@ Route::get('/transaction/:id/edit',    fn() => (new TransactionsController())->a
 Route::post('/transaction/:id/edit',   fn() => (new TransactionsController())->auth()->update() );
 
 Route::post('/transaction/:id/delete', fn() => (new TransactionsController())->auth()->destroy() );
+
+/**
+ * 
+ * Trends Routes (Authorized)
+ * 
+ */
+Route::get('/trends',                fn () => (new TrendsController())->auth()->index() );
+
+Route::get('/trends/budgets',        fn () => (new TrendsController())->auth()->budgets_index() );
+
+Route::get('/trends/budgets/:id',    fn () => (new TrendsController())->auth()->budgets_single() );
+
+Route::get('/trends/monthly',        fn () => (new TrendsController())->auth()->monthly_index() );
+
+Route::get('/trends/monthly/:month', fn () => (new TrendsController())->auth()->monthly_single() );
+
 
