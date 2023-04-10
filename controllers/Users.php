@@ -14,7 +14,7 @@ namespace controllers\UsersController;
 
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
-use utils\GenericUtils\GenericUtils;
+use lib\utils\Helpers\Helpers;
 use stdClass;
 
 
@@ -110,7 +110,7 @@ class UsersController extends Controller {
         {
             $this->userModel->destroy_session();
 
-            $session = GenericUtils::make_UUID();
+            $session = Helpers::make_UUID();
 
             $this->userModel->update_session(
                 session:  $session, 

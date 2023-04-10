@@ -15,6 +15,7 @@ namespace models\TransactionModel;
 use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\services\Transaction\Transaction;
+use lib\utils\Helpers\Helpers;
 use stdClass;
 
 
@@ -93,6 +94,7 @@ class TransactionModel {
             ->order('date DESC, id DESC')
             ->list( Transaction::class );
     }
+
     /**
      * 
      * @method Get a Transactions by name
@@ -187,17 +189,9 @@ class TransactionModel {
             ->where("id = '" . $id . "' ")
             ->single();
 
-        return !$transaction 
-            ? null
-            : new Transaction(
-                id:      (int)   $transaction->id,
-                name:            $transaction->name,
-                budget:          $transaction->budget,
-                amount:  (float) $transaction->amount,
-                type:            $transaction->type,
-                date:            $transaction->date,
-                user_id: (int)   $transaction->user_id
-            );
+        return $transaction 
+            ? Helpers::service_class_from_obj( Transaction::class, $transaction )
+            : null;
     }
 
     /**

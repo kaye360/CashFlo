@@ -27,7 +27,7 @@ namespace lib\Database;
 use PDO;
 use Exception;
 use exceptions\DatabaseException\DatabaseException;
-use lib\utils\GenericUtils\GenericUtils;
+use lib\utils\Helpers\Helpers;
 use PDOException;
 
 class Database
@@ -271,7 +271,7 @@ class Database
 
         } catch (Exception $e) {
 
-            GenericUtils::render_exception($e);
+            Helpers::render_exception($e);
             return false;
         }
     }
@@ -303,7 +303,7 @@ class Database
 
         } catch (Exception $e) {
 
-            GenericUtils::render_exception($e);
+            Helpers::render_exception($e);
             return false;
         }
     }
@@ -336,7 +336,7 @@ class Database
 
         } catch (Exception $e) {
 
-            GenericUtils::render_exception($e);
+            Helpers::render_exception($e);
             return false;
         }
     }

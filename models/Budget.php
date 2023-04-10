@@ -15,6 +15,7 @@ namespace models\BudgetModel;
 use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\services\Budget\Budget;
+use lib\utils\Helpers\Helpers;
 
 class BudgetModel {
 
@@ -97,16 +98,9 @@ class BudgetModel {
             ->where("id = '" . $id . "' ")
             ->single();
 
-        return !$budget
-            ? null
-            : new Budget(
-                id:      $budget->id,
-                name:    $budget->name,
-                type:    $budget->type,
-                amount:  $budget->amount,
-                user_id: $budget->user_id
-            );
-        
+        return $budget
+            ? Helpers::service_class_from_obj( Budget::class, $budget )
+            : null;
     }
 
     /**
