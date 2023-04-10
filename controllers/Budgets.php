@@ -16,6 +16,7 @@ use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
 use lib\Router\Route\Route;
+use lib\services\Budget\Budget;
 use stdClass;
 
 
@@ -25,45 +26,9 @@ class BudgetsController extends Controller {
     private $budgetModel;
     
 
-    public function __construct(protected mixed $param = null)
+    public function __construct()
     {
         $this->budgetModel = $this->model('Budget');
-    }
-
-    /**
-     * 
-     * @method Get Total Amount of Income or Spending
-     * 
-     */
-    private function get_budget_type_total(
-        string $type, 
-        array $array
-    ) : float {
-
-        if( empty($array) ) return 0;
-
-        return array_reduce($array, function($total, $budget) use($type)
-        {
-            if($budget->type === $type) $total += $budget->amount;
-            return $total;
-        }) ?? 0;
-    }
-
-    /**
-     * 
-     * @method Get Net Budget Worth
-     * 
-     */
-    private function get_budget_net_total(array $array) : float
-    {
-        if( empty($array )) return 0;
-
-        return array_reduce($array, function($total, $budget)
-        {
-            if ($budget->type === 'income')   $total += $budget->amount;
-            if ($budget->type === 'spending') $total -= $budget->amount;
-            return $total;
-        });
     }
 
     /**
@@ -74,11 +39,12 @@ class BudgetsController extends Controller {
     public function index() : void
     {
         $data                 =         new stdClass();
-        $data->budgets        = (array) $this->budgetModel->get_all();
-        $data->income_total   = (float) $this->get_budget_type_total('income',   $data->budgets);
-        $data->spending_total = (float) $this->get_budget_type_total('spending', $data->budgets);
-        $data->net_total      = (float) $this->get_budget_net_total($data->budgets);
+        $data->budgets        =         $this->budgetModel->get_all();
+        $data->income_total   = (float) $this->get_type_total('income',   $data->budgets);
+        $data->spending_total = (float) $this->get_type_total('spending', $data->budgets);
+        $data->net_total      = (float) $this->get_net_total($data->budgets);
         $data->prompt         =         $_GET['prompt'] ?? false;
+
         $this->view('budgets/index', $data);
     }
 
@@ -95,35 +61,34 @@ class BudgetsController extends Controller {
             'type'   => ['required']
         ]);
 
+        $amount  = InputHandler::sanitize($_POST['amount']);
+        $amount  = InputHandler::money($_POST['amount']);
+
+        $budget = new Budget(
+            id:      null,
+            name:    InputHandler::sanitize($_POST['name']),
+            type:    InputHandler::sanitize($_POST['type']),
+            amount:  $amount,
+            user_id: Auth::user_id()
+        );
+
         $data          = new stdClass();
-        $data->name    = InputHandler::sanitize($_POST['name']);
-        $data->amount  = InputHandler::sanitize($_POST['amount']);
-        $data->amount  = number_format( (float) $data->amount, 2, '.', '' );
-        $data->type    = InputHandler::sanitize($_POST['type']);
-        $data->amount  = InputHandler::money($_POST['amount']);
+        $data->budget  = $budget;
         $data->errors  = $validator->errors;
         $data->success = $validator->success;
 
         if( $data->success ) 
         {
-            $new_budget = $this->budgetModel->create($data);
-            
-            if( $new_budget->error ) 
-            {
-                $data->success       = false;
-                $data->errors->query = true;
-
-            } else {
-                $data->success = true;
-                $data->name    = '';
-                $data->amount  = '';
-            }
+            $this->budgetModel->create( $budget );
+            $data->success = true;
+            $data->name    = '';
+            $data->amount  = '';
         }
         
         $data->budgets        = $this->budgetModel->get_all();
-        $data->income_total   = $this->get_budget_type_total('income',   $data->budgets->data ?? []);
-        $data->spending_total = $this->get_budget_type_total('spending', $data->budgets->data ?? []);
-        $data->net_total      = $this->get_budget_net_total($data->budgets->data ?? []);
+        $data->income_total   = $this->get_type_total('income',   $data->budgets->data ?? []);
+        $data->spending_total = $this->get_type_total('spending', $data->budgets->data ?? []);
+        $data->net_total      = $this->get_net_total($data->budgets->data ?? []);
         
         $this->view('budgets/index', $data);
     }
@@ -135,19 +100,14 @@ class BudgetsController extends Controller {
      */
     public function edit() : void
     {
-        $id = (int) Route::params()->id;
+        $budget = $this->budgetModel->get(id: (int) Route::params()->id );
         
         // Authorize Edit Budget
-        $user = $this->budgetModel->get(id: $id);
-        Auth::authorize($user->user_id ?? 0);
-
-        $budget        = $this->budgetModel->get(id: $id);
+        Auth::authorize( $budget->user_id );
+        
         $data          = new stdClass();
-        $data->id      = $id;
+        $data->budget  = $budget;
         $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/budgets' , PHP_URL_PATH);
-        $data->name    = $budget->name;
-        $data->type    = $budget->type;
-        $data->amount  = $budget->amount;
 
         $this->view('budgets/edit', $data);
     }
@@ -159,34 +119,36 @@ class BudgetsController extends Controller {
      */
     public function update()
     {
+        // Authorize Edit Budget
+        $db_budget = $this->budgetModel->get(id: (int) Route::params()->id );
+        Auth::authorize($db_budget->user_id);
+
         $validator = InputHandler::validate([
             'name'   => ['required', 'max:20', 'has_spaces'],
             'amount' => ['required', 'number'],
             'type'   => ['required']
         ]);
 
+        $amount = InputHandler::sanitize($_POST['amount']);
+        $amount = InputHandler::money($_POST['amount']);
+
+        $budget = new Budget(
+            id:      (int) Route::params()->id,
+            name:    InputHandler::sanitize($_POST['name']),
+            type:    InputHandler::sanitize($_POST['type']),
+            amount:  $amount,
+            user_id: Auth::user_id()
+        );
+
         $data          = new stdClass();
-        $data->name    =         InputHandler::sanitize($_POST['name']);
-        $data->amount  = (float) InputHandler::sanitize($_POST['amount']);
-        $data->type    =         InputHandler::sanitize($_POST['type']);
-        $data->id      = (int)   InputHandler::sanitize($_POST['id']);
-        $data->referer =         InputHandler::sanitize($_POST['referer']);
+        $data->budget  = $budget;
+        $data->referer = InputHandler::sanitize($_POST['referer']);
         $data->errors  = $validator->errors;
         $data->success = $validator->success;
 
-        // Authorize Edit Budget
-        $user = $this->budgetModel->get(id: $data->id);
-        Auth::authorize($user->user_id);
-
         if( $data->success )
         {
-            // Edit Budget`
-            $this->budgetModel->update(
-                name:   $data->name,
-                type:   $data->type,
-                amount: $data->amount,
-                id:     $data->id
-            );
+            $this->budgetModel->update( $budget );
         }
 
         $this->view('budgets/edit', $data);
@@ -199,28 +161,56 @@ class BudgetsController extends Controller {
      */
     public function destroy()
     {
-        $data = new stdClass();
-        
-        if( empty($_POST['referer']) || empty($_POST['id']) )
-        {
-            $this->view('budgets/edit', $data);
-            return;
-        }
-
-        $budget_id = (int) $_POST['id'];
-        $referer   = $_POST['referer'];
-        $referer   = parse_url($referer, PHP_URL_PATH);
-
         // Authorize Delete Budget
-        $user = $this->budgetModel->get(id: $budget_id);
+        $user = $this->budgetModel->get(id: (int) Route::params()->id );
         Auth::authorize($user->user_id);
 
+        $referer = $_POST['referer'] ?? '/budgets';
+        $referer = parse_url($referer, PHP_URL_PATH);
+
         // Delete Budget
-        $this->budgetModel->destroy(id: $budget_id);
+        $this->budgetModel->destroy(id: (int) Route::params()->id );
 
         // Return to referer
         header("Location: $referer?prompt=delete_budget ");
         die();
     }
+    
+    /**
+     * 
+     * @method Get Total Amount of Income or Spending
+     * 
+     */
+    private function get_type_total(
+        string $type, 
+        array $array
+    ) : float {
+
+        if( empty($array) ) return 0;
+
+        return array_reduce($array, function($total, $budget) use($type)
+        {
+            if($budget->type === $type) $total += (float) $budget->amount;
+            return $total;
+        }) ?? 0;
+    }
+
+    /**
+     * 
+     * @method Get Net Budget Worth
+     * 
+     */
+    private function get_net_total(array $array) : float
+    {
+        if( empty($array )) return 0;
+
+        return array_reduce($array, function($total, $budget)
+        {
+            if ($budget->type === 'income')   $total += (float) $budget->amount;
+            if ($budget->type === 'spending') $total -= (float) $budget->amount;
+            return $total;
+        });
+    }
+
 
 }

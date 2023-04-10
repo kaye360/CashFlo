@@ -12,7 +12,6 @@
 declare(strict_types=1);
 namespace models\TransactionModel;
 
-use DateTimeImmutable;
 use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\services\Transaction\Transaction;
@@ -103,27 +102,12 @@ class TransactionModel {
     {
         $user_id = Auth::user_id();
 
-        $db_transactions = $this->database
+        $transactions = $this->database
             ->table('transactions')
             ->select('*')
             ->where("budget = '$budget' AND user_id = '$user_id' ")
             ->order('date DESC, id DESC')
             ->list( Transaction::class );
-
-        $transactions = [];
-
-        foreach($db_transactions as $transaction)
-        {
-            $transactions[] = new Transaction(
-                id:      (int)   $transaction->id ,
-                name:            $transaction->name ,
-                budget:          $transaction->budget,
-                amount:  (float) $transaction->amount,
-                type:            $transaction->type,
-                date:            $transaction->date,
-                user_id: (int)   $transaction->user_id
-            );
-        }
 
         /**
          * Chunk transactions by month in multidimensional array
@@ -195,7 +179,7 @@ class TransactionModel {
      * @method Get a Transaction
      * 
      */
-    public function get(int $id) : Transaction | null
+    public function get(int $id) : ?Transaction
     {
         $transaction = $this->database
             ->table('transactions')
@@ -203,17 +187,17 @@ class TransactionModel {
             ->where("id = '" . $id . "' ")
             ->single();
 
-        if( !$transaction ) return null;
-
-        return new Transaction(
-            id:      (int)   $transaction->id,
-            name:            $transaction->name,
-            budget:          $transaction->budget,
-            amount:  (float) $transaction->amount,
-            type:            $transaction->type,
-            date:            $transaction->date,
-            user_id: (int)   $transaction->user_id
-        );
+        return !$transaction 
+            ? null
+            : new Transaction(
+                id:      (int)   $transaction->id,
+                name:            $transaction->name,
+                budget:          $transaction->budget,
+                amount:  (float) $transaction->amount,
+                type:            $transaction->type,
+                date:            $transaction->date,
+                user_id: (int)   $transaction->user_id
+            );
     }
 
     /**

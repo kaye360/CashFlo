@@ -180,8 +180,8 @@ class TransactionsController extends Controller {
         $transaction = $this->transactionsModel->get(id: (int) Route::params()->id );
         Auth::authorize($transaction->user_id);
 
-        $referer        = $_POST['referer'] ?: '/transactions';
-        $referer        = parse_url($referer, PHP_URL_PATH);
+        $referer = $_POST['referer'] ?: '/transactions';
+        $referer = parse_url($referer, PHP_URL_PATH);
 
         // Delete Transaction
         $this->transactionsModel->destroy(id: $transaction->id);

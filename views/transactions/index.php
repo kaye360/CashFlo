@@ -202,9 +202,7 @@ $data->h1 = 'Transactions';
             
                 <?php foreach($data->transactions as $transaction): ?>
 
-                    <?php $current_date = (new DateTimeImmutable( $transaction->date ) )->format('M Y'); ?>
-
-                    <?php if ($current_date !== $date_counter): ?>
+                    <?php if ($date_counter !== $transaction->date_month): ?>
 
                         <tr>
                             <td colspan="5" class="
@@ -212,13 +210,13 @@ $data->h1 = 'Transactions';
                                 <?= !$date_counter ? 'pt-2' : 'pt-12'; ?>
                             ">
                                 <div class="border-b border-slate-200">
-                                    <?= $current_date;  ?>
+                                    <?= $transaction->date_month;  ?>
                                 </div>
 
                             </td>
                         </tr>
                         
-                        <?php $date_counter = $current_date; ?>
+                        <?php $date_counter = $transaction->date_month; ?>
                     <?php endif; ?>
 
                     <tr class="odd:bg-teal-50 hover:bg-slate-100">

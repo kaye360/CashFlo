@@ -10,7 +10,7 @@ $data->h1 = 'Edit Budget: ';
 
 <section>
 
-    <form method="POST" action="/budget/{{id}}/edit" class="flex flex-col gap-4 items-start">
+    <form method="POST" action="/budget/<?= $data->budget->id ?>/edit" class="flex flex-col gap-4 items-start">
 
         <label>
             
@@ -36,7 +36,7 @@ $data->h1 = 'Edit Budget: ';
                 </span>
             <?php endif; ?>
 
-            <input type="text" name="name" value="{{name}}" />
+            <input type="text" name="name" value="<?= $data->budget->name ?>" />
 
         </label>
 
@@ -64,7 +64,7 @@ $data->h1 = 'Edit Budget: ';
                 </span>
             <?php endif; ?>
 
-            <input type="number" name="amount" value="{{amount}}" step="any" class="border" />
+            <input type="number" name="amount" value="<?= (float) $data->budget->amount ?>" step="any" class="border" />
 
         </label>
 
@@ -74,18 +74,17 @@ $data->h1 = 'Edit Budget: ';
             <label>
                 <input 
                     type="radio" name="type" value="spending" 
-                    <?php if($data->type ==='spending') echo 'checked' ?> /> 
+                    <?php if($data->budget->type ==='spending') echo 'checked' ?> /> 
                 Spending
             </label>
             <label class="block">
                 <input 
                     type="radio" name="type" value="income"
-                    <?php if($data->type ==='income') echo 'checked' ?> /> Income
+                    <?php if($data->budget->type ==='income') echo 'checked' ?> /> 
+                Income
             </label>
 
         <input type="hidden" name="referer" value="{{referer}}" />
-        <input type="hidden" name="id" value="{{id}}" />
-
         <input type="submit" value="Edit Budget" class="<<button>> <<button_main>>" />
     
         <?php if( @$data->success ): ?>
@@ -103,9 +102,8 @@ $data->h1 = 'Edit Budget: ';
 
 <p>Would you like to delete this budget?</p>
 
-<form method="POST" action="/budget/{{id}}/delete" id="delete-form">
+<form method="POST" action="/budget/<?= $data->budget->id ?>/delete" id="delete-form">
     <input type="hidden" name="referer" value="{{referer}}" />
-    <input type="hidden" name="id" value="{{id}}" />
     <input type="submit" id="delete-budget" class="<<button>> bg-red-400 text-white" data-clicked="false" value="Delete Budget" />
 </form>
 

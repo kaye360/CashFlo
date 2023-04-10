@@ -58,7 +58,7 @@ class TrendsController extends Controller {
 
         if ( !$data->budget )
         {
-            header('Location: /error/404');
+            header('Location: /error/404'); 
             die();
         }
 

@@ -255,20 +255,13 @@ class InputHandler {
      * @method Format an input to CAD 
      * 
      */
-    public static function money(string $input) : float
+    public static function money(string $input) : string
     {
         if( !is_numeric($input) ) return 0;
 
-        $amount = ltrim($input, '0');
-        $amount = str_contains($amount, '.')
-            ?   $input
-            :   $input . '.00';
+        $input = number_format( (float) $input, 2, '.', '' );
 
-        $amount_array     = explode('.', $amount);
-        $decimal          = substr($amount_array[1], 0, 2);
-        $formatted_amount = floatval( $amount_array[0] . '.' . $decimal );
-
-        return $formatted_amount;
+        return $input;
     }
 
 

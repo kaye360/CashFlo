@@ -14,8 +14,7 @@ namespace models\BudgetModel;
 
 use lib\Auth\Auth;
 use lib\Database\Database;
-
-
+use lib\services\Budget\Budget;
 
 class BudgetModel {
 
@@ -33,12 +32,12 @@ class BudgetModel {
      * @method create a new Budget
      * 
      */
-    public function create(object $data): object
+    public function create( Budget $budget ): object
     {
         $create_new_budget = $this->database
             ->table('budgets')
             ->cols('name, type, amount, user_id')
-            ->values(" '$data->name', '$data->type', '$data->amount', '" . Auth::user_id() . "' ")
+            ->values(" '$budget->name', '$budget->type', '$budget->amount', '" . Auth::user_id() . "' ")
             ->new();
 
         if( !$create_new_budget ) 
@@ -51,7 +50,7 @@ class BudgetModel {
 
         return (object) [
             'error' => false,
-            'data'  => $data,
+            'data'  => $budget,
         ];
     }
 
@@ -60,16 +59,11 @@ class BudgetModel {
      * @method Edit a budget
      * 
      */
-    public function update(
-        string $name,
-        string $type,
-        float $amount,
-        int $id
-    ) : bool {
+    public function update( Budget $budget ) : bool {
 
         return $this->database
-            ->set("name = '$name', type = '$type', amount = '$amount' ")
-            ->where("id = '$id' ")
+            ->set("name = '$budget->name', type = '$budget->type', amount = '$budget->amount' ")
+            ->where("id = '$budget->id' ")
             ->update();
     }
 
@@ -87,7 +81,7 @@ class BudgetModel {
             ->table('budgets')
             ->where("user_id = '" . Auth::user_id() . "' ")
             ->order('type ASC, amount DESC')
-            ->list();
+            ->list( Budget::class );
     }
 
     /**
@@ -95,13 +89,24 @@ class BudgetModel {
      * @method Get a Budget
      * 
      */
-    public function get(int $id) : object | false
+    public function get(int $id) : ?Budget
     {
-        return $this->database
+        $budget =  $this->database
             ->select('*')
             ->table('budgets')
             ->where("id = '" . $id . "' ")
             ->single();
+
+        return !$budget
+            ? null
+            : new Budget(
+                id:      $budget->id,
+                name:    $budget->name,
+                type:    $budget->type,
+                amount:  $budget->amount,
+                user_id: $budget->user_id
+            );
+        
     }
 
     /**
