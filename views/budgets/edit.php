@@ -64,7 +64,7 @@ $data->h1 = 'Edit Budget: ';
                 </span>
             <?php endif; ?>
 
-            <input type="number" name="amount" value="{{amount}}" class="border" />
+            <input type="number" name="amount" value="{{amount}}" step="any" class="border" />
 
         </label>
 

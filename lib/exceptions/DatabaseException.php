@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace exceptions\DatabaseException;
+namespace lib\exceptions\DatabaseException;
 
 use Exception;
 

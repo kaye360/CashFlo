@@ -50,7 +50,7 @@ spl_autoload_register( function($class)
     }
 
     $class_array[1] = $file_name;
-    $class_file_path = '.';
+    $class_file_path = '';
 
     for($i = 0; $i < count($class_array) -1; $i++ )
     {
@@ -58,7 +58,7 @@ spl_autoload_register( function($class)
     }
     $class_file_path .= '.php';
 
-    require_once $class_file_path;
+    require_once dirname(__FILE__) . $class_file_path;
 });
 
 /**

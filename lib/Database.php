@@ -27,7 +27,8 @@ namespace lib\Database;
 use PDO;
 use Exception;
 use exceptions\DatabaseException\DatabaseException;
-use utils\GenericUtils\GenericUtils;
+use lib\utils\GenericUtils\GenericUtils;
+use PDOException;
 
 class Database
 {
@@ -206,7 +207,7 @@ class Database
      * limit('#')
      * 
      */
-    public function list() : array
+    public function list($class_type = null) : array
     {
         try 
         {
@@ -224,14 +225,19 @@ class Database
             $this->stmt = $this->dbh->prepare($sql);
             $this->stmt->execute();
 
-            $rows = $this->stmt->fetchAll(PDO::FETCH_OBJ);
+            $rows = $class_type
+                ? $this->stmt->fetchAll(PDO::FETCH_CLASS, $class_type)
+                : $this->stmt->fetchAll(PDO::FETCH_OBJ);
 
             return $rows;
 
+        } catch (PDOException $e) {
+
+            throw new PDOException($e->getMessage());
+
         } catch (Exception $e) {
 
-            GenericUtils::render_exception($e);
-            return [];
+            throw new Exception($e->getMessage());
         }
     }
  

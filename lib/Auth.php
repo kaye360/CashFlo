@@ -121,10 +121,10 @@ class Auth {
      * @method Authorize a user action
      * 
      */
-    public static function authorize(int $id) : void
+    public static function authorize( ?int $id ) : void
     {
-        // if id !== $this->user_id redirect and die
-        if($id !== self::$user_id) {
+        if($id !== self::$user_id) 
+        {
             header('Location: /error/403');
             die();
         }

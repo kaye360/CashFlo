@@ -8,7 +8,7 @@
  * 
  */
 declare(strict_types=1);
-namespace utils\GenericUtils;
+namespace lib\utils\GenericUtils;
 
 
 class GenericUtils {

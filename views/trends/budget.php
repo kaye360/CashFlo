@@ -1,48 +1,63 @@
 
+<a href="/trends/budgets" class="inline-block underline mb-6">Back to budgets</a>
 
 
-<section class="relative flex items-center gap-4 h-[210px]">
+<?php if ( $data->transactions->monthly_net_totals ): ?>
 
-    <div class="absolute top-[100px] left-0 right-0 h-[1px] bg-slate-300"></div>
+    <section class="relative flex items-center gap-4 h-[210px] w-fit min-w-[300px]">
 
-    <?php foreach ( $data->transactions->monthly_net_totals as $month => $total ): ?>
+        <div class="absolute top-[100px] left-0 right-0 h-[1px] bg-slate-300"></div>
 
-        <?php $bar_height = (int) ($total / $data->monthly_ratio); ?>
+        <?php foreach ( $data->transactions->monthly_net_totals as $month => $total ): ?>
 
-        <div class="relative h-[100%] w-16">
+            <?php $bar_height = (int) ($total / $data->monthly_ratio); ?>
 
-            <div class="absolute bottom-0 left-0 right-0 min-w-max text-center">
-                <?= (new DateTimeImmutable( $month ))->format('M y'); ?>
+            <div class="relative h-[100%] w-16">
+
+                <div class="absolute bottom-0 left-0 right-0 min-w-max text-center">
+                    <?= (new DateTimeImmutable( $month ))->format('M y'); ?>
+                </div>
+
+                <div 
+                    class="
+                        absolute left-0 right-0 text-center text-xs
+                        <?= $total >= 0
+                            ? 'top-[110px]'
+                            : 'bottom-[120px]';
+                        ?>
+                    "
+                >
+                    <?= $total >= 0 ? "+$total" : $total; ?>
+                </div>
+
+                <div 
+                    class="
+                        absolute left-0 right-0 rounded-sm
+                        <?= $bar_height >= 0 
+                            ? 'bottom-[110px] h-[' . $bar_height . 'px]      bg-gradient-to-b from-teal-200 to-teal-400'
+                            : 'top-[100px]    h-[' . $bar_height * -1 . 'px] bg-gradient-to-t from-red-200  to-red-400';  
+                        ?>
+                    "
+                ></div>
             </div>
 
-            <div 
-                class="
-                    absolute left-0 right-0 text-center text-xs
-                    <?= $total >= 0
-                        ? 'top-[110px]'
-                        : 'bottom-[120px]';
-                    ?>
-                "
-            >
+        <?php endforeach; ?>
+        
+    </section>
 
-                <?= $total >= 0 ? "+$total" : $total; ?>
-            </div>
+<?php else: ?>
 
-            <div 
-                class="
-                    absolute left-0 right-0 rounded-sm
-                    <?= $bar_height >= 0 
-                        ? 'bottom-[110px] h-[' . $bar_height . 'px] bg-gradient-to-b from-teal-200 to-teal-400'
-                        : 'top-[100px] h-[' . $bar_height * -1 . 'px] bg-gradient-to-t from-red-200 to-red-400';  
-                    ?>
-                "
-            ></div>
-        </div>
+    <section class="flex flex-col gap-6">
+        <p>
+            This budget doesn't have any transactions yet. <a href="/transactions" class="underline">Add some</a>
+        </p>
 
-    <?php endforeach; ?>
+        <p>
+            <a href="/trends/budgets" class="underline">Back to Budget Trends</a>
+        </p>
+    </section>
 
-</section>
-
+<?php endif; ?>
 
 <section>
 
@@ -55,6 +70,7 @@
                 <?= (new DateTimeImmutable( $key ))->format('F Y'); ?>
 
                 <span class="text-md font-normal">
+                    <?= $data->transactions->monthly_net_totals[ $key ] > 0 ? '+' : ''; ?>
                     <?= $data->transactions->monthly_net_totals[ $key ]; ?>
                 </span>
 

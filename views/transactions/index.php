@@ -1,12 +1,19 @@
 <?php
 $data->title = 'Transactions';
 $data->h1 = 'Transactions';
+// q($data->errors);
 ?>
 
 
 <?php if( @$data->prompt === 'delete_transaction' ): ?>
     <div class="<<success_prompt>> text-green-500 bg-green-100 border border-green 500">
         Transaction was deleted.
+    </div>
+<?php endif; ?>
+
+<?php if( @$data->prompt === 'add_transaction' ): ?>
+    <div class="<<success_prompt>> text-green-500 bg-green-100 border border-green 500">
+        Transaction was added successfully.
     </div>
 <?php endif; ?>
 
@@ -18,7 +25,18 @@ $data->h1 = 'Transactions';
         </button>
     </h2>
 
-    <form method="POST" id="add_transaction_form" action="/transactions" class="flex flex items-center gap-12 mb-8 hidden">
+    <form method="POST" id="add_transaction_form" action="/transactions" class="
+        flex flex items-center gap-12 mb-8
+        <?= 
+            @$data->errors->name->has_error ||
+            @$data->errors->amount->has_error ||
+            @$data->errors->budgets->has_error ||
+            @$data->errors->date->has_error
+                ? ''
+                : 'hidden';
+        ?>
+    ">
+
 
         <div class="grid grid-cols-3 gap-x-2 gap-y-6 w-full p-4 bg-slate-50 border border-slate-200 rounded-lg">
 
@@ -115,7 +133,7 @@ $data->h1 = 'Transactions';
                     <?php 
                         foreach( @$data->budgets as $budget )
                         {
-                            $selected = $budget->name === $data->selected_budget ? 'selected' : '';
+                            $selected = $budget->name === $data->budget ? 'selected' : '';
                             echo "<option value='$budget->name' $selected >$budget->name</option> \n";
                         }
                     ?>
@@ -180,10 +198,30 @@ $data->h1 = 'Transactions';
                 </tr>
             </thead>
             <tbody>
+                <?php $date_counter = null; ?>
             
                 <?php foreach($data->transactions as $transaction): ?>
 
-                    <tr class="px-4 odd:bg-teal-50 hover:bg-slate-100">
+                    <?php $current_date = (new DateTimeImmutable( $transaction->date ) )->format('M Y'); ?>
+
+                    <?php if ($current_date !== $date_counter): ?>
+
+                        <tr>
+                            <td colspan="5" class="
+                                px-2 pb-4 bg-white font-bold 
+                                <?= !$date_counter ? 'pt-2' : 'pt-12'; ?>
+                            ">
+                                <div class="border-b border-slate-200">
+                                    <?= $current_date;  ?>
+                                </div>
+
+                            </td>
+                        </tr>
+                        
+                        <?php $date_counter = $current_date; ?>
+                    <?php endif; ?>
+
+                    <tr class="odd:bg-teal-50 hover:bg-slate-100">
 
                         <td class="p-2 font-bold text-xl">
                                 <?= $transaction->name; ?>

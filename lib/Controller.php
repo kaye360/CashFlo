@@ -60,6 +60,7 @@ class Controller {
             $data->h1      = 'Error 500';
             $data->message = 'Model class not found';
             $this->view('error', $data);
+            
             return null;
             die();
         }

@@ -15,12 +15,13 @@ namespace models\TransactionModel;
 use DateTimeImmutable;
 use lib\Auth\Auth;
 use lib\Database\Database;
+use lib\services\Transaction\Transaction;
 use stdClass;
+
+
 
 class TransactionModel {
 
-
-    private string $table = 'transactions';
 
     /**
      * 
@@ -36,12 +37,12 @@ class TransactionModel {
      * @method create a new Transaction
      * 
      */
-    public function create(object $data): object
+    public function create( Transaction $transaction ) : object
     {
         $create_new_transaction = $this->database
             ->table('transactions')
             ->cols('name, budget, amount, type, date, user_id')
-            ->values(" '$data->name', '$data->selected_budget', '$data->amount', '$data->type', '$data->date', '" . Auth::user_id() . "' ")
+            ->values(" '$transaction->name', '$transaction->budget', '$transaction->amount', '$transaction->type', '$transaction->date', '" . Auth::user_id() . "' ")
             ->new();
 
         if( !$create_new_transaction ) 
@@ -54,7 +55,7 @@ class TransactionModel {
 
         return (object) [
             'error' => false,
-            'data'  => $data,
+            'data'  => $transaction,
         ];
     }
 
@@ -63,27 +64,19 @@ class TransactionModel {
      * @method Edit a transaction
      * 
      */
-    public function update(
-        ?string $name,
-        ?string $budget,
-        ?float $amount,
-        string $type,
-        string $date,
-        int $user_id,
-        int $id
-    ) : bool {
+    public function update( Transaction $transaction ) : bool {
 
         return $this->database
             ->table('transactions')
             ->set("
-                name = '$name', 
-                budget = '$budget', 
-                amount = '$amount', 
-                type = '$type', 
-                date = '$date', 
-                user_id = '$user_id' 
+                name    = '$transaction->name', 
+                budget  = '$transaction->budget', 
+                amount  = '$transaction->amount', 
+                type    = '$transaction->type', 
+                date    = '$transaction->date', 
+                user_id = '$transaction->user_id' 
             ")
-            ->where("id = '$id' ")
+            ->where("id = '$transaction->id' ")
             ->update();
     }
 
@@ -94,21 +87,12 @@ class TransactionModel {
      */
     public function get_all() : array | null
     {
-        $transactions = $this->database
+        return $this->database
             ->table('transactions')
             ->select('*')
             ->where("user_id = '" . Auth::user_id() . "' ")
             ->order('date DESC, id DESC')
-            ->list();
-        
-        foreach($transactions as $transaction)
-        {
-            $date = $transaction->date;
-            $date = new DateTimeImmutable($date);
-            $transaction->date_english = $date->format('M d Y');
-        }
-
-        return $transactions;
+            ->list( Transaction::class );
     }
     /**
      * 
@@ -119,22 +103,26 @@ class TransactionModel {
     {
         $user_id = Auth::user_id();
 
-        $transactions = $this->database
+        $db_transactions = $this->database
             ->table('transactions')
             ->select('*')
             ->where("budget = '$budget' AND user_id = '$user_id' ")
             ->order('date DESC, id DESC')
-            ->list();
+            ->list( Transaction::class );
 
-        /**
-         * Add a date formatted as english words to each transactions
-         */
-        foreach($transactions as $transaction)
+        $transactions = [];
+
+        foreach($db_transactions as $transaction)
         {
-            $date = $transaction->date;
-            $date = new DateTimeImmutable($date);
-
-            $transaction->date_english = $date->format('M d Y');
+            $transactions[] = new Transaction(
+                id:      (int)   $transaction->id ,
+                name:            $transaction->name ,
+                budget:          $transaction->budget,
+                amount:  (float) $transaction->amount,
+                type:            $transaction->type,
+                date:            $transaction->date,
+                user_id: (int)   $transaction->user_id
+            );
         }
 
         /**
@@ -164,7 +152,6 @@ class TransactionModel {
         
         foreach ( $transactions_chunked_by_month as $month )
         {
-
             foreach ( $month as $transaction)
             {
                 $year_month = substr($transaction->date, 0, -3);
@@ -174,13 +161,15 @@ class TransactionModel {
                     $monthly_net_totals[ $year_month ] = [];
                 }
     
-                $monthly_net_total = 
-                    array_reduce( $transactions_chunked_by_month[ $year_month ], function( $total, $current)
-                {
-                    if ( $current->type === 'income' )   $total = $total + $current->amount;
-                    if ( $current->type === 'spending' ) $total = $total - $current->amount;
-                    return $total;
-                });
+                $monthly_net_total = array_reduce( 
+                    $transactions_chunked_by_month[ $year_month ], 
+                    function( $total, $current)
+                    {
+                        if ( $current->type === 'income' )   $total += $current->amount;
+                        if ( $current->type === 'spending' ) $total -= $current->amount;
+                        return $total;
+                    }
+                );
 
                 $monthly_net_totals[ $year_month ] = number_format( $monthly_net_total, 2, '.', '' );
             }
@@ -194,9 +183,9 @@ class TransactionModel {
          * Return an object with transactions chunked by month and monthly net totals
          * Both will have matching array keys of month in the form YYYY-MM
          */
-        $budget_trend = new stdClass();
+        $budget_trend                                = new stdClass();
         $budget_trend->transactions_chunked_by_month = $transactions_chunked_by_month;
-        $budget_trend->monthly_net_totals = $monthly_net_totals;
+        $budget_trend->monthly_net_totals            = $monthly_net_totals ?: [];
 
         return $budget_trend;
     }
@@ -206,13 +195,25 @@ class TransactionModel {
      * @method Get a Transaction
      * 
      */
-    public function get(int $id) : object | false
+    public function get(int $id) : Transaction | null
     {
-        return $this->database
+        $transaction = $this->database
             ->table('transactions')
             ->select('*')
             ->where("id = '" . $id . "' ")
             ->single();
+
+        if( !$transaction ) return null;
+
+        return new Transaction(
+            id:      (int)   $transaction->id,
+            name:            $transaction->name,
+            budget:          $transaction->budget,
+            amount:  (float) $transaction->amount,
+            type:            $transaction->type,
+            date:            $transaction->date,
+            user_id: (int)   $transaction->user_id
+        );
     }
 
     /**

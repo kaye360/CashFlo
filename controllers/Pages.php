@@ -56,11 +56,15 @@ class PagesController extends Controller {
             404 => 'This page could not be found.',
         ];
 
+        $error_code = isset(Route::params()->code)
+            ? (int) Route::params()->code
+            : 400;
+
         $data          = new stdClass();
         $data->title   = 'Error';
         $data->h1      = 'Something went wrong';
-        $data->type    = array_key_exists( (int) Route::params()->code, $error_messages)
-                            ? (int) Route::params()->code
+        $data->type    = array_key_exists( $error_code, $error_messages)
+                            ? $error_code
                             : 400;
         $data->message = array_key_exists($data->type, $error_messages)
                             ? $error_messages[$data->type]

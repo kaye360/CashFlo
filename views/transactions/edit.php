@@ -10,7 +10,7 @@ $data->h1 = 'Edit Transaction: ';
 
 <section>
 
-    <form method="POST" action="/transaction/{{id}}/edit" class="flex flex-col gap-4 items-start">
+    <form method="POST" action="/transaction/<?= $data->transaction->id; ?>/edit" class="flex flex-col gap-4 items-start">
 
         <label>
             
@@ -36,7 +36,7 @@ $data->h1 = 'Edit Transaction: ';
                 </span>
             <?php endif; ?>
 
-            <input type="text" name="name" value="{{name}}" />
+            <input type="text" name="name" value="<?= $data->transaction->name; ?>" />
 
         </label>
 
@@ -64,7 +64,7 @@ $data->h1 = 'Edit Transaction: ';
                 </span>
             <?php endif; ?>
 
-            <input type="number" name="amount" value="{{amount}}" class="border" />
+            <input type="number" name="amount" value="<?= $data->transaction->amount; ?>" step="any" class="border" />
 
         </label>
 
@@ -75,13 +75,14 @@ $data->h1 = 'Edit Transaction: ';
             <label>
                 <input 
                     type="radio" name="type" value="spending" 
-                    <?php if($data->type ==='spending') echo 'checked' ?> /> 
+                    <?= $data->transaction->type ==='spending' ? 'checked' : '' ?> /> 
                 Spending
             </label>
             <label class="block">
                 <input 
                     type="radio" name="type" value="income"
-                    <?php if($data->type ==='income') echo 'checked' ?> /> Income
+                    <?= $data->transaction->type ==='income' ? 'checked' : '' ?> /> 
+                Income
             </label>
         </div>
 
@@ -105,13 +106,14 @@ $data->h1 = 'Edit Transaction: ';
             <?php endif; ?>
     
             <select name="budgets">
-                <?php 
-                    foreach( @$data->budgets as $budget )
-                    {
-                        $selected = $budget->name === $data->budget ? 'selected' : '';
-                        echo "<option value='$budget->name' $selected >\n\t$budget->name\n</option> \n";
-                    }
-                ?>
+                <?php foreach( @$data->budgets as $budget ) : ?>
+                    <option 
+                        value="<?= $budget->name; ?>"
+                        <?= $budget->name === $data->transaction->budget ? 'selected' : ''; ?>
+                    >
+                        <?= $budget->name; ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
 
@@ -138,7 +140,7 @@ $data->h1 = 'Edit Transaction: ';
                 </span>
             <?php endif; ?>
     
-            <input type="date" name="date" value="{{date}}" />
+            <input type="date" name="date" value="<?= $data->transaction->date; ?>" />
         </div>
 
 
@@ -162,9 +164,8 @@ $data->h1 = 'Edit Transaction: ';
 
 <p>Would you like to delete this transaction?</p>
 
-<form method="POST" action="/transaction/{{id}}/delete" id="delete-form">
+<form method="POST" action="/transaction/<?= $data->transaction->id; ?>/delete" id="delete-form">
     <input type="hidden" name="referer" value="{{referer}}" />
-    <input type="hidden" name="id" value="{{id}}" />
     <input type="submit" id="delete-transaction" class="<<button>> bg-red-400 text-white" data-clicked="false" value="Delete Transaction" />
 </form>
 

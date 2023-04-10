@@ -12,11 +12,11 @@
 declare(strict_types=1);
 namespace controllers\TransactionsController;
 
-use DateTimeImmutable;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
 use lib\Router\Route\Route;
+use lib\services\Transaction\Transaction;
 use stdClass;
 
 
@@ -40,14 +40,34 @@ class TransactionsController extends Controller {
     {
         $budgetsModel      = $this->model('Budget');
 
-        $data               =         new stdClass();
-        $data->transactions = (array) $this->transactionsModel->get_all();
-        $data->budgets      =         $budgetsModel->get_all( Auth::user_id() );
-        $data->prompt       =         $_GET['prompt'] ?? false;
-        $data->date         =         date('Y-m-d');
+        $data                  =         new stdClass();
+        $data->transactions    = (array) $this->transactionsModel->get_all();
+        $data->budgets         =         $budgetsModel->get_all( Auth::user_id() );
+        $data->prompt          =         $_GET['prompt'] ?? false;
+        $data->date            =         date('Y-m-d');
+        $data->selected_budget = '';
 
-        // q($data->budgets);
         $this->view('transactions/index', $data);
+    }
+    
+    /**
+     * 
+     * @method Edit Transaction Form
+     * 
+     */
+    public function edit() : void
+    {
+        $transaction  = $this->transactionsModel->get(id: (int) Route::params()->id );
+        $budgetsModel = $this->model('Budget');
+
+        Auth::authorize($transaction?->user_id);
+
+        $data              = new stdClass();
+        $data->transaction = $transaction;
+        $data->referer     = parse_url( $_SERVER['HTTP_REFERER'] ?? '/transactions' , PHP_URL_PATH);
+        $data->budgets     = $budgetsModel->get_all( Auth::user_id() );
+
+        $this->view('transactions/edit', $data);
     }
 
     /**
@@ -64,22 +84,30 @@ class TransactionsController extends Controller {
             'date'    => ['required', 'date']
         ]);
         
-        $budgetsModel      = $this->model('Budget');
+        $budgetsModel = $this->model('Budget');
 
-        $data                  = new stdClass();
-        $data->name            = InputHandler::sanitize($_POST['name']);
-        $data->selected_budget = InputHandler::sanitize($_POST['budgets']);
-        $data->budgets         = $budgetsModel->get_all( Auth::user_id() );
-        $data->amount          = InputHandler::sanitize($_POST['amount']);
-        $data->amount          = number_format( (float) $data->amount, 2, '.', '' );
-        $data->type            = InputHandler::sanitize($_POST['type']);
-        $data->date            = InputHandler::sanitize($_POST['date']);
-        $data->errors          = $validator->errors;
-        $data->success         = $validator->success;
+        $amount  = (float) InputHandler::sanitize($_POST['amount']);
+        $amount  = (float) number_format( $amount, 2, '.', '' );
+
+        $transaction = new Transaction(
+            id:      null,
+            name:    InputHandler::sanitize($_POST['name']),
+            budget:  InputHandler::sanitize($_POST['budgets']),
+            type:    InputHandler::sanitize($_POST['type']),
+            date:    InputHandler::sanitize($_POST['date']),
+            amount:  $amount,
+            user_id: Auth::user_id()
+        );
+
+        $data              = new stdClass();
+        $data->transaction = $transaction;
+        $data->budgets     = $budgetsModel->get_all( Auth::user_id() );
+        $data->errors      = $validator->errors;
+        $data->success     = $validator->success;
         
         if( $data->success ) 
         {
-            $new_transaction = $this->transactionsModel->create($data);
+            $new_transaction = $this->transactionsModel->create( $transaction );
             
             if( $new_transaction->error ) 
             {
@@ -87,10 +115,8 @@ class TransactionsController extends Controller {
                 $data->errors->query = true;
 
             } else {
-                $data->success = true;
-                $data->name    = '';
-                $data->amount  = '';
-                $data->date    = date('Y-m-d');
+                header('Location: /transactions?prompt=add_transaction');
+                die();
             }
         }
         
@@ -101,40 +127,15 @@ class TransactionsController extends Controller {
 
     /**
      * 
-     * @method Edit Transaction Form
-     * 
-     */
-    public function edit() : void
-    {
-        $id = (int) Route::params()->id;
-        
-        // Authorize Edit Transaction
-        $user = $this->transactionsModel->get(id: $id);
-        Auth::authorize($user->user_id ?? 0);
-
-        $budgetsModel  = $this->model('Budget');
-
-        $transaction   = $this->transactionsModel->get(id: $id);
-        $data          = new stdClass();
-        $data->id      = $id;
-        $data->referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/transactions' , PHP_URL_PATH);
-        $data->name    = $transaction->name;
-        $data->budgets = $budgetsModel->get_all( Auth::user_id() );
-        $data->budget  = $transaction->budget;
-        $data->date    = $transaction->date;
-        $data->amount  = $transaction->amount;
-        $data->type    = $transaction->type;
-
-        $this->view('transactions/edit', $data);
-    }
-
-    /**
-     * 
      * @method Edit a Transaction
      * 
      */
     public function update()
     {
+        // Authorize Edit Transaction
+        $db_transaction = $this->transactionsModel->get( id: (int) Route::params()->id );
+        Auth::authorize($db_transaction->user_id);
+
         $validator = InputHandler::validate([
             'name'    => ['required', 'max:20', 'has_spaces'],
             'amount'  => ['required', 'number'],
@@ -143,39 +144,27 @@ class TransactionsController extends Controller {
             'date'    => ['required', 'date']
         ]);
 
-        $budgetsModel  = $this->model('Budget');
+        $transaction = new Transaction(
+            id:      (int)   Route::params()->id,
+            name:            InputHandler::sanitize( $_POST['name'] ),
+            budget:          InputHandler::sanitize( $_POST['budgets'] ),
+            type:            InputHandler::sanitize( $_POST['type'] ),
+            date:            InputHandler::sanitize( $_POST['date'] ),
+            user_id: (int)   Auth::user_id(),
+            amount:  (float) InputHandler::sanitize( $_POST['amount'] )
+        );
 
-        $data          =         new stdClass();
-        $data->name    =         InputHandler::sanitize( $_POST['name'] );
-        $data->amount  = (float) InputHandler::sanitize( $_POST['amount'] );
-        $data->type    =         InputHandler::sanitize( $_POST['type'] );
-        $data->budget  =         InputHandler::sanitize( $_POST['budgets'] );
-        $data->budgets =         $budgetsModel->get_all( Auth::user_id() );
-        $data->date    =         InputHandler::sanitize( $_POST['date'] );
-        $data->referer =         InputHandler::sanitize( $_POST['referer'] );
-        $data->user_id =         Auth::user_id();
-        $data->id      = (int)   Route::params()->id;
-        $data->errors  =         $validator->errors;
-        $data->success =         $validator->success;
-
-        // Authorize Edit Transaction
-        $user = $this->transactionsModel->get(id: $data->id);
-        Auth::authorize($user->user_id);
+        $data              = new stdClass();
+        $data->transaction = $transaction;
+        $data->budgets     = ($this->model('Budget'))->get_all( (int) Auth::user_id() );
+        $data->referer     = InputHandler::sanitize( $_POST['referer'] );
+        $data->errors      = $validator->errors;
+        $data->success     = $validator->success;
 
         if ( $data->success )
         {
-            // Edit Transaction
-            $this->transactionsModel->update(
-                name:    $data->name,
-                budget:  $data->budget,
-                amount:  $data->amount,
-                type:    $data->type,
-                date:    $data->date,
-                id:      $data->id,
-                user_id: $data->user_id
-            );
+            $this->transactionsModel->update( $transaction );
         }
-
 
         $this->view('transactions/edit', $data);
     }
@@ -187,24 +176,15 @@ class TransactionsController extends Controller {
      */
     public function destroy()
     {
-        $data = new stdClass();
-        
-        if( empty($_POST['referer']) || empty($_POST['id']) )
-        {
-            $this->view('transactions/edit', $data);
-            return;
-        }
+        // Authorize Delete Transaction
+        $transaction = $this->transactionsModel->get(id: (int) Route::params()->id );
+        Auth::authorize($transaction->user_id);
 
-        $transaction_id = (int) $_POST['id'];
-        $referer        = $_POST['referer'];
+        $referer        = $_POST['referer'] ?: '/transactions';
         $referer        = parse_url($referer, PHP_URL_PATH);
 
-        // Authorize Delete Transaction
-        $user = $this->transactionsModel->get(id: $transaction_id);
-        Auth::authorize($user->user_id);
-
         // Delete Transaction
-        $this->transactionsModel->destroy(id: $transaction_id);
+        $this->transactionsModel->destroy(id: $transaction->id);
 
         // Return to referer
         header("Location: $referer?prompt=delete_transaction ");
