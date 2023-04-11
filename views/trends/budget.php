@@ -4,13 +4,14 @@
 
 <?php if ( $data->transactions->monthly_net_totals ): ?>
 
-    <section class="relative flex items-center gap-4 h-[210px] w-fit min-w-[300px]">
+    <section class="relative flex items-center gap-4 h-[230px] w-fit min-w-[300px] px-2 border border-slate-200 rounded-xl">
 
+        <!-- X Axis Line -->
         <div class="absolute top-[100px] left-0 right-0 h-[1px] bg-slate-300"></div>
 
         <?php foreach ( $data->transactions->monthly_net_totals as $month => $total ): ?>
 
-            <?php $bar_height = (int) ($total / $data->monthly_ratio); ?>
+            <?php $bar_height = (int) ($total * $data->monthly_ratio); ?>
 
             <div class="relative h-[100%] w-16">
 
@@ -22,8 +23,8 @@
                     class="
                         absolute left-0 right-0 text-center text-xs
                         <?= $total >= 0
-                            ? 'top-[110px]'
-                            : 'bottom-[120px]';
+                            ? 'top-[105px]'
+                            : 'bottom-[135px]';
                         ?>
                     "
                 >
@@ -34,7 +35,7 @@
                     class="
                         absolute left-0 right-0 rounded-sm
                         <?= $bar_height >= 0 
-                            ? 'bottom-[110px] h-[' . $bar_height . 'px]      bg-gradient-to-b from-teal-200 to-teal-400'
+                            ? 'bottom-[128px] h-[' . $bar_height . 'px]      bg-gradient-to-b from-teal-200 to-teal-400'
                             : 'top-[100px]    h-[' . $bar_height * -1 . 'px] bg-gradient-to-t from-red-200  to-red-400';  
                         ?>
                     "

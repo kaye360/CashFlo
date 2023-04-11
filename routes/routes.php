@@ -94,6 +94,8 @@ Route::post('/budget/:id/delete', fn() => (new BudgetsController())->auth()->des
  */
 Route::get('/transactions',            fn() => (new TransactionsController())->auth()->index() );
 
+Route::get('/transactions/:page',      fn() => (new TransactionsController())->auth()->index() );
+
 Route::post('/transactions',           fn() => (new TransactionsController())->auth()->create() );
 
 Route::get('/transaction/:id/edit',    fn() => (new TransactionsController())->auth()->edit() );

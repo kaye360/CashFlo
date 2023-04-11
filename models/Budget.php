@@ -99,7 +99,7 @@ class BudgetModel {
             ->single();
 
         return $budget
-            ? Helpers::service_class_from_obj( Budget::class, $budget )
+            ? new Budget(... (array) $budget)
             : null;
     }
 

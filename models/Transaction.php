@@ -15,7 +15,6 @@ namespace models\TransactionModel;
 use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\services\Transaction\Transaction;
-use lib\utils\Helpers\Helpers;
 use stdClass;
 
 
@@ -190,7 +189,7 @@ class TransactionModel {
             ->single();
 
         return $transaction 
-            ? Helpers::service_class_from_obj( Transaction::class, $transaction )
+            ? new Transaction(... (array) $transaction)
             : null;
     }
 

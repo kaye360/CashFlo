@@ -15,6 +15,7 @@ namespace controllers\TrendsController;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\Router\Route\Route;
+use lib\utils\Helpers\Helpers;
 use stdClass;
 
 class TrendsController extends Controller {
@@ -56,6 +57,9 @@ class TrendsController extends Controller {
         $data         = new stdClass();
         $data->budget = $budgetModel->get( (int) Route::params()->id );
 
+        // Authorize 
+        Auth::authorize( $data->budget->user_id );
+
         if ( !$data->budget )
         {
             header('Location: /error/404'); 
@@ -66,27 +70,8 @@ class TrendsController extends Controller {
         $data->h1            = 'Budget Trends: ' . ucwords($data->budget->name);
         $data->transactions  = $transactionModel->get_single_budget_trend( $data->budget->name );
 
-        // Authorize 
-        Auth::authorize( $data->budget->user_id );
-
-        if ( $data->transactions->monthly_net_totals )
-        {
-            $monthly_max     = (float) max($data->transactions->monthly_net_totals);
-            $monthly_min     = (float) min($data->transactions->monthly_net_totals);
-        } else {
-            $monthly_max     = (float) 1;
-            $monthly_min     = (float) 1;
-        }
-
-        $monthly_diff        = ($monthly_max - $monthly_min);
-        $data->monthly_ratio = $monthly_diff / 100;
-
-        if ( $data->monthly_ratio === (float) 0 )
-        {
-            $data->monthly_ratio = $monthly_max < 0
-                ? 50 / -$monthly_max
-                : 50 / $monthly_max;
-        }
+        // Generate Graph values
+        $data->monthly_ratio = Helpers::budget_trend_bar_graph( $data->transactions->monthly_net_totals );
 
         return $this->view('trends/budget', $data);
     }

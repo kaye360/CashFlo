@@ -30,33 +30,23 @@ class Helpers {
 
     /**
      * 
-     * @method Create a new Service Class from and object
+     * @method generate budget trend bar graph
      * 
-     * This method simplifies copying a DB query to a Service Class
-     * The object must have the required keys as args to the Service class
      */
-    public static function service_class_from_obj( string $service_class_name,  object $obj )
+    public static function budget_trend_bar_graph( array $net_totals, int $max_height = 100 )
     {
-        if( !class_exists($service_class_name))
-        {
-            throw new InvalidArgumentException( $service_class_name . 'Doesn\'t exist');
-        }
+        if( empty($net_totals) ) return;
 
-        $service_class_params = ( new ReflectionClass($service_class_name) )
-            ->getConstructor()
-            ->getParameters();
+        $monthly_max     = (float) max( $net_totals );
+        $monthly_max_abs = abs($monthly_max);
+        $monthly_min     = (float) min( $net_totals );
+        $monthly_min_abs = abs($monthly_min);
 
-        foreach( $service_class_params as $param)
-        {
-            if( !property_exists( $obj, $param->name ) )
-            {
-                throw new InvalidArgumentException('Missing property ' . $param->name . ' in class service_class_from_obj: arg #2');
-            }
-        }
+        $monthly_largest_abs = max ($monthly_max_abs, $monthly_min_abs );
+        $monthly_ratio       = $max_height / $monthly_largest_abs;        
 
-        return new $service_class_name(... (array) $obj );
+        return $monthly_ratio;
     }
-     
 
     /**
      * 
