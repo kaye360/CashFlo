@@ -74,7 +74,6 @@ define('DB_CONNECTION', DBConnect::connect() );
  * 
  */
 Auth::init();
-// define('AUTH', Auth::init() );
 
 /**
  * 
@@ -84,7 +83,7 @@ Auth::init();
 Route::init();
 require_once './routes/routes.php';
 Route::resolve();
-// q(Route::params());
+
 /**
  * 
  * @method Error Handler

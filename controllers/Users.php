@@ -12,8 +12,10 @@
 declare(strict_types=1);
 namespace controllers\UsersController;
 
+use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\InputHandler;
+use lib\Router\Route\Route;
 use lib\utils\Helpers\Helpers;
 use stdClass;
 
@@ -163,7 +165,11 @@ class UsersController extends Controller {
      */
     public function settings() : void
     {
-        $this->view('users/settings');
+        $data = new stdClass();
+        $data->settings = Auth::settings();
+        $data->success = true;
+
+        $this->view('users/settings', $data);
     }
 
     /**
@@ -174,25 +180,52 @@ class UsersController extends Controller {
     public function update_settings() : void
     {
         $validator = InputHandler::validate([
-            'password' => ['user_pass_verify'],
-            'confirm_password_1' => ['confirm_password', 'min:6']
+            'confirm_password_1'    => !$_POST['confirm_password_1'] && !$_POST['confirm_password_2'] 
+                ? []
+                : ['confirm_password', 'min:6'],
+            'transactions_per_page' => ['number']
         ]);
 
-        $data                     = new stdClass();
-        $data->success            = false;
-        $data->username           = InputHandler::sanitize( $_POST['username'] );
-        $data->password           = InputHandler::sanitize( $_POST['password'] );
-        $data->confirm_password_1 = InputHandler::sanitize( $_POST['confirm_password_1'] );
-        $data->confirm_password_2 = InputHandler::sanitize( $_POST['confirm_password_2'] );
-        $data->errors             = $validator->errors;
-        $data->success            = $validator->success; 
+        $data                        = new stdClass();
+        $data->success               = false;
+        $data->confirm_password_1    = InputHandler::sanitize( $_POST['confirm_password_1'] );
+        $data->confirm_password_2    = InputHandler::sanitize( $_POST['confirm_password_2'] );
+        $data->transactions_per_page = InputHandler::sanitize( $_POST['transactions_per_page'] );
+        $data->errors                = $validator->errors;
+        $data->success               = $validator->success; 
 
         if( $data->success )
         {
-            $this->userModel->update_settings($data);
+            $settings                        = new stdClass();
+            $settings->password              = $data->confirm_password_1;
+            $settings->transactions_per_page = $data->transactions_per_page;
+            
+            $this->userModel->update_settings($settings);
+
+            header("Location: /settings?prompt=success");
         }
 
         $this->view('users/settings', $data);
+    }
+
+    /**
+     * 
+     * @method update a single users setting
+     * 
+     */
+    public function update_setting()
+    {
+        $referer = $_SERVER['HTTP_REFERER'];
+
+        if( Route::params()->setting === 'transactions_per_page' )
+        {
+            $value = InputHandler::sanitize( Route::params()->value );
+            $this->userModel->update_setting('transactions_per_page', (int) $value );
+            header("Location: $referer");
+            return;
+        }
+
+        header('Location: /error/404');
     }
 
 }

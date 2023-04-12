@@ -1,4 +1,7 @@
 <?php
+
+use lib\Router\Route\Route;
+
 $data->title = 'Transactions';
 $data->h1 = 'Transactions';
 // q($data->errors);
@@ -183,6 +186,9 @@ $data->h1 = 'Transactions';
 </section>
 
 
+<?php include '_pagination.php'; ?>
+
+
 <section class="flex flex-col gap-4">
 
     <h2 class="mb-2 p-2 text-lg font-medium bg-teal-100 rounded-lg">Your Transactions</h2>
@@ -254,6 +260,8 @@ $data->h1 = 'Transactions';
                 You have no transactions to show.
             </div>
         <?php endif; ?>
+
+        <?php include '_pagination.php'; ?>
 
 </section>
 

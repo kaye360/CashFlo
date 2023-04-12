@@ -84,14 +84,30 @@ class TransactionModel {
      * @method Get currently logged in users transactions.
      * 
      */
-    public function get_all() : array | null
+    public function get_all( int $page = 1, int $per_page = 10 ) : object
     {
-        return $this->database
+        $start = ($page - 1) * $per_page;
+        // $start = $page * $per_page;
+
+        $list = $this->database
             ->table('transactions')
             ->select('*')
             ->where("user_id = '" . Auth::user_id() . "' ")
+            ->limit(" $start, $per_page ")
             ->order('date DESC, id DESC')
             ->list( Transaction::class );
+            
+        $count = $this->database
+            ->table('transactions')
+            ->select('*')
+            ->where("user_id = '" . Auth::user_id() . "' ")
+            ->count();
+
+        $transactions              = new stdClass();
+        $transactions->list        = $list;
+        $transactions->total_pages = (int) ceil( $count / $per_page );
+
+        return $transactions;
     }
 
     /**

@@ -35,9 +35,10 @@ class Auth {
      * Can be used if data needs to be returned, not echo'd
      * 
      */
-    private static bool   $is_logged_in = false;
-    private static ?string $username = null;
-    private static ?int    $user_id = null;
+    private static bool    $is_logged_in = false;
+    private static ?string $username     = null;
+    private static ?int    $user_id      = null;
+    private static ?string $settings     = null;
 
     /**
      * 
@@ -57,7 +58,7 @@ class Auth {
         // Check if there is an active session in the DB
         $user = $db_query
             ->table('users')
-            ->select('username, id')
+            ->select('username, id, settings')
             ->where("session = '$_COOKIE[session]' ")
             ->single();
 
@@ -68,6 +69,7 @@ class Auth {
             self::$username     = $user->username;
             self::$user_id      = $user->id;
             self::$is_logged_in = true;
+            self::$settings     = $user->settings;
         }
     }
 
@@ -114,6 +116,20 @@ class Auth {
     public static function is_logged_in() : bool
     {
         return (bool) self::$is_logged_in;
+    }
+
+    /**
+     * 
+     * @method Get user settings
+     * 
+     */
+    public static function settings() : object
+    {
+        $settings = json_decode( self::$settings );
+
+        if( !isset($settings->transactions_per_page) ) $settings->transactions_per_page = 25;
+
+        return $settings;
     }
 
     /**

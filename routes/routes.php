@@ -72,6 +72,8 @@ Route::get('/settings',  fn() => (new UsersController())->auth()->settings() );
 
 Route::post('/settings', fn() => (new UsersController())->auth()->update_settings() );
 
+Route::get('/settings/:setting/:value', fn() => (new UsersController())->auth()->update_setting() );
+
 /**
  * 
  * Budgets Routes (Authorized)

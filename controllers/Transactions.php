@@ -40,11 +40,34 @@ class TransactionsController extends Controller {
     {
         $budgetsModel      = $this->model('Budget');
 
-        $data                  =         new stdClass();
-        $data->transactions    = (array) $this->transactionsModel->get_all();
-        $data->budgets         =         $budgetsModel->get_all( Auth::user_id() );
-        $data->prompt          =         $_GET['prompt'] ?? false;
-        $data->date            =         date('Y-m-d');
+        $page = isset( Route::params()->page )
+            ? (int) Route::params()->page
+            : 1;
+
+        if( $page <= 0)
+        {
+            header('Location: /transactions/1');
+            die();
+        }
+
+        $transactions = $this->transactionsModel->get_all( 
+            page: $page, 
+            per_page: (int) Auth::settings()->transactions_per_page 
+        );
+
+        if( $page > $transactions->total_pages )
+        {
+            header('Location: /transactions/' . $transactions->total_pages );
+            die();
+        }
+
+        $data                  = new stdClass();
+        $data->page            = $page;
+        $data->transactions    = $transactions->list;
+        $data->total_pages     = $transactions->total_pages;
+        $data->budgets         = $budgetsModel->get_all( Auth::user_id() );
+        $data->prompt          = $_GET['prompt'] ?? false;
+        $data->date            = date('Y-m-d');
         $data->selected_budget = '';
 
         $this->view('transactions/index', $data);
@@ -86,6 +109,8 @@ class TransactionsController extends Controller {
         
         $budgetsModel = $this->model('Budget');
 
+        $referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/transactions' , PHP_URL_PATH);
+
         $amount  = (float) InputHandler::sanitize($_POST['amount']);
         $amount  = (float) number_format( $amount, 2, '.', '' );
 
@@ -115,7 +140,7 @@ class TransactionsController extends Controller {
                 $data->errors->query = true;
 
             } else {
-                header('Location: /transactions?prompt=add_transaction');
+                header("Location: $referer?prompt=add_transaction");
                 die();
             }
         }
