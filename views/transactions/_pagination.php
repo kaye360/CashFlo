@@ -1,16 +1,20 @@
-<section class="flex items-center justify-between">
+<?php use lib\Auth\Auth; ?>
 
-    <div class="flex items-center justify-center gap-4 text-lg py-4">
+
+
+<section class="flex items-center justify-between text-sm">
+
+    <div class="flex items-center justify-center gap-4 py-4">
 
         <span>
-            <?php
-
-use lib\Auth\Auth;
-
- if( $data->page !== 1 ): ?>
+            <?php if( $data->page !== 1 ): ?>
                 <a href="/transactions/<?= $data->page - 1; ?>" class="block px-4 py-2 hover:bg-teal-200 rounded-lg">
                     Previous
                 </a>
+            <?php else: ?>
+                <span class="block px-4 py-2">
+                    Previous
+                </span>
             <?php endif; ?>
         </span>
             
@@ -30,7 +34,12 @@ use lib\Auth\Auth;
                 <a href="/transactions/<?= $data->page + 1; ?>" class="block px-4 py-2 hover:bg-teal-200 rounded-lg">
                     Next
                 </a>
+            <?php else: ?>
+                <span class="block px-4 py-2">
+                    Next
+                </span>
             <?php endif; ?>
+                
         </span>
 
     </div>

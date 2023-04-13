@@ -14,7 +14,8 @@ namespace controllers\TransactionsController;
 
 use lib\Auth\Auth;
 use lib\Controller\Controller;
-use lib\InputHandler\InputHandler;
+use lib\InputHandler\Sanitizer\Sanitizer;
+use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\services\Transaction\Transaction;
 use stdClass;
@@ -100,7 +101,7 @@ class TransactionsController extends Controller {
      */
     public function create() : void
     {
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'name'    => ['required', 'max:20' , 'has_spaces'],
             'amount'  => ['required', 'number'],
             'budgets' => ['required', 'has_spaces'],
@@ -111,15 +112,15 @@ class TransactionsController extends Controller {
 
         $referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/transactions' , PHP_URL_PATH);
 
-        $amount  = (float) InputHandler::sanitize($_POST['amount']);
+        $amount  = (float) Sanitizer::sanitize($_POST['amount']);
         $amount  = (float) number_format( $amount, 2, '.', '' );
 
         $transaction = new Transaction(
             id:      null,
-            name:    InputHandler::sanitize($_POST['name']),
-            budget:  InputHandler::sanitize($_POST['budgets']),
-            type:    InputHandler::sanitize($_POST['type']),
-            date:    InputHandler::sanitize($_POST['date']),
+            name:    Sanitizer::sanitize($_POST['name']),
+            budget:  Sanitizer::sanitize($_POST['budgets']),
+            type:    Sanitizer::sanitize($_POST['type']),
+            date:    Sanitizer::sanitize($_POST['date']),
             amount:  $amount,
             user_id: Auth::user_id()
         );
@@ -161,7 +162,7 @@ class TransactionsController extends Controller {
         $db_transaction = $this->transactionsModel->get( id: (int) Route::params()->id );
         Auth::authorize($db_transaction->user_id);
 
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'name'    => ['required', 'max:20', 'has_spaces'],
             'amount'  => ['required', 'number'],
             'type'    => ['required'],
@@ -171,18 +172,18 @@ class TransactionsController extends Controller {
 
         $transaction = new Transaction(
             id:      (int)   Route::params()->id,
-            name:            InputHandler::sanitize( $_POST['name'] ),
-            budget:          InputHandler::sanitize( $_POST['budgets'] ),
-            type:            InputHandler::sanitize( $_POST['type'] ),
-            date:            InputHandler::sanitize( $_POST['date'] ),
+            name:            Sanitizer::sanitize( $_POST['name'] ),
+            budget:          Sanitizer::sanitize( $_POST['budgets'] ),
+            type:            Sanitizer::sanitize( $_POST['type'] ),
+            date:            Sanitizer::sanitize( $_POST['date'] ),
             user_id: (int)   Auth::user_id(),
-            amount:  (float) InputHandler::sanitize( $_POST['amount'] )
+            amount:  (float) Sanitizer::sanitize( $_POST['amount'] )
         );
 
         $data              = new stdClass();
         $data->transaction = $transaction;
         $data->budgets     = ($this->model('Budget'))->get_all( (int) Auth::user_id() );
-        $data->referer     = InputHandler::sanitize( $_POST['referer'] );
+        $data->referer     = Sanitizer::sanitize( $_POST['referer'] );
         $data->errors      = $validator->errors;
         $data->success     = $validator->success;
 

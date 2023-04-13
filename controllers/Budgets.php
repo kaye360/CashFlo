@@ -14,7 +14,8 @@ namespace controllers\BudgetsController;
 
 use lib\Auth\Auth;
 use lib\Controller\Controller;
-use lib\InputHandler\InputHandler;
+use lib\InputHandler\Sanitizer\Sanitizer;
+use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\services\Budget\Budget;
 use stdClass;
@@ -50,24 +51,24 @@ class BudgetsController extends Controller {
 
     /**
      * 
-     * @method Create a budget
+     * /@method Create a budget
      * 
      */
     public function create() : void
     {
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'name'   => ['required', 'max:20' , 'has_spaces'],
             'amount' => ['required', 'number'],
             'type'   => ['required']
         ]);
 
-        $amount  = InputHandler::sanitize($_POST['amount']);
-        $amount  = InputHandler::money($_POST['amount']);
+        $amount  = Sanitizer::sanitize($_POST['amount']);
+        $amount  = Sanitizer::money($_POST['amount']);
 
         $budget = new Budget(
             id:      null,
-            name:    InputHandler::sanitize($_POST['name']),
-            type:    InputHandler::sanitize($_POST['type']),
+            name:    Sanitizer::sanitize($_POST['name']),
+            type:    Sanitizer::sanitize($_POST['type']),
             amount:  $amount,
             user_id: Auth::user_id()
         );
@@ -123,26 +124,26 @@ class BudgetsController extends Controller {
         $db_budget = $this->budgetModel->get(id: (int) Route::params()->id );
         Auth::authorize($db_budget->user_id);
 
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'name'   => ['required', 'max:20', 'has_spaces'],
             'amount' => ['required', 'number'],
             'type'   => ['required']
         ]);
 
-        $amount = InputHandler::sanitize($_POST['amount']);
-        $amount = InputHandler::money($_POST['amount']);
+        $amount = Sanitizer::sanitize($_POST['amount']);
+        $amount = Sanitizer::money($_POST['amount']);
 
         $budget = new Budget(
             id:      (int) Route::params()->id,
-            name:    InputHandler::sanitize($_POST['name']),
-            type:    InputHandler::sanitize($_POST['type']),
+            name:    Sanitizer::sanitize($_POST['name']),
+            type:    Sanitizer::sanitize($_POST['type']),
             amount:  $amount,
             user_id: Auth::user_id()
         );
 
         $data          = new stdClass();
         $data->budget  = $budget;
-        $data->referer = InputHandler::sanitize($_POST['referer']);
+        $data->referer = Sanitizer::sanitize($_POST['referer']);
         $data->errors  = $validator->errors;
         $data->success = $validator->success;
 

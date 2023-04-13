@@ -14,7 +14,8 @@ namespace controllers\UsersController;
 
 use lib\Auth\Auth;
 use lib\Controller\Controller;
-use lib\InputHandler\InputHandler;
+use lib\InputHandler\Sanitizer\Sanitizer;
+use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\utils\Helpers\Helpers;
 use stdClass;
@@ -49,14 +50,14 @@ class UsersController extends Controller {
      */
     public function create() : void
     {
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'username' =>           ['required', 'unique', 'max:15', 'min:6'],
             'confirm_password_1' => ['required', 'min:6', 'confirm_password'],
             'confirm_password_2' => ['required']
         ]);
             
         $data                   = new stdClass() ;
-        $data->username         = InputHandler::sanitize( $_POST['username'] );
+        $data->username         = Sanitizer::sanitize( $_POST['username'] );
         $data->password         = trim($_POST['confirm_password_1']);
         $data->confirm_password = trim($_POST['confirm_password_2']);
         $data->errors           = $validator->errors;
@@ -97,14 +98,14 @@ class UsersController extends Controller {
      */
     public function authenticate() : void
     {
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'username' => ['required'],
             'password' => ['required', 'user_pass_verify']
         ]);
         
         $data           = new stdClass();
-        $data->username = InputHandler::sanitize( $_POST['username'] );
-        $data->password = InputHandler::sanitize( $_POST['password'] );
+        $data->username = Sanitizer::sanitize( $_POST['username'] );
+        $data->password = Sanitizer::sanitize( $_POST['password'] );
         $data->errors   = $validator->errors;
         $data->success  = $validator->success;
         
@@ -179,7 +180,7 @@ class UsersController extends Controller {
      */
     public function update_settings() : void
     {
-        $validator = InputHandler::validate([
+        $validator = Validator::validate([
             'confirm_password_1'    => !$_POST['confirm_password_1'] && !$_POST['confirm_password_2'] 
                 ? []
                 : ['confirm_password', 'min:6'],
@@ -188,9 +189,9 @@ class UsersController extends Controller {
 
         $data                        = new stdClass();
         $data->success               = false;
-        $data->confirm_password_1    = InputHandler::sanitize( $_POST['confirm_password_1'] );
-        $data->confirm_password_2    = InputHandler::sanitize( $_POST['confirm_password_2'] );
-        $data->transactions_per_page = InputHandler::sanitize( $_POST['transactions_per_page'] );
+        $data->confirm_password_1    = Sanitizer::sanitize( $_POST['confirm_password_1'] );
+        $data->confirm_password_2    = Sanitizer::sanitize( $_POST['confirm_password_2'] );
+        $data->transactions_per_page = Sanitizer::sanitize( $_POST['transactions_per_page'] );
         $data->errors                = $validator->errors;
         $data->success               = $validator->success; 
 
@@ -219,7 +220,7 @@ class UsersController extends Controller {
 
         if( Route::params()->setting === 'transactions_per_page' )
         {
-            $value = InputHandler::sanitize( Route::params()->value );
+            $value = Sanitizer::sanitize( Route::params()->value );
             $this->userModel->update_setting('transactions_per_page', (int) $value );
             header("Location: $referer");
             return;
