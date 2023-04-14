@@ -50,6 +50,88 @@ class Helpers {
 
     /**
      * 
+     * @method Calculate monthly net totals
+     * 
+     * Create an array of net spending for each month
+     * $monthly_net_totals array keys match $transactions_chunked_by_month
+     * 
+     */
+    public static function calc_monthly_net_totals( array $transactions_chunked_by_month, string $type = 'net' ) : array
+    {
+        $monthly_net_totals = [];
+        
+        foreach ( $transactions_chunked_by_month as $month )
+        {
+            foreach ( $month as $transaction)
+            {
+                $year_month = substr($transaction->date, 0, -3);
+    
+                if ( !array_key_exists( $year_month, $monthly_net_totals) )
+                {
+                    $monthly_net_totals[ $year_month ] = [];
+                }
+    
+                $monthly_net_total = array_reduce( 
+                    $transactions_chunked_by_month[ $year_month ], 
+                    function( $total, $current) use($type)
+                    {
+                        if ( 
+                            ( $type === 'net' || $type === 'income' ) &&
+                            ( $current->type === 'income' )
+                            )   {
+                                $total += $current->amount;
+                            }
+                            
+                        if ( 
+                            ( $type === 'net' || $type === 'spending') &&
+                            ( $current->type === 'spending' )
+                        ) {
+                            $total -= $current->amount;
+                        }
+
+                        return $total;
+                    }
+                );
+
+                $monthly_net_totals[ $year_month ] = number_format( $monthly_net_total ?: 0, 2, '.', '' );
+            }
+
+            unset($transaction);
+        }
+
+        unset($month);
+
+        return $monthly_net_totals;
+    }
+
+    /**
+     * 
+     * @method Chunk transactions by month
+     * 
+     */
+    public static function chunk_transactions_by_month( array $transactions ) : array
+    {
+        $transactions_chunked_by_month = [];
+
+        foreach ( $transactions as $transaction )
+        {
+            $year_month = substr($transaction->date, 0, -3);
+
+            if ( !array_key_exists( $year_month, $transactions_chunked_by_month ) )
+            {
+                $transactions_chunked_by_month[ $year_month ] = [];
+            }
+
+            array_push( $transactions_chunked_by_month[ $year_month ], $transaction );
+        }
+
+        unset($transaction);
+        
+        return $transactions_chunked_by_month;
+    }
+
+    /**
+     * 
      * @method Render Exception
      * 
      */

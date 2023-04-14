@@ -3,11 +3,17 @@ $data->title = 'Budget Trends';
 $data->h1 = 'Budget Trends';
 ?>
 
-<section class="grid grid-cols-4 gap-8 text-lg">
+<div class="my-4">
+    <a href="/trends" class="underline">
+        Back to Trends
+    </a>
+</div>
 
-    <div class="col-span-4">
-        Select a budget to view spending over time
-    </div>
+<div class="my-4">
+    Select a budget to view spending over time
+</div>
+
+<section class="grid grid-cols-5 gap-8 text-lg">
 
     <?php foreach ($data->budgets as $budget): ?>
 

@@ -1,7 +1,11 @@
 
 <a href="/trends/budgets" class="inline-block underline mb-6">Back to budgets</a>
 
+<p class="mb-4">
+    This pages shows how much was spent/earned per month for the budget: <?= $data->budget->name; ?>
+</p>
 
+<!-- Bar Graph -->
 <?php if ( $data->transactions->monthly_net_totals ): ?>
 
     <section class="relative flex items-center gap-4 h-[230px] w-fit min-w-[300px] px-2 border border-slate-200 rounded-xl">

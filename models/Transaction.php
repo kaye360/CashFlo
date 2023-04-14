@@ -15,6 +15,7 @@ namespace models\TransactionModel;
 use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\services\Transaction\Transaction;
+use lib\utils\Helpers\Helpers;
 use stdClass;
 
 
@@ -115,78 +116,35 @@ class TransactionModel {
      * @method Get a Transactions by name
      * 
      */
-    public function get_single_budget_trend( string $budget ) : object
+    public function get_monthly_transaction_trend( ?string $budget = null ) : object
     {
         $user_id = Auth::user_id();
+
+        $where = $budget 
+            ? "budget = '$budget' AND user_id = '$user_id' "
+            : "user_id = '$user_id' ";
 
         $transactions = $this->database
             ->table('transactions')
             ->select('*')
-            ->where("budget = '$budget' AND user_id = '$user_id' ")
+            ->where($where)
             ->order('date DESC, id DESC')
             ->list( Transaction::class );
 
-        /**
-         * Chunk transactions by month in multidimensional array
-         */
-        $transactions_chunked_by_month = [];
-
-        foreach ( $transactions as $transaction )
-        {
-            $year_month = substr($transaction->date, 0, -3);
-
-            if ( !array_key_exists( $year_month, $transactions_chunked_by_month ) )
-            {
-                $transactions_chunked_by_month[ $year_month ] = [];
-            }
-
-            array_push( $transactions_chunked_by_month[ $year_month ], $transaction );
-        }
-
-        unset($transaction);
-
-        /**
-         * Create an array of net spending for each month
-         * $monthly_net_totals array keys match $transactions_chunked_by_month
-         */
-        $monthly_net_totals = [];
-        
-        foreach ( $transactions_chunked_by_month as $month )
-        {
-            foreach ( $month as $transaction)
-            {
-                $year_month = substr($transaction->date, 0, -3);
-    
-                if ( !array_key_exists( $year_month, $monthly_net_totals) )
-                {
-                    $monthly_net_totals[ $year_month ] = [];
-                }
-    
-                $monthly_net_total = array_reduce( 
-                    $transactions_chunked_by_month[ $year_month ], 
-                    function( $total, $current)
-                    {
-                        if ( $current->type === 'income' )   $total += $current->amount;
-                        if ( $current->type === 'spending' ) $total -= $current->amount;
-                        return $total;
-                    }
-                );
-
-                $monthly_net_totals[ $year_month ] = number_format( $monthly_net_total, 2, '.', '' );
-            }
-
-            unset($transaction);
-        }
-
-        unset($month);
-
-        /**
-         * Return an object with transactions chunked by month and monthly net totals
-         * Both will have matching array keys of month in the form YYYY-MM
-         */
         $budget_trend                                = new stdClass();
-        $budget_trend->transactions_chunked_by_month = $transactions_chunked_by_month;
-        $budget_trend->monthly_net_totals            = $monthly_net_totals ?: [];
+        $budget_trend->transactions_chunked_by_month = Helpers::chunk_transactions_by_month( $transactions );
+
+        $budget_trend->monthly_net_totals            = Helpers::calc_monthly_net_totals(                                
+            $budget_trend->transactions_chunked_by_month 
+        );
+
+        $budget_trend->monthly_net_spending          = Helpers::calc_monthly_net_totals( 
+            $budget_trend->transactions_chunked_by_month, 'spending' 
+        );
+
+        $budget_trend->monthly_net_income          = Helpers::calc_monthly_net_totals( 
+            $budget_trend->transactions_chunked_by_month, 'income' 
+        );
 
         return $budget_trend;
     }

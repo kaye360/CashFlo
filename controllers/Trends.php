@@ -68,7 +68,7 @@ class TrendsController extends Controller {
 
         $data->title         = 'Budget Trends: ' . ucwords($data->budget->name);
         $data->h1            = 'Budget Trends: ' . ucwords($data->budget->name);
-        $data->transactions  = $transactionModel->get_single_budget_trend( $data->budget->name );
+        $data->transactions  = $transactionModel->get_monthly_transaction_trend( $data->budget->name );
 
         // Generate Graph values
         $data->monthly_ratio = Helpers::budget_trend_bar_graph( $data->transactions->monthly_net_totals );
@@ -83,7 +83,12 @@ class TrendsController extends Controller {
      */
     public function monthly_index()
     {
-        return $this->view('trends/monthly');
+        $transactionModel = $this->model('Transaction');
+
+        $data = new stdClass();
+        $data->transactions = $transactionModel->get_monthly_transaction_trend();
+
+        return $this->view('trends/monthly', $data);
     }
 
     /**
