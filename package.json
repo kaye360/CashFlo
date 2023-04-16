@@ -1,0 +1,26 @@
+{
+  "name": "spendly",
+  "version": "1.0.0",
+  "description": "This will be a custom, built from scratch money tracking app.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kaye360/CashFlo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaye360/CashFlo/issues"
+  },
+  "homepage": "https://github.com/kaye360/CashFlo#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.3.1"
+  }
+}

@@ -1,5 +1,5 @@
 
-# Spendly APP
+# CashFlo
 
 This will be a custom, built from scratch money tracking app.
 

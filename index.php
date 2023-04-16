@@ -2,14 +2,14 @@
 /**
  * 
  * -----------------------------------
- * | Spendly                         |
+ * | CashFlo                         |
  * | A personal expense tracking app |
  * -----------------------------------
  * 
  * 
- * Welcome to Spendly: A personal expense tracking app!
+ * Welcome to CashFlo: A personal expense tracking app!
  * @author Josh Kaye - https://joshkaye.dev
- * @link to github repo: https://github.com/kaye360/spendly_v2
+ * @link to github repo: https://github.com/kaye360/CashFlo
  * 
  * 
  * This is the gateway to the entire application
