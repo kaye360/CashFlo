@@ -1,6 +1,6 @@
 <?php
-$data->title = 'About Spendly';
-$data->h1 = 'About Spendly';
+$data->title = 'About CashFlo';
+$data->h1 = 'About CashFlo';
 ?>
 
 

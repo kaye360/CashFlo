@@ -1,6 +1,6 @@
 <?php
-$data->title = 'Welcome to Spendly';
-$data->h1 = 'Welcome to Spendly';
+$data->title = 'Welcome to CashFlo';
+$data->h1 = 'Welcome to CashFlo';
 ?>
 
 <section class="flex flex-col gap-6 min-h-[50vh]">

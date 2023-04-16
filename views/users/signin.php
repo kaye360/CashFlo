@@ -1,6 +1,6 @@
 <?php
-$data->title = 'Sign In to Spendly';
-$data->h1 = 'Sign In to Spendly';
+$data->title = 'Sign In to CashFlo';
+$data->h1 = 'Sign In to CashFlo';
 ?>
 <section class="flex flex-col gap-6 min-h-[50vh]">
 
