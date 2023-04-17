@@ -71,7 +71,7 @@ use lib\Router\Route\Route;
 
 
 <?php if( Auth::is_logged_in() && ( Route::path() !== '/' ) ): ?>
-    <div class="max-w-6xl text-right px-6 py-0 text-primary-700 font-bold">
+    <div class="max-w-6xl mx-auto text-right px-6 py-0 text-primary-700 font-bold">
         Signed in as: <?= Auth::username(); ?>
     </div>
 <?php endif; ?>

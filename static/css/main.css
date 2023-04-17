@@ -35,6 +35,14 @@
         color : #fff;
         font-weight: bold;
     }
+
+    .monthly_budget_edit {
+        color : #ddd;
+    }
+
+    .monthly_budget_row:hover .monthly_budget_edit {
+        color : #666;
+    }
 }
 
 
