@@ -46,9 +46,6 @@ class Router {
 	 * 
 	 * /@var url stores the current REQUEST_URI
 	 * 
-	 * Formatted to be an array key. any '/' is removed 
-	 * @example users/23 becomes users23
-	 * 
 	 */
 	private string $url = '';
 
@@ -188,7 +185,7 @@ class Router {
 	{
 		$request_uri 		  = explode('/', $this->url);
 
-		// Route loop Loop thru defined routes
+		// Loop thru defined routes
 		foreach($this->routes as $key => $route)
 		{
 			$params 	= [];
@@ -234,6 +231,16 @@ class Router {
 	public function get_params() : object | null
 	{
 		return $this->params;
+	}
+
+	/**
+	 * 
+	 * @method Get the path for the current requested route
+	 * 
+	 */
+	public function get_path() : string | null
+	{
+		return $this->url;
 	}
 
 	/**

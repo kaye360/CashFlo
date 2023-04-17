@@ -24,6 +24,7 @@ class Route {
     private static $instance = null;
     private static $router;
     private static $params = null;
+    private static $path = null;
 
 
     public function __construct()
@@ -82,8 +83,17 @@ class Route {
      */
     public static function params()
     {
-        // q(self::$params);
         return self::$params;
+    }
+
+    /**
+     * 
+     * @method Get Route Path Facade
+     * 
+     */
+    public static function path()
+    {
+        return self::$path === '/' ? '/' : '/' . self::$path;
     }
 
     /**
@@ -96,6 +106,8 @@ class Route {
         self::$router->resolve();
 
         self::$params = self::$router->get_params();
+
+        self::$path = self::$router->get_path();
         
         self::$router->call_route_method();
     }

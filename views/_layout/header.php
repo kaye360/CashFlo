@@ -1,4 +1,7 @@
-<?php use lib\Auth\Auth; ?>
+<?php use lib\Auth\Auth;
+use lib\Router\Route\Route;
+
+ ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,28 +19,40 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
     <title>
-        {{title}} - CashFlow
+        {{title}} - CashFlo
     </title>
 </head>
 <body>
 
 <div id="app" class="">
 
-<header>
+<header class="text-primary-50">
 
     <nav class="flex justify-between items-center max-w-6xl mx-auto p-4">
-        <div class="text-xl font-bold text-primary-50">
-            <span class="text-[#79EAD6]">Cash</span>Flow
+
+
+        <a href="/" class="inline-flex text-2xl font-bold">
+            <span class="text-[#79EAD6]">Cash</span>Flo
+            <img src="/static/img/logo.svg" >
+        </a>
+
+        <div class="flex items-center gap-2">
+
+            <?php if( !Auth::is_logged_in() ): ?>
+                <a href="/signup" class="btn-secondary-filled">Sign Up</a>
+            <?php endif; ?>
+
+            <button class="md:hidden hover:text-secondary-300">
+                <span class="material-icons-round text-4xl ">menu</span>
+            </button>
+
         </div>
 
-        <button class="md:hidden text-primary-50 hover:text-secondary-300">
-            <span class="material-icons-round text-4xl ">menu</span>
-        </button>
-
-        <ul class="flex items-center gap-4 text-primary-50 font-bold">
+        <ul class="hidden md:flex items-center gap-4 font-bold">
 
             <li><a href="/">Home</a></li>
             <li><a href="/about">About</a></li>
+            <li><a href="/signin">Sign In</a></li>
 
             <?php if( Auth::is_logged_in() ): ?>
                 <li><a href="/dashboard" class="btn-secondary-filled">Dashboard</a></li>
@@ -47,29 +62,29 @@
         </ul>
 
     </nav>
+
+    <?php if( Route::path() === '/' ) {
+        include 'hero.php';
+    } ?>
     
 </header>
 
-<?php if( Auth::is_logged_in() ): ?>
+
+<?php if( Auth::is_logged_in() && ( Route::path() !== '/' ) ): ?>
     <div class="max-w-6xl text-right px-6 py-0 text-primary-700 font-bold">
         Signed in as: <?= Auth::username(); ?>
     </div>
 <?php endif; ?>
 
-<main class="px-4 py-8">
+<div class="
+    max-w-6xl mx-auto px-4 
+    <?= Route::path() !== '/' ? 'grid grid-cols-[200px_1fr] gap-8 items-start' : 'pt-12'; ?>
+">
     
-    <div class="sidebar">
-        <?php if( Auth::is_logged_in() ): ?>
-            <ul class="flex flex-col gap-4">
-                <li class="font-bold"><?= Auth::username(); ?>, id: <?= Auth::user_id(); ?></li>
-                <li><a href="/dashboard" class="hover:underline">Dashboard</a></li>
-                <li><a href="/budgets" class="hover:underline">Budgets</a></li>
-                <li><a href="/transactions" class="hover:underline">Transactions</a></li>
-                <li><a href="/trends" class="hover:underline">Trends</a></li>
-                <li><a href="/settings" class="hover:underline">Settings</a></li>
-                <li><a href="/signout" class="hover:underline">Logout</a></li>
-            </ul>
-        <?php endif; ?>
-    </div>
+    <?php if( Auth::is_logged_in() && ( Route::path() !== '/') ){
+        include 'sidebar.php';
+    } ?>
 
-<h1 class="mb-6 pb-2 text-3xl font-semibold border-b border-slate-200">{{h1}}</h1>
+    <main>
+
+        <h1 class="mb-6 pb-2 text-3xl text-primary-800 font-semibold border-b border-primary-100">{{h1}}</h1>
