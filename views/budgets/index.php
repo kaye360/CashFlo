@@ -54,7 +54,7 @@ $data->h1 = 'Monthly Budgets';
 
     </section>
 
-    <section class="flex flex-col gap-8 pt-8">
+    <section class="flex flex-col gap-8 pt-8 max-w-[250px]">
 
         <div class="grid grid-cols-2 gap-x-8 gap-y-4 bg-primary-50 drop-shadow-md p-6 rounded-lg font-medium">
 
@@ -92,20 +92,28 @@ $data->h1 = 'Monthly Budgets';
 
         </div>
 
-        <button class="flex items-center justify-center gap-2 w-full py-2 border-2 border-secondary-400 text-secondary-400 font-bold rounded-xl">
+        <button id="add-budget-btn" class="flex items-center justify-center gap-2 w-full py-2 border-2 border-secondary-400 text-secondary-400 font-bold rounded-xl">
             <span class="material-icons-round">post_add</span>
             Add a budget
         </button>
 
-        <form method="POST" action="/budgets" class="flex flex-col gap-2">
+        <form 
+            method="POST" 
+            action="/budgets" 
+            id="add-budget-form" 
+            class=" 
+                flex flex-col gap-4 overflow-hidden 
+                <?= $_SERVER['REQUEST_METHOD'] === 'POST' ? 'max-w-[1000px]' : 'max-h-0'; ?>  
+                transition-all ease-in-out duration-500"
+        >
 
-            <div class="relative border h-8">
-                <label for="name" class="absolute top-0 left-0 z-20">
-                    Name:
-                </label>
+            <h2 class="font-bold">Enter budget info:</h2>
 
-                <input type="text" name="name" id="name" class="absolute top-0 left-0 z-10 w-full border border-primary-400" value="{{name}}" />
-            </div>
+            <label class="floating-label">
+                <span class="ml-2 px-2 bg-white ">Budget name:</span>
+                
+                <input type="text" name="name" required class="px-2 border border-primary-300 rounded-lg" value="{{name}}" />
+            </label>
 
             <?php if ( @$data->errors->name->has_error ): ?>
                 <span class="<<input_error>>">
@@ -129,32 +137,32 @@ $data->h1 = 'Monthly Budgets';
 
                 
             
-            <label>
-                <div>Amount:</div>
-
-                <?php if ( @$data->errors->amount->has_error ): ?>
-                    <span class="<<input_error>>">
-                        <?php if ( $data->errors->amount->has_forbidden_chars ): ?>
-                            <span>
-                                Amount must only have letters, numbers, and spaces.
-                            </span>
-                        <?php endif; ?>
-                        <?php if ( $data->errors->amount->required ): ?>
-                            <span>
-                                Amount is required.
-                            </span>
-                        <?php endif; ?>
-                        <?php if ( $data->errors->amount->number ): ?>
-                            <span>
-                                Amount must be a number.
-                            </span>
-                        <?php endif; ?>
-                    </span>
-                <?php endif; ?>
+            <label class="floating-label">
+                <span class="ml-2 px-2 bg-white">Amount per month:</span>
 
                 <!-- #amount id is used in JS validation -->
-                <input type="number" name="amount" id="amount" value="{{amount}}" step="any" class="border " />
+                <input type="number" name="amount" id="amount" required value="{{amount}}" step="any" class="px-2 border border-primary-300 rounded-lg" />
             </label>
+
+            <?php if ( @$data->errors->amount->has_error ): ?>
+                <span class="<<input_error>>">
+                    <?php if ( $data->errors->amount->has_forbidden_chars ): ?>
+                        <span>
+                            Amount must only have letters, numbers, and spaces.
+                        </span>
+                    <?php endif; ?>
+                    <?php if ( $data->errors->amount->required ): ?>
+                        <span>
+                            Amount is required.
+                        </span>
+                    <?php endif; ?>
+                    <?php if ( $data->errors->amount->number ): ?>
+                        <span>
+                            Amount must be a number.
+                        </span>
+                    <?php endif; ?>
+                </span>
+            <?php endif; ?>
 
             <div>
                 <div>Type:</div>
@@ -166,12 +174,12 @@ $data->h1 = 'Monthly Budgets';
                 </label>
             </div>
 
-            <input type="submit" value="Add Budget" class="" />
+            <input type="submit" value="Add Budget" class="btn-primary-filled" />
 
         </form>
 
         <?php if( @$data->success ): ?>
-            <span class="<<success_prompt>>">
+            <span class="<<success_prompt>> max-h-">
                 Budget added successfully.
             </span>
         <?php endif; ?>
@@ -187,11 +195,23 @@ window.addEventListener('DOMContentLoaded', () =>
 {
 
     // Shorten Amount Input to 2 decimal places
+    
     const amountInput = document.querySelector('#amount')
 
     amountInput.addEventListener('change', () => 
     {
         amountInput.value = parseFloat( amountInput.value ).toFixed(2)
+    })
+
+    // Show/Hide Add budget Form
+
+    const addBudgetBtn = document.querySelector('#add-budget-btn')
+    const addBudgetForm = document.querySelector('#add-budget-form')
+
+    addBudgetBtn.addEventListener('click', () => 
+    {
+        addBudgetForm.classList.toggle('max-h-0')
+        addBudgetForm.classList.toggle('max-h-[1000px]')
     })
 })
 

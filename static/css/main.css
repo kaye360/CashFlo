@@ -5,6 +5,11 @@
 
 @layer base {
 
+    :root {
+        --color-primary: 197deg 33%;
+        --color-secondary: 22deg 80%;
+    }
+
     html {
       font-family: Mulish, Helvetica, sans-serif;
     }
@@ -25,6 +30,7 @@
         border-radius: 6px;
         color : #fff;
         font-weight: bold;
+        cursor: pointer;
     }
 
     .btn-secondary-filled {
@@ -34,6 +40,7 @@
         border-radius: 6px;
         color : #fff;
         font-weight: bold;
+        cursor: pointer;
     }
 
     .monthly_budget_edit {
@@ -43,6 +50,74 @@
     .monthly_budget_row:hover .monthly_budget_edit {
         color : #666;
     }
+
+    label.floating-label {
+        position: relative;
+        display : block;
+        min-height : 3rem;
+    }
+
+    label.floating-label span {
+        position: absolute;
+        z-index : 10;
+        top : 50%;
+        left : 0;
+        translate : 0 -50%;
+        transition: all 250ms ease-in-out;
+    }
+    
+    label.floating-label input {
+        position: absolute;
+        z-index : 5;
+        inset : 0;
+        background-color: transparent;
+    }
+
+    label.floating-label:has( input:focus) span,
+    label.floating-label:has( input:valid) span {
+        top : 0;
+    }
+
+    .prompt {
+        position: fixed;
+        z-index: 999;
+        inset : 0 auto auto 50%;
+
+        display : flex;
+        align-items: center;
+        gap : 0.75rem;
+
+        width : 100%;
+        max-width : 500px;
+        padding : 1rem;
+        translate : -50% 0;
+
+        background-color: hsl( var(--color-primary) 95% );
+        
+        font-weight: bold;
+        letter-spacing: 0.05rem;
+
+        animation : prompt 8s ease-in-out both;
+    }
+
+    .prompt-success {
+        color : #22c55e;
+    }
+
+    .prompt-error {
+        color : #f43f5e;
+    }
+
+    @keyframes prompt {
+        0%, 100% {
+            translate : -50% -100%;
+        }
+        
+        5%, 95% {
+            translate : -50% 0;
+        }
+    }
 }
+
 
 
