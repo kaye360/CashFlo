@@ -178,12 +178,6 @@ $data->h1 = 'Monthly Budgets';
 
         </form>
 
-        <?php if( @$data->success ): ?>
-            <span class="<<success_prompt>> max-h-">
-                Budget added successfully.
-            </span>
-        <?php endif; ?>
-
     </section>
 
 </div>

@@ -19,6 +19,9 @@
         border-radius: 0px 0px 10px 10px;
     }
 
+    input, button {
+        cursor: pointer;
+    }
 }
 
 @layer components {
@@ -92,6 +95,7 @@
         padding : 1rem;
         translate : -50% 0;
 
+        border-left : 3px solid transparent;
         background-color: hsl( var(--color-primary) 95% );
         
         font-weight: bold;
@@ -102,10 +106,12 @@
 
     .prompt-success {
         color : #22c55e;
+        border-color: #22c55e;
     }
 
     .prompt-error {
         color : #f43f5e;
+        border-color: #f43f5e;
     }
 
     @keyframes prompt {

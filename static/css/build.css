@@ -436,6 +436,10 @@ header {
   border-radius: 0px 0px 10px 10px;
 }
 
+input, button {
+  cursor: pointer;
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -596,6 +600,7 @@ label.floating-label:has( input:focus) span,
   max-width : 500px;
   padding : 1rem;
   translate : -50% 0;
+  border-left : 3px solid transparent;
   background-color: hsl( var(--color-primary) 95% );
   font-weight: bold;
   letter-spacing: 0.05rem;
@@ -604,10 +609,12 @@ label.floating-label:has( input:focus) span,
 
 .prompt-success {
   color : #22c55e;
+  border-color: #22c55e;
 }
 
 .prompt-error {
   color : #f43f5e;
+  border-color: #f43f5e;
 }
 
 @keyframes prompt {
@@ -1011,6 +1018,16 @@ label.floating-label:has( input:focus) span,
   border-color: hsl( var(--color-primary) 70% / var(--tw-border-opacity) ) !important;
 }
 
+.border-primary-800 {
+  --tw-border-opacity: 1 !important;
+  border-color: hsl( var(--color-primary) 20% / var(--tw-border-opacity) ) !important;
+}
+
+.border-rose-200 {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(254 205 211 / var(--tw-border-opacity)) !important;
+}
+
 .border-secondary-400 {
   --tw-border-opacity: 1 !important;
   border-color: hsl( var(--color-secondary) 60% / var(--tw-border-opacity) ) !important;
@@ -1063,6 +1080,11 @@ label.floating-label:has( input:focus) span,
 .bg-red-400 {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(248 113 113 / var(--tw-bg-opacity)) !important;
+}
+
+.bg-rose-50 {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(255 241 242 / var(--tw-bg-opacity)) !important;
 }
 
 .bg-slate-300 {

@@ -1,4 +1,4 @@
-
+<?php use lib\utils\Prompt\Prompt; ?>
 
 </main>
 
@@ -15,27 +15,32 @@
 
 </div>
 
-<?php if( @$data->prompt ): ?>
+<?php if( Prompt::is_set() ): ?>
+
     <div class="prompt
-        <?= @$data->prompt === 'success' ? 'prompt-success' : ''; ?>
-        <?= @$data->prompt === 'error'   ? 'prompt-error'   : ''; ?>
-        <?= @$data->prompt === 'success' ? 'prompt-success' : ''; ?>
+        <?= Prompt::get_type() === 'success' ? 'prompt-success' : '' ?>
+        <?= Prompt::get_type() === 'error'   ? 'prompt-error'   : '' ?>
     ">
 
         <span class="material-icons-round">
-            <?php if( @$data->prompt === 'success' ): ?>
+
+            <?php if( Prompt::get_type() === 'success' ): ?>
                 check_circle_outline
-            <?php elseif( @$data->prompt === 'error' ): ?>
+
+            <?php elseif( Prompt::get_type() === 'error' ): ?>
                 error_outline
+
             <?php endif; ?>
+
         </span>
 
         <div class="prompt-message">
-            <?= @$data->promt_message; ?>
-            This is a test message
+            <?= Prompt::get_message() ?>
         </div>
+        
     </div>
-<?php endif; ?>
+
+<?php endif ?>
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
 $data->title = 'Edit budget';
-$data->h1 = 'Edit Budget: ';
+$data->h1 = 'Edit Budget: ' . $data->budget->name;
 ?>
 
 
@@ -36,7 +36,12 @@ $data->h1 = 'Edit Budget: ';
                 </span>
             <?php endif; ?>
 
-            <input type="text" name="name" value="<?= $data->budget->name ?>" />
+            <input 
+                type="text" 
+                name="name" 
+                value="<?= $data->budget->name ?>" 
+                class="p-2 border border-primary-800 rounded-lg" 
+            />
 
         </label>
 
@@ -64,7 +69,13 @@ $data->h1 = 'Edit Budget: ';
                 </span>
             <?php endif; ?>
 
-            <input type="number" name="amount" value="<?= (float) $data->budget->amount ?>" step="any" class="border" />
+            <input 
+                type="number" 
+                name="amount" 
+                value="<?= (float) $data->budget->amount ?>" 
+                step="any" 
+                class="p-2 border border-primary-800 rounded-lg" 
+            />
 
         </label>
 
@@ -85,27 +96,27 @@ $data->h1 = 'Edit Budget: ';
             </label>
 
         <input type="hidden" name="referer" value="{{referer}}" />
-        <input type="submit" value="Edit Budget" class="<<button>> <<button_main>>" />
-    
-        <?php if( @$data->success ): ?>
-            <span class="<<success_prompt>>">
-                Budget saved.
-            </span>
-        <?php endif; ?>
 
+        <input type="submit" value="Edit Budget" class="btn-primary-filled" />
+    
     </form>
 
 </section>
 
 
-<section class="my-8">
+<section class="my-8 p-4 rounded-lg border border-rose-200 bg-rose-50">
 
-<p>Would you like to delete this budget?</p>
+    <p class="mb-2">
+        Would you like to delete this budget?
+    </p>
 
-<form method="POST" action="/budget/<?= $data->budget->id ?>/delete" id="delete-form">
-    <input type="hidden" name="referer" value="{{referer}}" />
-    <input type="submit" id="delete-budget" class="<<button>> bg-red-400 text-white" data-clicked="false" value="Delete Budget" />
-</form>
+    <form method="POST" action="/budget/<?= $data->budget->id ?>/delete" id="delete-form">
+
+        <input type="hidden" name="referer" value="{{referer}}" />
+
+        <input type="submit" id="delete-budget" class="bg-red-400 p-2 text-white rounded-lg" data-clicked="false" value="Delete Budget" />
+        
+    </form>
 
 </section>
 

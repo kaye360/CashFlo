@@ -103,6 +103,9 @@ class Controller {
         ob_end_clean();
         
         echo $view;
+
+        // Page has rendered, Now we can kill the prompt Session if there is one
+        unset($_SESSION['prompt']);
     }
 
     /**

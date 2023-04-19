@@ -1,4 +1,3 @@
-<?php use lib\Auth\Auth; ?>
 
 
 <div class="p-4 bg-primary-50 drop-shadow-lg rounded-lg font-bold text-primary-800">

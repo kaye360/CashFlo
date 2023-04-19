@@ -20,7 +20,8 @@
  * 
  */
 declare(strict_types=1);
-use lib\Router\Route\Route;
+
+session_start();
 
 /**
  * Bootstrap the App Essentials

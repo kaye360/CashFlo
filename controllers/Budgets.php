@@ -18,6 +18,7 @@ use lib\InputHandler\Sanitizer\Sanitizer;
 use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\services\Budget\Budget;
+use lib\utils\Prompt\Prompt;
 use stdClass;
 
 
@@ -44,7 +45,6 @@ class BudgetsController extends Controller {
         $data->income_total   = (float) $this->get_type_total('income',   $data->budgets);
         $data->spending_total = (float) $this->get_type_total('spending', $data->budgets);
         $data->net_total      = (float) $this->get_net_total($data->budgets);
-        $data->prompt         =         $_GET['prompt'] ?? false;
 
         $this->view('budgets/index', $data);
     }
@@ -81,15 +81,20 @@ class BudgetsController extends Controller {
         if( $data->success ) 
         {
             $this->budgetModel->create( $budget );
-            $data->success = true;
-            $data->name    = '';
-            $data->amount  = '';
+            Prompt::set('success', 'Budget created successfully');
+
+            $data->name           = '';
+            $data->amount         = '';
+
+        } else {
+            
+            Prompt::set('error', 'Budget not created. Please check form inputs.');
         }
         
         $data->budgets        = $this->budgetModel->get_all();
-        $data->income_total   = $this->get_type_total('income',   $data->budgets->data ?? []);
-        $data->spending_total = $this->get_type_total('spending', $data->budgets->data ?? []);
-        $data->net_total      = $this->get_net_total($data->budgets->data ?? []);
+        $data->income_total   = $this->get_type_total('income',   $data->budgets);
+        $data->spending_total = $this->get_type_total('spending', $data->budgets);
+        $data->net_total      = $this->get_net_total($data->budgets);
         
         $this->view('budgets/index', $data);
     }
@@ -150,6 +155,13 @@ class BudgetsController extends Controller {
         if( $data->success )
         {
             $this->budgetModel->update( $budget );
+
+            Prompt::set('success', 'Budget updated succesfully.');
+            
+        } else {
+            
+            Prompt::set('error', 'Budget not updated. Please check your form inputs');
+
         }
 
         $this->view('budgets/edit', $data);
@@ -172,8 +184,10 @@ class BudgetsController extends Controller {
         // Delete Budget
         $this->budgetModel->destroy(id: (int) Route::params()->id );
 
+        Prompt::set('success', 'Budget was deleted successfully yo dawg');
+
         // Return to referer
-        header("Location: $referer?prompt=delete_budget ");
+        header("Location: $referer");
         die();
     }
     
