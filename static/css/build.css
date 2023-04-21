@@ -627,6 +627,10 @@ label.floating-label:has( input:focus) span,
   }
 }
 
+.fixed {
+  position: fixed !important;
+}
+
 .absolute {
   position: absolute !important;
 }
@@ -673,6 +677,10 @@ label.floating-label:has( input:focus) span,
 
 .top-\[105px\] {
   top: 105px !important;
+}
+
+.z-50 {
+  z-index: 50 !important;
 }
 
 .col-span-2 {
@@ -1082,6 +1090,11 @@ label.floating-label:has( input:focus) span,
   background-color: rgb(248 113 113 / var(--tw-bg-opacity)) !important;
 }
 
+.bg-red-50 {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity)) !important;
+}
+
 .bg-rose-50 {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 241 242 / var(--tw-bg-opacity)) !important;
@@ -1458,6 +1471,12 @@ label.floating-label:has( input:focus) span,
   color: hsl( var(--color-secondary) 70% / var(--tw-text-opacity) ) !important;
 }
 
+@media (min-width: 640px) {
+  .sm\:block {
+    display: block !important;
+  }
+}
+
 @media (min-width: 768px) {
   .md\:relative {
     position: relative !important;
@@ -1510,6 +1529,18 @@ label.floating-label:has( input:focus) span,
 
   .md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .md\:grid-cols-\[200px_1fr\] {
+    grid-template-columns: 200px 1fr !important;
+  }
+
+  .md\:flex-col {
+    flex-direction: column !important;
+  }
+
+  .md\:justify-normal {
+    justify-content: normal !important;
   }
 
   .md\:py-16 {

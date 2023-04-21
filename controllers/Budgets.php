@@ -184,7 +184,7 @@ class BudgetsController extends Controller {
         // Delete Budget
         $this->budgetModel->destroy(id: (int) Route::params()->id );
 
-        Prompt::set('success', 'Budget was deleted successfully yo dawg');
+        Prompt::set('success', 'Budget was deleted successfully');
 
         // Return to referer
         header("Location: $referer");

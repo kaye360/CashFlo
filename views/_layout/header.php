@@ -78,7 +78,7 @@
 
 <div class="
     max-w-6xl mx-auto px-4 
-    <?= Route::path() !== '/' ? 'grid grid-cols-[200px_1fr] gap-8' : 'pt-12'; ?>
+    <?= Route::path() !== '/' ? 'grid md:grid-cols-[200px_1fr] gap-8' : 'pt-12'; ?>
 ">
     
     <?php if( Auth::is_logged_in() && ( Route::path() !== '/') ){
