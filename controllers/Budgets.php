@@ -73,28 +73,30 @@ class BudgetsController extends Controller {
             user_id: Auth::user_id()
         );
 
-        $data          = new stdClass();
-        $data->budget  = $budget;
-        $data->errors  = $validator->errors;
-        $data->success = $validator->success;
+        $data                 = new stdClass();
+        $data->budget         = $budget;
+        $data->errors         = $validator->errors;
+        $data->success        = $validator->success;
+        $data->budgets        = $this->budgetModel->get_all();
+        $data->income_total   = $this->get_type_total('income',   $data->budgets);
+        $data->spending_total = $this->get_type_total('spending', $data->budgets);
+        $data->net_total      = $this->get_net_total($data->budgets);
 
         if( $data->success ) 
         {
             $this->budgetModel->create( $budget );
+            
             Prompt::set('success', 'Budget created successfully');
 
-            $data->name           = '';
-            $data->amount         = '';
+            header('Location: /budgets');
+            die();
 
         } else {
             
             Prompt::set('error', 'Budget not created. Please check form inputs.');
         }
         
-        $data->budgets        = $this->budgetModel->get_all();
-        $data->income_total   = $this->get_type_total('income',   $data->budgets);
-        $data->spending_total = $this->get_type_total('spending', $data->budgets);
-        $data->net_total      = $this->get_net_total($data->budgets);
+
         
         $this->view('budgets/index', $data);
     }

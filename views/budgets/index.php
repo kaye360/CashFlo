@@ -10,53 +10,53 @@ $data->h1 = 'Monthly Budgets';
     </div>
 <?php endif; ?>
 
-<div class="flex justify-between">
+<div class="flex flex-col-reverse sm:flex-row sm:justify-between">
 
     <section class="flex flex-col">
 
-            <?php if( count($data->budgets) === 0): ?>
-                <div>
-                    You have no budgets to show.
-                </div>
-            <?php endif; ?>
+        <?php if( count($data->budgets) === 0): ?>
+            <div>
+                You have no budgets to show.
+            </div>
+        <?php endif; ?>
 
   
 
-            <?php $type = null; ?>
-            
-            <?php foreach($data->budgets as $budget): ?>
+        <?php $type = null; ?>
+        
+        <?php foreach($data->budgets as $budget): ?>
 
-                <?php if( $budget->type !== $type ): ?>
+            <?php if( $budget->type !== $type ): ?>
 
-                    <h2 class="mx-2 my-4 py-2 text-lg font-bold border-b border-primary-200">
-                        <?= ucwords($budget->type); ?>
-                    </h2>
+                <h2 class="mx-2 my-4 py-2 text-lg font-bold border-b border-primary-200">
+                    <?= ucwords($budget->type); ?>
+                </h2>
 
-                    <?php $type = $budget->type; ?>
+                <?php $type = $budget->type; ?>
 
-                <?php endif; ?>
+            <?php endif; ?>
 
-                <div class="grid grid-cols-3 items-end gap-4 p-2 rounded-lg hover:bg-primary-50 monthly_budget_row">
+            <div class="grid grid-cols-3 items-end gap-4 p-2 rounded-lg hover:bg-primary-50 monthly_budget_row">
 
-                    <span class="font-medium">
-                        <?php echo $budget->name; ?>
-                    </span>
+                <span class="font-medium">
+                    <?php echo $budget->name; ?>
+                </span>
 
-                    <span class="text-primary-500">
-                        $<?php echo $budget->amount; ?>
-                    </span>
+                <span class="text-primary-500">
+                    $<?php echo $budget->amount; ?>
+                </span>
 
-                    <a href="/budget/<?php echo $budget->id; ?>/edit" class="monthly_budget_edit">
-                        <span class="material-icons-round">edit_note</span>
-                    </a>
-                </div>
-            <?php endforeach; ?>
+                <a href="/budget/<?php echo $budget->id; ?>/edit" class="monthly_budget_edit">
+                    <span class="material-icons-round">edit_note</span>
+                </a>
+            </div>
+        <?php endforeach; ?>
 
     </section>
 
-    <section class="flex flex-col gap-8 pt-8 max-w-[250px]">
+    <section class="flex flex-col justify-stretch gap-8 md:pt-8 min-w-[300px]">
 
-        <div class="grid grid-cols-2 gap-x-8 gap-y-4 bg-primary-50 drop-shadow-md p-6 rounded-lg font-medium">
+        <div class="grid grid-cols-[11ch_auto] gap-x-2 gap-y-4 bg-primary-50 drop-shadow-md p-6 rounded-lg font-medium">
 
             <h4 class="col-span-2 mb-2 text-md font-bold">
                 Monthly Totals
@@ -102,17 +102,23 @@ $data->h1 = 'Monthly Budgets';
             action="/budgets" 
             id="add-budget-form" 
             class=" 
-                flex flex-col gap-4 overflow-hidden 
-                <?= $_SERVER['REQUEST_METHOD'] === 'POST' ? 'max-w-[1000px]' : 'max-h-0'; ?>  
+                flex flex-col gap-4 w-full overflow-hidden rounded-lg drop-shadow-md bg-primary-50
+                <?= $_SERVER['REQUEST_METHOD'] === 'POST' ? 'border max-h-[1000px] p-4' : 'max-h-0'; ?>  
                 transition-all ease-in-out duration-500"
         >
 
             <h2 class="font-bold">Enter budget info:</h2>
 
             <label class="floating-label">
-                <span class="ml-2 px-2 bg-white ">Budget name:</span>
+                <span class="ml-2 px-2 bg-primary-50 ">Budget name:</span>
                 
-                <input type="text" name="name" required class="px-2 border border-primary-300 rounded-lg" value="{{name}}" />
+                <input 
+                    type="text" 
+                    name="name" 
+                    class="px-2 border border-primary-300 rounded-lg" 
+                    value="<?= @$data->budget->name ?>" 
+                    required 
+                />
             </label>
 
             <?php if ( @$data->errors->name->has_error ): ?>
@@ -138,10 +144,18 @@ $data->h1 = 'Monthly Budgets';
                 
             
             <label class="floating-label">
-                <span class="ml-2 px-2 bg-white">Amount per month:</span>
+                <span class="ml-2 px-2 bg-primary-50">Amount per month:</span>
 
                 <!-- #amount id is used in JS validation -->
-                <input type="number" name="amount" id="amount" required value="{{amount}}" step="any" class="px-2 border border-primary-300 rounded-lg" />
+                <input 
+                    type="number" 
+                    name="amount" 
+                    id="amount" 
+                    value="<?= @$data->budget->amount ?>" 
+                    step="any" 
+                    class="px-2 border border-primary-300 rounded-lg" 
+                    required 
+                />
             </label>
 
             <?php if ( @$data->errors->amount->has_error ): ?>
@@ -166,12 +180,25 @@ $data->h1 = 'Monthly Budgets';
 
             <div>
                 <div>Type:</div>
+
                 <label class="block">
-                    <input type="radio" name="type" value="spending" checked /> Spending
+                    <input 
+                        type="radio" 
+                        name="type" 
+                        value="spending" 
+                        <?= @$data->budget->type === 'spending' ? 'checked' : '' ?>
+                    /> Spending
                 </label>
+
                 <label class="block">
-                    <input type="radio" name="type" value="income" /> Income
+                    <input 
+                        type="radio" 
+                        name="type" 
+                        value="income" 
+                        <?= @$data->budget->type === 'income' ? 'checked' : '' ?>
+                    /> Income
                 </label>
+
             </div>
 
             <input type="submit" value="Add Budget" class="btn-primary-filled" />
@@ -206,6 +233,7 @@ window.addEventListener('DOMContentLoaded', () =>
     {
         addBudgetForm.classList.toggle('max-h-0')
         addBudgetForm.classList.toggle('max-h-[1000px]')
+        addBudgetForm.classList.toggle('p-4')
     })
 })
 
