@@ -799,6 +799,18 @@ label.floating-label:has( input:focus) span,
   max-height: 1000px !important;
 }
 
+.max-h-52 {
+  max-height: 13rem !important;
+}
+
+.max-h-32 {
+  max-height: 8rem !important;
+}
+
+.max-h-64 {
+  max-height: 16rem !important;
+}
+
 .min-h-\[50vh\] {
   min-height: 50vh !important;
 }
@@ -871,10 +883,6 @@ label.floating-label:has( input:focus) span,
   grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
 }
 
-.grid-cols-\[200px_1fr\] {
-  grid-template-columns: 200px 1fr !important;
-}
-
 .grid-cols-\[9ch_9ch_1fr\] {
   grid-template-columns: 9ch 9ch 1fr !important;
 }
@@ -901,6 +909,10 @@ label.floating-label:has( input:focus) span,
 
 .items-center {
   align-items: center !important;
+}
+
+.justify-end {
+  justify-content: flex-end !important;
 }
 
 .justify-center {
@@ -1088,11 +1100,6 @@ label.floating-label:has( input:focus) span,
 .bg-red-400 {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(248 113 113 / var(--tw-bg-opacity)) !important;
-}
-
-.bg-red-50 {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(254 242 242 / var(--tw-bg-opacity)) !important;
 }
 
 .bg-rose-50 {
@@ -1412,6 +1419,10 @@ label.floating-label:has( input:focus) span,
   transition-duration: 500ms !important;
 }
 
+.duration-200 {
+  transition-duration: 200ms !important;
+}
+
 .ease-in-out {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -1466,17 +1477,6 @@ label.floating-label:has( input:focus) span,
   color: rgb(75 85 99 / var(--tw-text-opacity)) !important;
 }
 
-.hover\:text-secondary-300:hover {
-  --tw-text-opacity: 1 !important;
-  color: hsl( var(--color-secondary) 70% / var(--tw-text-opacity) ) !important;
-}
-
-@media (min-width: 640px) {
-  .sm\:block {
-    display: block !important;
-  }
-}
-
 @media (min-width: 768px) {
   .md\:relative {
     position: relative !important;
@@ -1518,6 +1518,10 @@ label.floating-label:has( input:focus) span,
     height: auto !important;
   }
 
+  .md\:max-h-none {
+    max-height: none !important;
+  }
+
   .md\:translate-y-0 {
     --tw-translate-y: 0px !important;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
@@ -1535,12 +1539,20 @@ label.floating-label:has( input:focus) span,
     grid-template-columns: 200px 1fr !important;
   }
 
+  .md\:flex-row {
+    flex-direction: row !important;
+  }
+
   .md\:flex-col {
     flex-direction: column !important;
   }
 
   .md\:justify-normal {
     justify-content: normal !important;
+  }
+
+  .md\:justify-between {
+    justify-content: space-between !important;
   }
 
   .md\:py-16 {

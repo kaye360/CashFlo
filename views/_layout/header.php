@@ -28,7 +28,7 @@
 
 <header class="text-primary-50">
 
-    <nav class="flex justify-between items-center max-w-6xl mx-auto p-4">
+    <nav class="grid grid-cols-[auto_auto] md:flex justify-between items-center max-w-6xl mx-auto p-4">
 
 
         <a href="/" class="inline-flex text-2xl font-bold">
@@ -42,13 +42,17 @@
                 <a href="/signup" class="btn-secondary-filled">Sign Up</a>
             <?php endif; ?>
 
-            <button class="md:hidden hover:text-secondary-300">
+            <button id="mobile-menu-btn" class="md:hidden">
                 <span class="material-icons-round text-4xl ">menu</span>
             </button>
 
         </div>
 
-        <ul class="hidden md:flex items-center gap-4 font-bold">
+        <ul id="main-nav" class=" 
+            overflow-hidden max-h-0 flex flex-col items-center gap-4 col-span-2
+            md:flex md:flex-row md:max-h-none
+            font-bold transition-all duration-500
+        ">
 
             <li><a href="/">Home</a></li>
             <li><a href="/about">About</a></li>
@@ -88,3 +92,19 @@
     <main>
 
         <h1 class="mb-6 pb-2 text-3xl text-primary-800 font-semibold border-b border-primary-100">{{h1}}</h1>
+
+
+
+<script>
+
+const mobileMenuBtn = document.querySelector('#mobile-menu-btn')
+const mainNav = document.querySelector("#main-nav")
+
+mobileMenuBtn.addEventListener('click', () => {
+
+    mainNav.classList.toggle('max-h-0') 
+    mainNav.classList.toggle('max-h-64') 
+
+})
+
+</script>
