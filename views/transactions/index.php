@@ -1,117 +1,62 @@
 <?php
-
-use lib\Router\Route\Route;
-
 $data->title = 'Transactions';
 $data->h1 = 'Transactions';
-// q($data->errors);
 ?>
 
-
-<?php if( @$data->prompt === 'delete_transaction' ): ?>
-    <div class="<<success_prompt>> text-green-500 bg-green-100 border border-green 500">
-        Transaction was deleted.
-    </div>
-<?php endif; ?>
-
-<?php if( @$data->prompt === 'add_transaction' ): ?>
-    <div class="<<success_prompt>> text-green-500 bg-green-100 border border-green 500">
-        Transaction was added successfully.
-    </div>
-<?php endif; ?>
 
 <section>
 
     <h2 class="mb-4">
-        <button id="add_transaction_btn" class="text-lg font-medium border border-slate-300 hover:border-slate-600 px-4 py-2 rounded-md">
+        <button id="add-transaction-btn" class="btn-secondary-outlined">
+            <span class="material-icons-round">post_add</span>
             Add a Transaction
         </button>
     </h2>
 
-    <form method="POST" id="add_transaction_form" action="/transactions" class="
-        flex flex items-center gap-12 mb-8
-        <?= 
-            @$data->errors->name->has_error ||
-            @$data->errors->amount->has_error ||
-            @$data->errors->budgets->has_error ||
-            @$data->errors->date->has_error
-                ? ''
-                : 'hidden';
-        ?>
+    <form method="POST" id="add-transaction-form" action="/transactions" class="
+        flex items-center gap-12 mb-8 overflow-hidden max-h-0 max-h-[300px] transition-all duration-500
     ">
 
+        <?= @$data->errors->name->show_error; ?>
 
-        <div class="grid grid-cols-3 gap-x-2 gap-y-6 w-full p-4 bg-slate-50 border border-slate-200 rounded-lg">
+        <div class="grid grid-cols-3 gap-x-2 gap-y-6 w-full p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg">
 
-            <div>
-                <label>
 
-                    <h3>Name</h3>
-        
-                    <?php if ( @$data->errors->name->has_error ): ?>
-                        <span class="<<input_error>>">
-                            <?php if ( @$data->errors->name->has_forbidden_chars ): ?>
-                                <span>
-                                    Transaction Name must only have letters, numbers, and spaces.
-                                </span>
-                            <?php endif; ?>
-                            <?php if ( @$data->errors->name->required ): ?>
-                                <span>
-                                    Transaction Name is required.
-                                </span>
-                            <?php endif; ?>
-                            <?php if ( @$data->errors->name->max ): ?>
-                                <span>
-                                    Transaction name may have up to 20 characters.
-                                </span>
-                            <?php endif; ?>
-                        </span>
-                    <?php endif; ?>
-        
-                    <input type="text" name="name" class="border" value="{{name}}" />
-                </label>
-            </div>
+            <label class="floating-label">
+                <span class="ml-2 px-2 bg-primary-50 ">Transaction name:</span>
+                
+                <input 
+                    type="text" 
+                    name="name" 
+                    class="px-2 border border-primary-150 rounded-lg" 
+                    value="<?= @$data->budget->name ?>" 
+                    required 
+                />
+            </label>
 
-            <div>
-                <label>
-                    
-                    <h3>Amount</h3>
-        
-                    <?php if ( @$data->errors->amount->has_error ): ?>
-                        <span class="<<input_error>>">
-                            <?php if ( $data->errors->amount->has_forbidden_chars ): ?>
-                                <span>
-                                    Amount must only have letters, numbers, and spaces.
-                                </span>
-                            <?php endif; ?>
-                            <?php if ( $data->errors->amount->required ): ?>
-                                <span>
-                                    Amount is required.
-                                </span>
-                            <?php endif; ?>
-                            <?php if ( $data->errors->amount->number ): ?>
-                                <span>
-                                    Amount must be a number.
-                                </span>
-                            <?php endif; ?>
-                        </span>
-                    <?php endif; ?>
-        
-                    <!-- #amount id is used in JS validation -->
-                    <input type="number" name="amount" id="amount" value="{{amount}}" step="any" class="border " />
-                </label>
-            </div>
+            <label class="floating-label">
+                <span class="ml-2 px-2 bg-primary-50 ">Amount:</span>
+                
+                <input 
+                    type="number" 
+                    id="amount"
+                    name="amount" 
+                    class="px-2 border border-primary-150 rounded-lg" 
+                    value="<?= @$data->budget->name ?>" 
+                    required 
+                />
+            </label>
 
-            <div>
+            <label class="flex items-center gap-2 p-2 border border-primary-150 rounded-lg">
 
-                <h3>Type</h3>
+                Type:
 
-                <select name="type">
+                <select name="type" class="bg-transparent">
                     <option value="spending">Spending</option>
                     <option value="income">Income</option>
                 </select>
 
-            </div>
+            </label>
 
             <div>
                 
@@ -191,79 +136,71 @@ $data->h1 = 'Transactions';
 
 <section class="flex flex-col gap-4">
 
-    <h2 class="mb-2 p-2 text-lg font-medium bg-teal-100 rounded-lg">Your Transactions</h2>
+    <table>
+        <thead class="hidden md:table-header-group ">
+            <tr>
+                <th class="text-left p-2">Name</th>
+                <th class="text-left p-2">Amount</th>
+                <th class="text-left p-2">Date</th>
+                <th class="text-left p-2">Category</th>
+                <th class="text-left p-2">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $date_counter = null; ?>
+        
+            <?php foreach($data->transactions as $transaction): ?>
 
-        <table>
-            <thead>
-                <tr>
-                    <td class="p-2">Name</td>
-                    <td class="p-2">Amount</td>
-                    <td class="p-2">Date</td>
-                    <td class="p-2">Category</td>
-                    <td class="p-2"></td>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $date_counter = null; ?>
-            
-                <?php foreach($data->transactions as $transaction): ?>
+                <?php if ($date_counter !== $transaction->date_month): ?>
 
-                    <?php if ($date_counter !== $transaction->date_month): ?>
-
-                        <tr>
-                            <td colspan="5" class="
-                                px-2 pb-4 bg-white font-bold 
-                                <?= !$date_counter ? 'pt-2' : 'pt-12'; ?>
-                            ">
-                                <div class="border-b border-slate-200">
-                                    <?= $transaction->date_month;  ?>
-                                </div>
-
-                            </td>
-                        </tr>
-                        
-                        <?php $date_counter = $transaction->date_month; ?>
-                    <?php endif; ?>
-
-                    <tr class="odd:bg-teal-50 hover:bg-slate-100">
-
-                        <td class="p-2 font-bold text-xl">
-                                <?= $transaction->name; ?>
-                        </td>
-                        
-                        <td class="p-2">
-                            <?= $transaction->type === 'spending' ? '-' : '+'; ?>
-                            $<?= $transaction->amount; ?>
-                        </td>
-                        
-                        <td class="p-2">
-                            <?= $transaction->date_english; ?>
-                        </td>
-                        
-                        <td class="p-2">
-                            <?= $transaction->budget; ?>
-                        </td>
-                        
-                        <td class="p-2">
-                            <a href="/transaction/<?php echo $transaction->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
-                                Edit
-                            </a>
+                    <tr>
+                        <td colspan="5" class="px-2 py-4 bg-primary-150 font-bold rounded-lg">
+                            <?= $transaction->date_month;  ?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                    
+                    <?php $date_counter = $transaction->date_month; ?>
+                <?php endif; ?>
 
-            </tbody>
-        </table>
+                <tr class="grid grid-cols-3 items-center w-full md:table-row odd:bg-primary-50 hover:bg-secondary-50 rounded-lg">
 
-        <?php if( count($data->transactions) === 0): ?>
-            <div class="pl-2">
-                You have no transactions to show.
-            </div>
-        <?php endif; ?>
+                    <td class=" col-span-2 px-2 md:py-4 text-xl font-bold">
+                            <?= $transaction->name; ?>
+                    </td>
+                    
+                    <td class="px-2 md:py-2 font-bold">
+                        <?= $transaction->type === 'spending' ? '-' : '+'; ?>$<?= $transaction->amount; ?>
+                    </td>
+                    
+                    <td class=" col-span-3 px-2 md:py-2 text-sm">
+                        <?= $transaction->date_english; ?>
+                    </td>
+                    
+                    <td class=" col-span-2 px-2 md:py-2">
+                        <?= $transaction->budget; ?>
+                    </td>
+                    
+                    <td class="px-2 md:py-2 text-sm">
+                        <a href="/transaction/<?php echo $transaction->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
+                        <span class="material-icons-round">edit_note</span>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
-        <?php include '_pagination.php'; ?>
+        </tbody>
+    </table>
+
+    <?php if( count($data->transactions) === 0): ?>
+        <div class="pl-2">
+            You have no transactions to show.
+        </div>
+    <?php endif; ?>
+
+    <?php include '_pagination.php'; ?>
 
 </section>
+
 
 
 <script>
@@ -272,6 +209,7 @@ window.addEventListener('DOMContentLoaded', () =>
 {
 
     // Shorten Amount Input to 2 decimal places
+    
     const amountInput = document.querySelector('#amount')
 
     amountInput.addEventListener('change', () => 
@@ -279,13 +217,17 @@ window.addEventListener('DOMContentLoaded', () =>
         amountInput.value = parseFloat( amountInput.value ).toFixed(2)
     })
 
-    // Show/Hide Add transaction form
-    const addTransactionBtn  = document.querySelector('#add_transaction_btn')
-    const addTransactionForm = document.querySelector('#add_transaction_form')
+    // Show/Hide Add budget Form
 
-    addTransactionBtn.addEventListener('click', () =>
+    const addTransactionBtn = document.querySelector('#add-transaction-btn')
+    console.log(addTransactionBtn)
+    const addTransactionForm = document.querySelector('#add-transaction-form')
+
+    addTransactionBtn.addEventListener('click', () => 
     {
-        addTransactionForm.classList.toggle('hidden')
+        addTransactionForm.classList.toggle('max-h-0')
+        addTransactionForm.classList.toggle('max-h-[300px]')
+        addTransactionForm.classList.toggle('p-4')
     })
 })
 

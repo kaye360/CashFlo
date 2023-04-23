@@ -1,4 +1,7 @@
 <?php
+
+use lib\InputHandler\InputErrors\InputErrors;
+
 $data->title = 'Monthly Budgets';
 $data->h1 = 'Monthly Budgets';
 ?>
@@ -54,7 +57,7 @@ $data->h1 = 'Monthly Budgets';
 
     </section>
 
-    <section class="flex flex-col justify-stretch gap-8 md:pt-8 min-w-[300px]">
+    <section class="flex flex-col justify-stretch gap-8 md:pt-8 min-w-[300px] ">
 
         <div class="grid grid-cols-[11ch_auto] gap-x-2 gap-y-4 bg-primary-50 drop-shadow-md p-6 rounded-lg font-medium">
 
@@ -92,7 +95,7 @@ $data->h1 = 'Monthly Budgets';
 
         </div>
 
-        <button id="add-budget-btn" class="flex items-center justify-center gap-2 w-full py-2 border-2 border-secondary-400 text-secondary-400 font-bold rounded-xl">
+        <button id="add-budget-btn" class="btn-secondary-outlined">
             <span class="material-icons-round">post_add</span>
             Add a budget
         </button>
@@ -121,28 +124,8 @@ $data->h1 = 'Monthly Budgets';
                 />
             </label>
 
-            <?php if ( @$data->errors->name->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( @$data->errors->name->has_forbidden_chars ): ?>
-                        <span>
-                            Budget Name must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( @$data->errors->name->required ): ?>
-                        <span>
-                            Budget Name is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( @$data->errors->name->max ): ?>
-                        <span>
-                            Budget name may have up to 20 characters.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
+            <?= @$data->errors->name->show_error; ?>
 
-                
-            
             <label class="floating-label">
                 <span class="ml-2 px-2 bg-primary-50">Amount per month:</span>
 
@@ -158,25 +141,7 @@ $data->h1 = 'Monthly Budgets';
                 />
             </label>
 
-            <?php if ( @$data->errors->amount->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->amount->has_forbidden_chars ): ?>
-                        <span>
-                            Amount must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->amount->required ): ?>
-                        <span>
-                            Amount is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->amount->number ): ?>
-                        <span>
-                            Amount must be a number.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
+            <?= @$data->errors->amount->show_error; ?>
 
             <div>
                 <div>Type:</div>
@@ -186,7 +151,12 @@ $data->h1 = 'Monthly Budgets';
                         type="radio" 
                         name="type" 
                         value="spending" 
-                        <?= @$data->budget->type === 'spending' ? 'checked' : '' ?>
+                        default
+                        <?= @$data->budget->type === 'spending' ||
+                            @$data->budget->type === null 
+                                ? 'checked' 
+                                : '' 
+                        ?>
                     /> Spending
                 </label>
 

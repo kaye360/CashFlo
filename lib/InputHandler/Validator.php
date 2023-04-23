@@ -59,9 +59,12 @@ class Validator {
         foreach( $inputs as $input => $rules )
         {
             // Error container for current $input
-            $validator->errors->$input            = new stdClass();
-            $validator->errors->$input->has_error = false;
+            $validator->errors->$input             = new stdClass();
+            $validator->errors->$input->has_error  = false;
+            $validator->errors->$input->show_error = '';
 
+            // This is used for show_error html rendering
+            $input_name = ucwords($input);
 
             /**
              * Default Rules
@@ -79,6 +82,7 @@ class Validator {
                 $validator->errors->$input->has_forbidden_chars = true;
                 $validator->errors->$input->has_error           = true;
                 $validator->success                             = false;
+                $validator->errors->$input->show_error         .= "<li>$input_name must only contain letters, numbers, dashes, or periods.</li> \n";
 
             } else {
 
@@ -96,9 +100,10 @@ class Validator {
             {
                 if( empty( $_POST[$input])) 
                 {
-                    $validator->errors->$input->required  = true;
-                    $validator->errors->$input->has_error = true;
-                    $validator->success                   = false;
+                    $validator->errors->$input->required    = true;
+                    $validator->errors->$input->has_error   = true;
+                    $validator->success                     = false;
+                    $validator->errors->$input->show_error .= "<li>$input_name is required.</li> \n";
 
                 } else {
 
@@ -113,9 +118,10 @@ class Validator {
             {
                 if( Rules::is_not_unique($_POST[$input]) ) 
                 {
-                    $validator->errors->$input->unique    = true;
-                    $validator->errors->$input->has_error = true;
-                    $validator->success                   = false;
+                    $validator->errors->$input->unique      = true;
+                    $validator->errors->$input->has_error   = true;
+                    $validator->success                     = false;
+                    $validator->errors->$input->show_error .= "<li>$input_name is already taken.</li> \n";
 
                 } else {
 
@@ -133,9 +139,10 @@ class Validator {
                     is_numeric($param) && 
                     Rules::has_too_many_chars( $_POST[$input], $param )
                 ) {
-                    $validator->errors->$input->max       = true;
-                    $validator->errors->$input->has_error = true;
-                    $validator->success                   = false;
+                    $validator->errors->$input->max         = true;
+                    $validator->errors->$input->has_error   = true;
+                    $validator->success                     = false;
+                    $validator->errors->$input->show_error .= "<li>$input_name has too many characters.</li> \n";
 
                 } else {
 
@@ -153,9 +160,10 @@ class Validator {
                     is_numeric($param) && 
                     Rules::has_too_few_chars( $_POST[$input], $param )
                 ) {
-                    $validator->errors->$input->min       = true;
-                    $validator->errors->$input->has_error = true;
-                    $validator->success                   = false;
+                    $validator->errors->$input->min         = true;
+                    $validator->errors->$input->has_error   = true;
+                    $validator->success                     = false;
+                    $validator->errors->$input->show_error .= "<li>$input_name doesn't have the minimum required characters.</li> \n";
 
                 } else {
 
@@ -174,6 +182,7 @@ class Validator {
                     $validator->errors->$input->user_pass_verify = true;
                     $validator->errors->$input->has_error        = true;
                     $validator->success                          = false;
+                    $validator->errors->$input->show_error      .= "<li>Username and password is incorrect.</li> \n";
 
                 } else {
 
@@ -192,6 +201,7 @@ class Validator {
                     $validator->errors->$input->confirm_password = true;
                     $validator->errors->$input->has_error        = true;
                     $validator->success                          = false;
+                    $validator->errors->$input->show_error      .= "<li>Password and confirm password fields must match.</li> \n";
 
                 } else {
 
@@ -207,6 +217,7 @@ class Validator {
                     $validator->errors->$input->number    = true;
                     $validator->errors->$input->has_error = true;
                     $validator->success                   = false;
+                    $validator->errors->$input->show_error .= "<li>$input_name must be a number.</li> \n";
 
                 } else {
 
@@ -222,9 +233,19 @@ class Validator {
                     $validator->errors->$input->date    = true;
                     $validator->errors->$input->has_error = true;
                     $validator->success                   = false;
+                    $validator->errors->$input->show_error .= "<li>$input_name must be a valid date.</li> \n";
+
                 } else {
                     $validator->errors->$input->date    = false;
                 }
+            }
+
+            if( !empty( $validator->errors->$input->show_error ) )
+            {
+                $validator->errors->$input->show_error = 
+                    "<ul class='text-red-500 list-disc ml-8 mb-4'> \n " . 
+                    $validator->errors->$input->show_error . 
+                    "\n </ul>";
             }
 
         }

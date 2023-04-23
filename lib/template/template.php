@@ -49,23 +49,6 @@ class Template
             }
         }
 
-        // Search and replace all <<css_class>> classes with CSSComponents::css_class in $view
-        preg_match_all('/\<\<(.*?)\>\>/i', $view, $matches);  // Find <<...>>
-
-        $css_placeholders = array_unique($matches[1]);
-
-        unset($matches);
-        
-        $css = CSSComponents::init();
-
-        foreach( $css_placeholders as $value )
-        {
-            if( property_exists($css, $value) )
-            {
-                $view = str_replace('<<' . $value . '>>', CSSComponents::$$value, $view);
-            }
-        }
-
         return $view;
     }
 }

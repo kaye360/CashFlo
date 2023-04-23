@@ -37,6 +37,18 @@
         cursor: pointer;
     }
 
+    .btn-secondary-outlined {
+        display : flex;
+        align-items: center;
+        justify-content: center;
+        gap : 0.5rem;
+        padding : 0.5rem 1rem;
+        border : 2px solid hsl( var(--color-secondary) 70% );
+        color :hsl( var(--color-secondary) 70% );
+        font-weight: bold;
+        border-radius: 0.75rem;
+    }
+
     .btn-secondary-filled {
         display : inline-block;
         padding : 0.5rem 1rem;

@@ -96,8 +96,6 @@ class BudgetsController extends Controller {
             Prompt::set('error', 'Budget not created. Please check form inputs.');
         }
         
-
-        
         $this->view('budgets/index', $data);
     }
 
