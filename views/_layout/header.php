@@ -31,9 +31,9 @@
     <nav class="grid grid-cols-[auto_auto] md:flex justify-between items-center max-w-6xl mx-auto p-4">
 
 
-        <a href="/" class="inline-flex text-2xl font-bold">
+        <a href="/" class="inline-flex text-2xl font-bold hover:no-underline">
             <span class="text-[#79EAD6]">Cash</span>Flo
-            <img src="/static/img/logo.svg" >
+            <img src="/static/img/logo.svg" class="logo">
         </a>
 
         <div class="flex items-center gap-2">

@@ -440,6 +440,31 @@ input[type=submit], button {
   cursor: pointer;
 }
 
+a {
+  transition: all 250ms ease-in-out;
+}
+
+a:hover, a:focus {
+  color : hsl( var(--color-primary) 70% );
+  text-decoration: underline;
+}
+
+a:hover .logo {
+  animation: logo-anim 500ms ease-in-out both;
+}
+
+@keyframes logo-anim {
+  from {
+    -webkit-clip-path: polygon(0 0, 4% 0, 4% 100%, 0% 100%);
+            clip-path: polygon(0 0, 4% 0, 4% 100%, 0% 100%);
+  }
+
+  to {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -571,11 +596,23 @@ input[type=submit], button {
 .btn-primary-filled {
   display : inline-block;
   padding : 0.5rem 1rem;
-  background: linear-gradient(180deg, hsl(169, 73%, 60%) 0%, #1FC6A9 86.61%);
+  background: linear-gradient(
+            180deg, 
+            hsl( var(--color-primary) 80%) 0%, 
+            hsl( var(--color-primary) 65%) 86.61%
+        );
   border-radius: 6px;
   color : #fff;
   font-weight: bold;
   cursor: pointer;
+}
+
+.btn-primary-filled:hover, .btn-primary-filled:focus {
+  background: linear-gradient(
+            180deg, 
+            hsl( var(--color-primary) 60%) 0%, 
+            hsl( var(--color-primary) 45%) 86.61%
+        );
 }
 
 .btn-secondary-outlined {
@@ -585,19 +622,38 @@ input[type=submit], button {
   gap : 0.5rem;
   padding : 0.5rem 1rem;
   border : 2px solid hsl( var(--color-secondary) 70% );
-  color :hsl( var(--color-secondary) 70% );
+  color : hsl( var(--color-secondary) 70% );
   font-weight: bold;
   border-radius: 0.75rem;
+}
+
+.btn-secondary-outlined:hover, .btn-secondary-outlined:focus {
+  background-color: hsl( var(--color-secondary) 95% );
+  border-color: hsl( var(--color-secondary) 90% );
+  color : hsl( var(--color-secondary) 60% );
 }
 
 .btn-secondary-filled {
   display : inline-block;
   padding : 0.5rem 1rem;
-  background: linear-gradient(180deg, #EA7D3F 0%, #E5661C 86.61%);
+  background: linear-gradient(
+            180deg, 
+            hsl( var(--color-secondary) 58%) 0%, 
+            hsl( var(--color-secondary) 50%) 85%
+        );
   border-radius: 6px;
   color : #fff;
   font-weight: bold;
   cursor: pointer;
+}
+
+.btn-secondary-filled:hover, .btn-primary-filled:focus {
+  background: linear-gradient(
+            180deg, 
+            hsl( var(--color-secondary) 48%) 0%, 
+            hsl( var(--color-secondary) 40%) 85%
+        );
+  color : #fff;
 }
 
 .monthly_budget_edit {
@@ -876,6 +932,14 @@ label.floating-label:has( input:focus) span,
   margin-left: 0.5rem !important;
 }
 
+.ml-8 {
+  margin-left: 2rem !important;
+}
+
+.ml-auto {
+  margin-left: auto !important;
+}
+
 .mr-4 {
   margin-right: 1rem !important;
 }
@@ -886,10 +950,6 @@ label.floating-label:has( input:focus) span,
 
 .mt-4 {
   margin-top: 1rem !important;
-}
-
-.ml-8 {
-  margin-left: 2rem !important;
 }
 
 .box-border {
@@ -1057,6 +1117,10 @@ label.floating-label:has( input:focus) span,
   width: min-content !important;
 }
 
+.w-screen {
+  width: 100vw !important;
+}
+
 .min-w-\[300px\] {
   min-width: 300px !important;
 }
@@ -1068,6 +1132,10 @@ label.floating-label:has( input:focus) span,
 .min-w-max {
   min-width: -moz-max-content !important;
   min-width: max-content !important;
+}
+
+.min-w-full {
+  min-width: 100% !important;
 }
 
 .max-w-3xl {
@@ -1449,6 +1517,34 @@ label.floating-label:has( input:focus) span,
 
 .grid-cols-\[auto_auto\] {
   grid-template-columns: auto auto !important;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
+.grid-cols-\[1fr\] {
+  grid-template-columns: 1fr !important;
+}
+
+.grid-cols-\[1fr_2fr\] {
+  grid-template-columns: 1fr 2fr !important;
+}
+
+.grid-cols-\[150px\] {
+  grid-template-columns: 150px !important;
+}
+
+.grid-cols-\[300px\] {
+  grid-template-columns: 300px !important;
+}
+
+.grid-cols-\[auto\] {
+  grid-template-columns: auto !important;
+}
+
+.grid-cols-\[100\%\] {
+  grid-template-columns: 100% !important;
 }
 
 .flex-row {
@@ -2141,6 +2237,11 @@ label.floating-label:has( input:focus) span,
   border-color: hsl( var(--color-primary) 90% / var(--tw-border-opacity) ) !important;
 }
 
+.border-primary-150 {
+  --tw-border-opacity: 1 !important;
+  border-color: hsl( var(--color-primary) 86% / var(--tw-border-opacity) ) !important;
+}
+
 .border-primary-200 {
   --tw-border-opacity: 1 !important;
   border-color: hsl( var(--color-primary) 80% / var(--tw-border-opacity) ) !important;
@@ -2171,20 +2272,6 @@ label.floating-label:has( input:focus) span,
   border-color: rgb(203 213 225 / var(--tw-border-opacity)) !important;
 }
 
-.border-teal-200 {
-  --tw-border-opacity: 1 !important;
-  border-color: rgb(153 246 228 / var(--tw-border-opacity)) !important;
-}
-
-.border-transparent {
-  border-color: transparent !important;
-}
-
-.border-primary-150 {
-  --tw-border-opacity: 1 !important;
-  border-color: hsl( var(--color-primary) 86% / var(--tw-border-opacity) ) !important;
-}
-
 .bg-\[rgb\(255\2c 0\2c 0\)\] {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity)) !important;
@@ -2213,6 +2300,11 @@ label.floating-label:has( input:focus) span,
 .bg-primary-150 {
   --tw-bg-opacity: 1 !important;
   background-color: hsl( var(--color-primary) 86% / var(--tw-bg-opacity) ) !important;
+}
+
+.bg-primary-25 {
+  --tw-bg-opacity: 1 !important;
+  background-color: hsl( var(--color-primary) 97% / var(--tw-bg-opacity) ) !important;
 }
 
 .bg-primary-50 {
@@ -2260,30 +2352,46 @@ label.floating-label:has( input:focus) span,
   background-color: rgb(94 234 212 / var(--tw-bg-opacity)) !important;
 }
 
+.bg-transparent {
+  background-color: transparent !important;
+}
+
 .bg-violet-300 {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(196 181 253 / var(--tw-bg-opacity)) !important;
 }
 
-.bg-transparent {
-  background-color: transparent !important;
-}
-
-.bg-white {
+.bg-red-200 {
   --tw-bg-opacity: 1 !important;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity)) !important;
 }
 
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops)) !important;
 }
 
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+}
+
 .bg-gradient-to-t {
   background-image: linear-gradient(to top, var(--tw-gradient-stops)) !important;
 }
 
-.bg-gradient-to-r {
-  background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+.from-primary-25 {
+  --tw-gradient-from: hsl( var(--color-primary) 97% / 1 ) var(--tw-gradient-from-position) !important;
+  --tw-gradient-from-position:   !important;
+  --tw-gradient-to: hsl( var(--color-primary) 97% / 0 )  var(--tw-gradient-from-position) !important;
+  --tw-gradient-to-position:   !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.from-primary-50 {
+  --tw-gradient-from: hsl( var(--color-primary) 95% / 1 ) var(--tw-gradient-from-position) !important;
+  --tw-gradient-from-position:   !important;
+  --tw-gradient-to: hsl( var(--color-primary) 95% / 0 )  var(--tw-gradient-from-position) !important;
+  --tw-gradient-to-position:   !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 
 .from-red-200 {
@@ -2302,14 +2410,6 @@ label.floating-label:has( input:focus) span,
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 
-.from-primary-50 {
-  --tw-gradient-from: hsl( var(--color-primary) 95% / 1 ) var(--tw-gradient-from-position) !important;
-  --tw-gradient-from-position:   !important;
-  --tw-gradient-to: hsl( var(--color-primary) 95% / 0 )  var(--tw-gradient-from-position) !important;
-  --tw-gradient-to-position:   !important;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
-}
-
 .to-red-400 {
   --tw-gradient-to: #f87171 var(--tw-gradient-to-position) !important;
   --tw-gradient-to-position:   !important;
@@ -2320,13 +2420,13 @@ label.floating-label:has( input:focus) span,
   --tw-gradient-to-position:   !important;
 }
 
-.to-white {
-  --tw-gradient-to: #fff var(--tw-gradient-to-position) !important;
+.to-transparent {
+  --tw-gradient-to: transparent var(--tw-gradient-to-position) !important;
   --tw-gradient-to-position:   !important;
 }
 
-.to-primary-100 {
-  --tw-gradient-to: hsl( var(--color-primary) 90% / 1 ) var(--tw-gradient-to-position) !important;
+.to-white {
+  --tw-gradient-to: #fff var(--tw-gradient-to-position) !important;
   --tw-gradient-to-position:   !important;
 }
 
@@ -2757,11 +2857,6 @@ label.floating-label:has( input:focus) span,
   color: rgb(241 245 249 / var(--tw-text-opacity)) !important;
 }
 
-.text-teal-600 {
-  --tw-text-opacity: 1 !important;
-  color: rgb(13 148 136 / var(--tw-text-opacity)) !important;
-}
-
 .text-teal-800 {
   --tw-text-opacity: 1 !important;
   color: rgb(17 94 89 / var(--tw-text-opacity)) !important;
@@ -3088,6 +3183,10 @@ label.floating-label:has( input:focus) span,
   transition-duration: 150ms !important;
 }
 
+.transition-none {
+  transition-property: none !important;
+}
+
 .duration-500 {
   transition-duration: 500ms !important;
 }
@@ -3155,11 +3254,6 @@ label.floating-label:has( input:focus) span,
   border-color: rgb(94 234 212 / var(--tw-border-opacity)) !important;
 }
 
-.hover\:border-teal-500:hover {
-  --tw-border-opacity: 1 !important;
-  border-color: rgb(20 184 166 / var(--tw-border-opacity)) !important;
-}
-
 .hover\:bg-primary-100:hover {
   --tw-bg-opacity: 1 !important;
   background-color: hsl( var(--color-primary) 90% / var(--tw-bg-opacity) ) !important;
@@ -3175,11 +3269,6 @@ label.floating-label:has( input:focus) span,
   background-color: hsl( var(--color-secondary) 95% / var(--tw-bg-opacity) ) !important;
 }
 
-.hover\:bg-teal-200:hover {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(153 246 228 / var(--tw-bg-opacity)) !important;
-}
-
 .hover\:bg-teal-50:hover {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(240 253 250 / var(--tw-bg-opacity)) !important;
@@ -3192,6 +3281,15 @@ label.floating-label:has( input:focus) span,
 .hover\:text-gray-600:hover {
   --tw-text-opacity: 1 !important;
   color: rgb(75 85 99 / var(--tw-text-opacity)) !important;
+}
+
+.hover\:text-primary-600:hover {
+  --tw-text-opacity: 1 !important;
+  color: hsl( var(--color-primary) 40% / var(--tw-text-opacity) ) !important;
+}
+
+.hover\:no-underline:hover {
+  text-decoration-line: none !important;
 }
 
 .before\:hover\:text-center:hover::before {
@@ -3245,6 +3343,14 @@ label.floating-label:has( input:focus) span,
 
   .md\:top-32 {
     top: 8rem !important;
+  }
+
+  .md\:ml-auto {
+    margin-left: auto !important;
+  }
+
+  .md\:mt-0 {
+    margin-top: 0px !important;
   }
 
   .md\:block {
@@ -3302,6 +3408,10 @@ label.floating-label:has( input:focus) span,
 
   .md\:flex-col {
     flex-direction: column !important;
+  }
+
+  .md\:items-end {
+    align-items: flex-end !important;
   }
 
   .md\:justify-normal {

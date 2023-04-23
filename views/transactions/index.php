@@ -4,26 +4,31 @@ $data->h1 = 'Transactions';
 ?>
 
 
-<section>
+<section class="md:grid md:grid-cols-2 items-end">
 
-    <h2 class="mb-4">
-        <button id="add-transaction-btn" class="btn-secondary-outlined">
+    <?php include '_pagination.php'; ?>
+
+    <div class="md:flex mt-4 md:mt-0">
+        <button id="add-transaction-btn" class="btn-secondary-outlined md:ml-auto">
             <span class="material-icons-round">post_add</span>
             Add a Transaction
         </button>
-    </h2>
+    </div>
 
-    <form method="POST" id="add-transaction-form" action="/transactions" class="
-        flex items-center gap-12 mb-8 overflow-hidden max-h-0 max-h-[300px] transition-all duration-500
+    <form method="POST" id="add-transaction-form" action="/transactions" class=" col-span-2 flex items-center gap-12 mb-8 overflow-hidden max-h-0 transition-all duration-500
     ">
 
         <?= @$data->errors->name->show_error; ?>
+        <?= @$data->errors->amount->show_error; ?>
+        <?= @$data->errors->type->show_error; ?>
+        <?= @$data->errors->budget->show_error; ?>
+        <?= @$data->errors->date->show_error; ?>
 
-        <div class="grid grid-cols-3 gap-x-2 gap-y-6 w-full p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg">
+        <div class="grid grid-cols-3 items-center gap-x-2 gap-y-6 w-full p-4 bg-gradient-to-r from-primary-25 to-white rounded-lg">
 
 
             <label class="floating-label">
-                <span class="ml-2 px-2 bg-primary-50 ">Transaction name:</span>
+                <span class="ml-2 px-2 bg-primary-25 ">Transaction name:</span>
                 
                 <input 
                     type="text" 
@@ -35,7 +40,7 @@ $data->h1 = 'Transactions';
             </label>
 
             <label class="floating-label">
-                <span class="ml-2 px-2 bg-primary-50 ">Amount:</span>
+                <span class="ml-2 px-2 bg-primary-25 ">Amount:</span>
                 
                 <input 
                     type="number" 
@@ -58,26 +63,13 @@ $data->h1 = 'Transactions';
 
             </label>
 
-            <div>
+            <label>
                 
-                <h3>Budget</h3>
+                <div>
+                    Budget:
+                </div>
         
-                <?php if ( @$data->errors->budgets->has_error ): ?>
-                    <span class="<<input_error>>">
-                        <?php if ( $data->errors->budgets->has_forbidden_chars ): ?>
-                            <span>
-                                Budget must only have letters, numbers, and spaces.
-                            </span>
-                        <?php endif; ?>
-                        <?php if ( $data->errors->budgets->required ): ?>
-                            <span>
-                                Budget is required.
-                            </span>
-                        <?php endif; ?>
-                    </span>
-                <?php endif; ?>
-        
-                <select name="budgets">
+                <select name="budgets" class="bg-transparent">
                     <?php 
                         foreach( @$data->budgets as $budget )
                         {
@@ -86,52 +78,25 @@ $data->h1 = 'Transactions';
                         }
                     ?>
                 </select>
-            </div>
 
-            <div>
+            </label>
+
+            <label>
                 
                 <h3>Date</h3>
         
-                <?php if ( @$data->errors->date->has_error ): ?>
-                    <span class="<<input_error>>">
-                        <?php if ( $data->errors->date->has_forbidden_chars ): ?>
-                            <span>
-                                Date must only have letters, numbers, and spaces.
-                            </span>
-                        <?php endif; ?>
-                        <?php if ( $data->errors->date->required ): ?>
-                            <span>
-                                Date is required.
-                            </span>
-                        <?php endif; ?>
-                        <?php if ( $data->errors->date->date ): ?>
-                            <span>
-                                Date is in an incorrect format.
-                            </span>
-                        <?php endif; ?>
-                    </span>
-                <?php endif; ?>
-        
-                <input type="date" name="date" value="{{date}}" />
-            </div>
+                <input type="date" name="date" value="{{date}}" class="bg-transparent" />
+            </label>
 
             <div>
-                <input type="submit" value="Add Transaction" class="<<button>> <<button_main>>" />
+                <input type="submit" value="Add Transaction" class="btn-primary-filled" />
             </div>
 
         </div>
     </form>
 
-    <?php if( @$data->success ): ?>
-        <span class="<<success_prompt>>">
-            Transaction added successfully.
-        </span>
-    <?php endif; ?>
-
 </section>
 
-
-<?php include '_pagination.php'; ?>
 
 
 <section class="flex flex-col gap-4">

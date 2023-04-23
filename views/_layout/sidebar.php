@@ -8,7 +8,7 @@
 ">
     <ul class="flex justify-center md:justify-normal md:flex-col gap-2 h-full">
         <li>
-            <a href="/dashboard" class="hover:bg-primary-100 p-2 rounded-lg flex items-center gap-2">
+            <a href="/dashboard" class="hover:bg-primary-100 hover:no-underline hover:text-primary-600 transition-none p-2 rounded-lg flex items-center gap-2">
                 <span class="material-icons-round">dashboard</span>
                 <span class="hidden md:block">
                     Dashboard
@@ -17,7 +17,7 @@
         </li>
 
         <li>
-            <a href="/budgets" class="hover:bg-primary-100 p-2 rounded-lg flex items-center gap-2">
+            <a href="/budgets" class="hover:bg-primary-100 hover:no-underline hover:text-primary-600 transition-none p-2 rounded-lg flex items-center gap-2">
                 <span class="material-icons-round">checklist</span>
                 <span class="hidden md:block">
                     Budgets
@@ -26,7 +26,7 @@
         </li>
 
         <li>
-            <a href="/transactions" class="hover:bg-primary-100 p-2 rounded-lg flex items-center gap-2">
+            <a href="/transactions" class="hover:bg-primary-100 hover:no-underline hover:text-primary-600 transition-none p-2 rounded-lg flex items-center gap-2">
                 <span class="material-icons-round">receipt_long</span>
                 <span class="hidden md:block">
                     Transactions
@@ -35,7 +35,7 @@
         </li>
 
         <li>
-            <a href="/trends" class="hover:bg-primary-100 p-2 rounded-lg flex items-center gap-2">
+            <a href="/trends" class="hover:bg-primary-100 hover:no-underline hover:text-primary-600 transition-none p-2 rounded-lg flex items-center gap-2">
                 <span class="material-icons-round">trending_up</span>
                 <span class="hidden md:block">
                     Trends
@@ -44,7 +44,7 @@
         </li>
 
         <li>
-            <a href="/settings" class="hover:bg-primary-100 p-2 rounded-lg flex items-center gap-2">
+            <a href="/settings" class="hover:bg-primary-100 hover:no-underline hover:text-primary-600 transition-none p-2 rounded-lg flex items-center gap-2">
                 <span class="material-icons-round">settings</span>
                 <span class="hidden md:block">
                     Settings
@@ -53,7 +53,7 @@
         </li>
 
         <li>
-            <a href="/signout" class="hover:bg-primary-100 p-2 rounded-lg flex center gap-2">
+            <a href="/signout" class="hover:bg-primary-100 hover:no-underline hover:text-primary-600 transition-none p-2 rounded-lg flex center gap-2">
                 <span class="material-icons-round">logout</span>
                 <span class="hidden md:block">
                     Logout

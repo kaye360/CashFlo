@@ -23,6 +23,28 @@
         cursor: pointer;
     }
 
+    a {
+        transition: all 250ms ease-in-out;
+    }
+
+    a:hover, a:focus {
+        color : hsl( var(--color-primary) 70% );
+        text-decoration: underline;
+    }
+
+    a:hover .logo {
+        animation: logo-anim 500ms ease-in-out both;
+    }
+
+    @keyframes logo-anim {
+        from {
+            clip-path: polygon(0 0, 4% 0, 4% 100%, 0% 100%);
+        }
+
+        to {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+    }
 }
 
 @layer components {
@@ -30,11 +52,23 @@
     .btn-primary-filled {
         display : inline-block;
         padding : 0.5rem 1rem;
-        background: linear-gradient(180deg, hsl(169, 73%, 60%) 0%, #1FC6A9 86.61%);
+        background: linear-gradient(
+            180deg, 
+            hsl( var(--color-primary) 80%) 0%, 
+            hsl( var(--color-primary) 65%) 86.61%
+        );
         border-radius: 6px;
         color : #fff;
         font-weight: bold;
         cursor: pointer;
+    }
+
+    .btn-primary-filled:hover, .btn-primary-filled:focus {
+        background: linear-gradient(
+            180deg, 
+            hsl( var(--color-primary) 60%) 0%, 
+            hsl( var(--color-primary) 45%) 86.61%
+        );
     }
 
     .btn-secondary-outlined {
@@ -44,19 +78,38 @@
         gap : 0.5rem;
         padding : 0.5rem 1rem;
         border : 2px solid hsl( var(--color-secondary) 70% );
-        color :hsl( var(--color-secondary) 70% );
+        color : hsl( var(--color-secondary) 70% );
         font-weight: bold;
         border-radius: 0.75rem;
+    }
+    
+    .btn-secondary-outlined:hover, .btn-secondary-outlined:focus {
+        background-color: hsl( var(--color-secondary) 95% );
+        border-color: hsl( var(--color-secondary) 90% );
+        color : hsl( var(--color-secondary) 60% );
     }
 
     .btn-secondary-filled {
         display : inline-block;
         padding : 0.5rem 1rem;
-        background: linear-gradient(180deg, #EA7D3F 0%, #E5661C 86.61%);
+        background: linear-gradient(
+            180deg, 
+            hsl( var(--color-secondary) 58%) 0%, 
+            hsl( var(--color-secondary) 50%) 85%
+        );
         border-radius: 6px;
         color : #fff;
         font-weight: bold;
         cursor: pointer;
+    }
+
+    .btn-secondary-filled:hover, .btn-primary-filled:focus {
+        background: linear-gradient(
+            180deg, 
+            hsl( var(--color-secondary) 48%) 0%, 
+            hsl( var(--color-secondary) 40%) 85%
+        );
+        color : #fff;
     }
 
     .monthly_budget_edit {
