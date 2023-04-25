@@ -1,3 +1,4 @@
+<?php declare(strict_types=1); ?>
 
 <a href="/trends/budgets" class="btn-back">
     <span class="material-icons-round">keyboard_backspace</span>
@@ -43,14 +44,14 @@
                 >
                     <?= $total >= 0 
                         ? "+$$total" 
-                        : "-$" . abs($total); 
+                        : "-$" . abs((int) $total); 
                     ?>
                 </div>
 
                 <!-- Bar -->
                 <div 
                     class="
-                        absolute left-[0.75rem] right-[0.75rem] rounded-sm min-h-[5px]
+                        absolute left-[0.75rem] right-[0.75rem] rounded-sm min-h-[5px] anim-bar-horizontal
                         <?= $bar_height >= 0 
                             ? 'bottom-[128px] bg-gradient-to-b from-teal-600 to-teal-400'
                             : 'top-[100px]    bg-gradient-to-t from-rose-600  to-rose-400';  

@@ -1,7 +1,7 @@
 
 
 <div class="
-    fixed bottom-0 left-0 right-0 z-50
+    fixed bottom-[-3px] left-0 right-0 z-50
     md:relative
     p-4 
     bg-primary-50 shadow-lg rounded-b-none md:rounded-b-lg rounded-lg font-bold text-primary-800

@@ -24,7 +24,7 @@
 </head>
 <body class="bg-gradient-to-tr from-primary-50 via-white to-primary-50 bg-fixed">
 
-<div id="app" class="">
+<div id="app" class="flex flex-col items-stretch min-h-[100vh]">
 
 <header class="text-primary-50">
 
@@ -71,17 +71,17 @@
         include 'hero.php';
     } ?>
     
-</header>
+</header> 
 
 
 <?php if( Auth::is_logged_in() && ( Route::path() !== '/' ) ): ?>
-    <div class="max-w-6xl mx-auto text-right px-6 py-0 text-primary-700 font-bold">
+    <div class="w-full max-w-6xl mx-auto text-right px-6 py-0 text-primary-700 font-bold">
         Signed in as: <?= Auth::username(); ?>
     </div>
 <?php endif; ?>
 
 <div class="
-    max-w-6xl mx-auto px-4 
+    w-full max-w-6xl mx-auto px-4 
     <?= Route::path() !== '/' ? 'grid md:grid-cols-[200px_1fr] gap-8' : 'pt-12'; ?>
 ">
     
