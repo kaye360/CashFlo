@@ -1,28 +1,37 @@
 
-<a href="/trends/budgets" class="inline-block underline mb-6">Back to budgets</a>
-
-<p class="mb-4">
-    This pages shows how much was spent/earned per month for the budget: <?= $data->budget->name; ?>
-</p>
+<a href="/trends/budgets" class="btn-back">
+    <span class="material-icons-round">keyboard_backspace</span>
+    Back to budgets
+</a>
 
 <!-- Bar Graph -->
 <?php if ( $data->transactions->monthly_net_totals ): ?>
 
-    <section class="relative flex items-center gap-4 h-[230px] w-fit min-w-[300px] px-2 border border-slate-200 rounded-xl">
+    <section id="bar-graph"
+        class="
+            relative flex items-center h-[230px] w-fit md:w-full max-w-[calc(100vw-50px)]
+            overflow-x-auto snap-mandatory snap-x scrollbar-hidden 
+            bg-gradient-to-br from-primary-800 to-primary-700
+            rounded-lg text-primary-100
+        "
+    >
 
         <!-- X Axis Line -->
-        <div class="absolute top-[100px] left-0 right-0 h-[1px] bg-slate-300"></div>
+        <div id="x-axis-line" class="absolute top-[100px] left-0 h-[2px] z-10 bg-primary-500"></div>
 
         <?php foreach ( $data->transactions->monthly_net_totals as $month => $total ): ?>
 
+
             <?php $bar_height = (int) ($total * $data->monthly_ratio); ?>
 
-            <div class="relative h-[100%] w-16">
+            <div class="relative h-[100%] w-24 px-6 flex-shrink-0 snap-start">
 
+                <!-- Date -->
                 <div class="absolute bottom-0 left-0 right-0 min-w-max text-center">
-                    <?= (new DateTimeImmutable( $month ))->format('M y'); ?>
+                    <?= (new DateTimeImmutable( $month ))->format('M \'y'); ?>
                 </div>
 
+                <!-- Amount -->
                 <div 
                     class="
                         absolute left-0 right-0 text-center text-xs
@@ -32,17 +41,23 @@
                         ?>
                     "
                 >
-                    <?= $total >= 0 ? "+$total" : $total; ?>
+                    <?= $total >= 0 
+                        ? "+$$total" 
+                        : "-$" . abs($total); 
+                    ?>
                 </div>
 
+                <!-- Bar -->
                 <div 
                     class="
-                        absolute left-0 right-0 rounded-sm
+                        absolute left-[0.75rem] right-[0.75rem] rounded-sm min-h-[5px]
                         <?= $bar_height >= 0 
-                            ? 'bottom-[128px] h-[' . $bar_height . 'px]      bg-gradient-to-b from-teal-200 to-teal-400'
-                            : 'top-[100px]    h-[' . $bar_height * -1 . 'px] bg-gradient-to-t from-red-200  to-red-400';  
+                            ? 'bottom-[128px] bg-gradient-to-b from-teal-600 to-teal-400'
+                            : 'top-[100px]    bg-gradient-to-t from-rose-600  to-rose-400';  
                         ?>
                     "
+
+                    style="height : <?= abs($bar_height) ?>px"
                 ></div>
             </div>
 
@@ -56,15 +71,11 @@
         <p>
             This budget doesn't have any transactions yet. <a href="/transactions" class="underline">Add some</a>
         </p>
-
-        <p>
-            <a href="/trends/budgets" class="underline">Back to Budget Trends</a>
-        </p>
     </section>
 
 <?php endif; ?>
 
-<section>
+<section class="mt-8">
 
     <?php foreach ( $data->transactions->transactions_chunked_by_month as $key => $month ): ?>
 
@@ -103,3 +114,18 @@
     <?php endforeach; ?>
 
 </section>
+
+
+<script>
+
+window.addEventListener('DOMContentLoaded', () => {
+
+    const barGraphWidth = document.querySelector('#bar-graph').scrollWidth
+
+    const xAxisLine = document.querySelector('#x-axis-line')
+    xAxisLine.style.width = barGraphWidth + 'px'
+
+})
+
+
+</script>

@@ -238,6 +238,75 @@
             translate : -50% 0;
         }
     }
+
+    .sidebar-nav-link {
+        display : flex;
+        flex-direction: column;
+        flex-basis: 400px;
+        place-items: center;
+        column-gap : 0.5rem;
+        padding-block : 0.5rem;
+
+        border-radius: 0.5rem;
+        transition: none;
+
+        font-size: 0.75rem;
+        line-height: 1rem;
+    }
+
+    @media screen and (min-width : 768px) {
+
+        .sidebar-nav-link {
+            flex-direction: row;
+            padding : 0.5rem;
+            font-size: 1rem;
+            line-height: 1rem;
+        }
+
+    }
+
+    .sidebar-nav-link:hover, .sidebar-nav-link:focus {
+        color: hsl( var(--color-primary) 40%);
+        background-color: hsl( var(--color-primary) 90%);
+        text-decoration: none;
+
+    }
+
+    .btn-trend-grid {
+        padding : 1rem;
+        background: linear-gradient(
+            45deg,
+            hsl( var(--color-primary) 95%),
+            hsl( var(--color-primary) 80%)
+        );
+        background-size: 200%;
+        background-position-x: 0%;
+        border : 2px solid hsl( var(--color-primary) 80%);
+        border-radius: 1rem;
+        color : hsl( var(--color-primary) 30%);
+        transition: all 250ms ease-in-out;
+    }
+    
+    .btn-trend-grid:hover, .btn-trend-grid:focus {
+        background-position: 100%;
+        color : hsl( var(--color-primary) 30%);
+    }
+}
+
+@layer utilities {
+
+    /* 
+    Hidden scrollbar found here:
+    https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll
+     */
+    .scrollbar-hidden {
+        overflow-y: scroll;
+        scrollbar-width: none; /* Firefox */
+    }
+    .scrollbar-hidden::-webkit-scrollbar { /* WebKit */
+        width: 0;
+        height: 0;
+    }
 }
 
 

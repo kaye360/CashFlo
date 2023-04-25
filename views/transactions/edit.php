@@ -99,7 +99,7 @@ $data->h1 = 'Edit Transaction: ' . $data->transaction->name;
 
             <input type="hidden" name="referer" value="{{referer}}" />
             
-            <button type="submit" class="btn-primary-filled flex items-center gap-2">
+            <button type="submit" class="btn-primary-filled flex items-center justify-center gap-2 w-full md:w-auto">
                 <span class="material-icons-round">edit_note</span>
                 Edit Transaction
             </button>
@@ -110,13 +110,13 @@ $data->h1 = 'Edit Transaction: ' . $data->transaction->name;
 </section>
 
 
-<section class="my-8 p-4 rounded-lg border border-rose-200 bg-rose-50 w-fit">
+<section class="my-8 p-4 rounded-lg border border-rose-200 bg-rose-50 w-full md:w-fit">
 
     <p class="mb-2">Would you like to delete this transaction?</p>
 
     <form method="POST" action="/transaction/<?= $data->transaction->id; ?>/delete" id="delete-form">
         <input type="hidden" name="referer" value="{{referer}}" />
-        <button type="submit" id="delete-transaction" class="btn-delete" data-clicked="false">
+        <button type="submit" id="delete-transaction" class="btn-delete justify-center w-full md:w-auto" data-clicked="false">
             <span class="material-icons-round">delete</span>
             Delete Transaction
         </button>

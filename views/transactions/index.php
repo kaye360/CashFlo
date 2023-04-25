@@ -8,12 +8,10 @@ $data->h1 = 'Transactions';
 
     <?php include '_pagination.php'; ?>
 
-    <div class="md:flex mt-4 md:mt-0">
-        <button id="add-transaction-btn" class="btn-secondary-outlined md:ml-auto">
-            <span class="material-icons-round">post_add</span>
-            Add a Transaction
-        </button>
-    </div>
+    <button id="add-transaction-btn" class="btn-secondary-outlined mt-4 w-full md:w-auto md:ml-auto">
+        <span class="material-icons-round">post_add</span>
+        Add a Transaction
+    </button>
 
     <form method="POST" id="add-transaction-form" action="/transactions" class=" col-span-2 flex items-center gap-12 mb-8 overflow-hidden max-h-0 transition-all duration-500
     ">
