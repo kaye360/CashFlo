@@ -22,7 +22,7 @@
         {{title}} - CashFlo
     </title>
 </head>
-<body>
+<body class="bg-gradient-to-tr from-primary-50 via-white to-primary-50 bg-fixed">
 
 <div id="app" class="">
 

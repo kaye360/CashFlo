@@ -1,173 +1,127 @@
 <?php
 $data->title = 'Edit Transaction';
-$data->h1 = 'Edit Transaction: ';
+$data->h1 = 'Edit Transaction: ' . $data->transaction->name;
 ?>
 
 
-<a href="{{referer}}" class="inline-block mb-4 underline">
+<a href="{{referer}}" class="btn-back">
+    <span class="material-icons-round">keyboard_backspace</span>
     Back to Transactions
 </a>
 
 <section>
 
-    <form method="POST" action="/transaction/<?= $data->transaction->id; ?>/edit" class="flex flex-col gap-4 items-start">
+    <form method="POST" action="/transaction/<?= $data->transaction->id; ?>/edit" class="grid grid-cols-[7ch_1fr] gap-4 items-center">
 
-        <label>
-            
+        <label for="name">
             <h3>Name</h3>
-
-            <?php if ( @$data->errors->name->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->name->has_forbidden_chars ): ?>
-                        <span>
-                            Transaction Name must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->name->required ): ?>
-                        <span>
-                            Transaction Name is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->name->max ): ?>
-                        <span>
-                            Transaction name may have up to 20 characters.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
-
-            <input type="text" name="name" value="<?= $data->transaction->name; ?>" />
-
         </label>
 
-        <label>
+        <input 
+            type="text" 
+            name="name" 
+            id="name" 
+            class="user-input"
+            value="<?= $data->transaction->name; ?>"
+        />
 
+
+        <label for="amount">
             <h3>Amount</h3>
-
-            <?php if ( @$data->errors->amount->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->name->has_forbidden_chars ): ?>
-                        <span>
-                            Amount must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->amount->required ): ?>
-                        <span>
-                            Amount is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->amount->number ): ?>
-                        <span>
-                            Amount must be a number.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
-
-            <input type="number" name="amount" value="<?= $data->transaction->amount; ?>" step="any" class="border" />
-
         </label>
 
+        <input 
+            type="number" 
+            name="amount" 
+            id="amount" 
+            class="user-input"
+            value="<?= $data->transaction->amount; ?>" 
+            step="any" 
+        />
 
         <div>
             <h3>Type</h3>
+        </div>
     
+        <div>
+
             <label>
-                <input 
-                    type="radio" name="type" value="spending" 
-                    <?= $data->transaction->type ==='spending' ? 'checked' : '' ?> /> 
                 Spending
-            </label>
-            <label class="block">
+                
                 <input 
-                    type="radio" name="type" value="income"
-                    <?= $data->transaction->type ==='income' ? 'checked' : '' ?> /> 
+                    type="radio" 
+                    name="type" 
+                    value="spending" 
+                    <?= $data->transaction->type ==='spending' ? 'checked' : '' ?> 
+                /> 
+            </label>
+
+            <label>
                 Income
+                <input 
+                    type="radio" 
+                    name="type" 
+                    value="income"
+                    <?= $data->transaction->type ==='income' ? 'checked' : '' ?> 
+                /> 
             </label>
         </div>
 
 
-        <div>
-            <h3>Budget</h3>
+        <label for="budgets">
+            Budget
+        </label>
     
-            <?php if ( @$data->errors->budgets->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->budgets->has_forbidden_chars ): ?>
-                        <span>
-                            Budget must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->budgets->required ): ?>
-                        <span>
-                            Budget is required.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
-    
-            <select name="budgets">
-                <?php foreach( @$data->budgets as $budget ) : ?>
-                    <option 
-                        value="<?= $budget->name; ?>"
-                        <?= $budget->name === $data->transaction->budget ? 'selected' : ''; ?>
-                    >
-                        <?= $budget->name; ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+        <select name="budgets" id="budgets" class="user-input">
+            <?php foreach( @$data->budgets as $budget ) : ?>
+                <option 
+                    value="<?= $budget->name; ?>"
+                    <?= $budget->name === $data->transaction->budget ? 'selected' : ''; ?>
+                >
+                    <?= $budget->name; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
 
-        <div>
-            <h3>Date</h3>
+        <label for="date">
+            Date
+        </label>
     
-            <?php if ( @$data->errors->date->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->date->has_forbidden_chars ): ?>
-                        <span>
-                            Date must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->date->required ): ?>
-                        <span>
-                            Date is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->date->date ): ?>
-                        <span>
-                            Date is in an incorrect format.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
-    
-            <input type="date" name="date" value="<?= $data->transaction->date; ?>" />
-        </div>
+        <input 
+            type="date" 
+            name="date"
+            id="date"
+            class="user-input"
+            value="<?= $data->transaction->date; ?>" 
+        />
 
+        <div class="col-span-2">
 
-        <div>
             <input type="hidden" name="referer" value="{{referer}}" />
-            <input type="submit" value="Edit Transaction" class="<<button>> <<button_main>>" />
+            
+            <button type="submit" class="btn-primary-filled flex items-center gap-2">
+                <span class="material-icons-round">edit_note</span>
+                Edit Transaction
+            </button>
         </div>
-
-        <?php if( @$data->success ): ?>
-            <span class="<<success_prompt>>">
-                Transaction saved.
-            </span>
-        <?php endif; ?>
 
     </form>
 
 </section>
 
 
-<section class="my-8">
+<section class="my-8 p-4 rounded-lg border border-rose-200 bg-rose-50 w-fit">
 
-<p>Would you like to delete this transaction?</p>
+    <p class="mb-2">Would you like to delete this transaction?</p>
 
-<form method="POST" action="/transaction/<?= $data->transaction->id; ?>/delete" id="delete-form">
-    <input type="hidden" name="referer" value="{{referer}}" />
-    <input type="submit" id="delete-transaction" class="<<button>> bg-red-400 text-white" data-clicked="false" value="Delete Transaction" />
-</form>
+    <form method="POST" action="/transaction/<?= $data->transaction->id; ?>/delete" id="delete-form">
+        <input type="hidden" name="referer" value="{{referer}}" />
+        <button type="submit" id="delete-transaction" class="btn-delete" data-clicked="false">
+            <span class="material-icons-round">delete</span>
+            Delete Transaction
+        </button>
+        
+    </form>
 
 </section>
 
@@ -183,9 +137,9 @@ $data->h1 = 'Edit Transaction: ';
             e.preventDefault()
             if( deleteBtn.dataset.clicked === 'false'){
                 deleteBtn.dataset.clicked = 'true'
-                deleteBtn.value = 'Are you sure?'
+                deleteBtn.textContent = 'Are you sure?'
             } else {
-                deleteBtn.value = 'Deleting...'
+                deleteBtn.textContent = 'Deleting...'
                 deleteForm.submit()
             }
         })

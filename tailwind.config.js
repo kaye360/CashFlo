@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./**/*.{html,js,php}"],
+  content: [
+    "./views/**/*.{html,js,php}",
+    "./static/**/*.{html,js,php}",
+    "./lib/**/*.{html,js,php}"
+  ],
   theme: {
     extend: {
       colors: {
@@ -19,6 +23,7 @@ module.exports = {
           900 : 'hsl( var(--color-primary) 10% / <alpha-value> )'
         },
         'secondary' : {
+          25  : 'hsl( var(--color-secondary) 97% / <alpha-value> )',
           50  : 'hsl( var(--color-secondary) 95% / <alpha-value> )',
           100 : 'hsl( var(--color-secondary) 90% / <alpha-value> )',
           200 : 'hsl( var(--color-secondary) 80% / <alpha-value> )',

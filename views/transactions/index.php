@@ -99,7 +99,7 @@ $data->h1 = 'Transactions';
 
 
 
-<section class="flex flex-col gap-4">
+<section class="flex flex-col gap-4 text-md text-primary-600">
 
     <table>
         <thead class="hidden md:table-header-group ">
@@ -119,7 +119,7 @@ $data->h1 = 'Transactions';
                 <?php if ($date_counter !== $transaction->date_month): ?>
 
                     <tr>
-                        <td colspan="5" class="px-2 py-4 bg-primary-150 font-bold rounded-lg">
+                        <td colspan="5" class="px-2 pb-4 pt-6 border-b-2 border-primary-100 font-bold rounded-lg">
                             <?= $transaction->date_month;  ?>
                         </td>
                     </tr>
@@ -127,25 +127,25 @@ $data->h1 = 'Transactions';
                     <?php $date_counter = $transaction->date_month; ?>
                 <?php endif; ?>
 
-                <tr class="grid grid-cols-3 items-center w-full md:table-row odd:bg-primary-50 hover:bg-secondary-50 rounded-lg">
+                <tr class="grid grid-cols-3 items-center w-full md:table-row odd:bg-primary-25 hover:bg-primary-50 rounded-lg">
 
-                    <td class=" col-span-2 px-2 md:py-4 text-xl font-bold">
+                    <td class=" col-span-2 px-2 pt-2 md:py-2 text-primary-900 font-medium">
                             <?= $transaction->name; ?>
                     </td>
                     
-                    <td class="px-2 md:py-2 font-bold">
+                    <td class="px-2 ">
                         <?= $transaction->type === 'spending' ? '-' : '+'; ?>$<?= $transaction->amount; ?>
                     </td>
                     
-                    <td class=" col-span-3 px-2 md:py-2 text-sm">
+                    <td class=" col-span-3 px-2 ">
                         <?= $transaction->date_english; ?>
                     </td>
                     
-                    <td class=" col-span-2 px-2 md:py-2">
+                    <td class=" col-span-2 px-2 pb-2 md:py-0">
                         <?= $transaction->budget; ?>
                     </td>
                     
-                    <td class="px-2 md:py-2 text-sm">
+                    <td class="px-2 ">
                         <a href="/transaction/<?php echo $transaction->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
                         <span class="material-icons-round">edit_note</span>
                         </a>

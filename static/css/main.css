@@ -112,6 +112,42 @@
         color : #fff;
     }
 
+    .btn-delete {
+        display : flex;
+        align-items: center;
+        gap : 0.5rem;
+        padding : 0.5rem 1rem;
+        color : #fff;
+        border-radius: 0.5rem;
+        background: linear-gradient(
+            180deg,
+            #fca5a5,
+            #f87171
+        );
+    }
+    
+    .btn-delete:hover, .btn-delete:focus {
+        background: linear-gradient(
+            180deg,
+            #ef4444,
+            #b91c1c
+        );
+    }
+
+    .btn-back {
+        display : inline-flex;
+        align-items: center;
+        gap : 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom : 2px solid transparent;
+    }
+
+    .btn-back:hover, .btn-back:focus {
+        text-decoration: none;
+        color : hsl( var(--color-primary) 50%);
+        border-color: hsl( var(--color-primary) 50%);
+    }
+
     .monthly_budget_edit {
         color : #ddd;
     }
@@ -145,6 +181,19 @@
     label.floating-label:has( input:focus) span,
     label.floating-label:has( input:valid) span {
         top : 0;
+    }
+
+    .user-input {
+        padding : 0.5rem;
+        background-color: hsl( var(--color-primary) 97%);
+        border : 2px solid hsl( var(--color-primary) 90%);
+        border-radius: 0.5rem;
+        max-width: 320px;
+        outline : 0;
+    }
+    
+    .user-input:focus-visible {
+        border-color : hsl( var(--color-primary) 60%);
     }
 
     .prompt {

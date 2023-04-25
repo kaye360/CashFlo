@@ -4,107 +4,81 @@ $data->h1 = 'Edit Budget: ' . $data->budget->name;
 ?>
 
 
-<a href="{{referer}}" class="inline-block mb-4 underline">
+<a href="{{referer}}" class="btn-back">
+    <span class="material-icons-round">keyboard_backspace</span>
     Back to budgets
 </a>
 
 <section>
 
-    <form method="POST" action="/budget/<?= $data->budget->id ?>/edit" class="flex flex-col gap-4 items-start">
+    <form method="POST" action="/budget/<?= $data->budget->id ?>/edit" class="grid grid-cols-[6ch_1fr] gap-4 items-center">
 
-        <label>
-            
+        <label for="name">
             <div>Name</div>
-
-            <?php if ( @$data->errors->name->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->name->has_forbidden_chars ): ?>
-                        <span>
-                            Budget Name must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->name->required ): ?>
-                        <span>
-                            Budget Name is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->name->max ): ?>
-                        <span>
-                            Budget name may have up to 20 characters.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
-
-            <input 
-                type="text" 
-                name="name" 
-                value="<?= $data->budget->name ?>" 
-                class="p-2 border border-primary-800 rounded-lg" 
-            />
-
         </label>
 
-        <label>
+        <input 
+            type="text" 
+            name="name" 
+            id="name"
+            value="<?= $data->budget->name ?>" 
+            class="user-input" 
+        />
 
+
+        <label for="amount">
             <div>Amount</div>
-
-            <?php if ( @$data->errors->amount->has_error ): ?>
-                <span class="<<input_error>>">
-                    <?php if ( $data->errors->name->has_forbidden_chars ): ?>
-                        <span>
-                            Amount must only have letters, numbers, and spaces.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->amount->required ): ?>
-                        <span>
-                            Amount is required.
-                        </span>
-                    <?php endif; ?>
-                    <?php if ( $data->errors->amount->number ): ?>
-                        <span>
-                            Amount must be a number.
-                        </span>
-                    <?php endif; ?>
-                </span>
-            <?php endif; ?>
-
-            <input 
-                type="number" 
-                name="amount" 
-                value="<?= (float) $data->budget->amount ?>" 
-                step="any" 
-                class="p-2 border border-primary-800 rounded-lg" 
-            />
-
         </label>
 
+        <input 
+            type="number" 
+            name="amount" 
+            id="amount"
+            value="<?= (float) $data->budget->amount ?>" 
+            step="any" 
+            class="user-input" 
+        />
 
-        <div>Type</div>
 
+
+        <div>
+            Type
+        </div>
+
+        <div class="flex items-center gap-4">
             <label>
                 <input 
                     type="radio" name="type" value="spending" 
                     <?php if($data->budget->type ==='spending') echo 'checked' ?> /> 
+
                 Spending
             </label>
-            <label class="block">
+
+            <label>
+
                 <input 
                     type="radio" name="type" value="income"
                     <?php if($data->budget->type ==='income') echo 'checked' ?> /> 
+                    
                 Income
             </label>
+        </div>
 
         <input type="hidden" name="referer" value="{{referer}}" />
 
-        <input type="submit" value="Edit Budget" class="btn-primary-filled" />
+        <div class="col-span-2">
+            <button type="submit" class="btn-primary-filled flex items-center gap-2">
+            <span class="material-icons-round">edit_note</span>
+                Edit Budget
+            </button>
+        </div>
     
     </form>
 
 </section>
 
 
-<section class="my-8 p-4 rounded-lg border border-rose-200 bg-rose-50">
+<section class="my-8 p-4 rounded-lg border border-rose-200 bg-rose-50 w-fit">
 
     <p class="mb-2">
         Would you like to delete this budget?
@@ -114,7 +88,15 @@ $data->h1 = 'Edit Budget: ' . $data->budget->name;
 
         <input type="hidden" name="referer" value="{{referer}}" />
 
-        <input type="submit" id="delete-budget" class="bg-red-400 p-2 text-white rounded-lg" data-clicked="false" value="Delete Budget" />
+        <button 
+            type="submit" 
+            id="delete-budget" 
+            class="btn-delete" 
+            data-clicked="false"
+        >
+            <span class="material-icons-round">delete</span>
+            Delete Budget
+        </button>
         
     </form>
 
@@ -132,9 +114,9 @@ $data->h1 = 'Edit Budget: ' . $data->budget->name;
             e.preventDefault()
             if( deleteBtn.dataset.clicked === 'false'){
                 deleteBtn.dataset.clicked = 'true'
-                deleteBtn.value = 'Are you sure?'
+                deleteBtn.textContent = 'Are you sure?'
             } else {
-                deleteBtn.value = 'Deleting...'
+                deleteBtn.textContent = 'Deleting...'
                 deleteForm.submit()
             }
         })
