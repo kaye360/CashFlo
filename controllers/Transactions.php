@@ -19,6 +19,7 @@ use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\types\Transaction\Transaction;
 use lib\utils\Prompt\Prompt;
+use services\TransactionService\TransactionService;
 use stdClass;
 
 
@@ -40,28 +41,16 @@ class TransactionsController extends Controller {
      */
     public function index() : void
     {
-        $budgetsModel      = $this->model('Budget');
+        $budgetsModel = $this->model('Budget');
 
-        $page = isset( Route::params()->page )
-            ? (int) Route::params()->page
-            : 1;
-
-        if( $page <= 0)
-        {
-            header('Location: /transactions/1');
-            die();
-        }
+        $page = TransactionService::get_current_page();
 
         $transactions = $this->transactionsModel->get_all( 
             page: $page, 
             per_page: (int) Auth::settings()->transactions_per_page 
         );
 
-        if( $page > $transactions->total_pages )
-        {
-            header('Location: /transactions/' . $transactions->total_pages );
-            die();
-        }
+        TransactionService::check_page_exceeds_total($page, $transactions->total_pages );
 
         $data                  = new stdClass();
         $data->page            = $page;
@@ -72,6 +61,41 @@ class TransactionsController extends Controller {
         $data->date            = date('Y-m-d');
         $data->selected_budget = '';
 
+        $this->view('transactions/index', $data);
+    }
+    
+    /**
+     * 
+     * @method Create a Transaction
+     * 
+     */
+    public function create() : void
+    {
+        $budgetsModel = $this->model('Budget');
+
+        $page = TransactionService::get_current_page();
+
+        $transactions = $this->transactionsModel->get_all( 
+            page: $page, 
+            per_page: (int) Auth::settings()->transactions_per_page 
+        );
+
+        $transaction = TransactionService::prep_transaction();
+
+        $data               = new stdClass();
+        $data->page         = $page;
+        $data->transactions = $transactions->list;
+        $data->total_pages  = $transactions->total_pages;
+        $data->transaction  = $transaction->transaction;
+        $data->budgets      = $budgetsModel->get_all( Auth::user_id() );
+        $data->errors       = $transaction->validation->errors;
+        $data->success      = $transaction->validation->success;
+        
+        if( $data->success ) 
+        {
+            TransactionService::create_transaction($this->transactionsModel, $transaction->transaction);
+        }
+                
         $this->view('transactions/index', $data);
     }
     
@@ -93,72 +117,6 @@ class TransactionsController extends Controller {
         $data->budgets     = $budgetsModel->get_all( Auth::user_id() );
 
         $this->view('transactions/edit', $data);
-    }
-
-    /**
-     * 
-     * @method Create a Transaction
-     * 
-     */
-    public function create() : void
-    {
-        $validator = Validator::validate([
-            'name'    => ['required', 'max:20' , 'has_spaces'],
-            'amount'  => ['required', 'number'],
-            'budgets' => ['required', 'has_spaces'],
-            'date'    => ['required', 'date']
-        ]);
-        
-        $budgetsModel = $this->model('Budget');
-
-        $amount  = (float) Sanitizer::sanitize($_POST['amount']);
-        $amount  = (float) number_format( $amount, 2, '.', '' );
-
-        $transaction = new Transaction(
-            id:      null,
-            name:    Sanitizer::sanitize($_POST['name']),
-            budget:  Sanitizer::sanitize($_POST['budgets']),
-            type:    Sanitizer::sanitize($_POST['type']),
-            date:    Sanitizer::sanitize($_POST['date']),
-            amount:  $amount,
-            user_id: Auth::user_id()
-        );
-
-        $page = isset( Route::params()->page )
-            ? (int) Route::params()->page
-            : 1;
-
-        if( $page <= 0)
-        {
-            header('Location: /transactions/1');
-            die();
-        }
-
-        $transactions = $this->transactionsModel->get_all( 
-            page: $page, 
-            per_page: (int) Auth::settings()->transactions_per_page 
-        );
-
-        $data              = new stdClass();
-        $data->page            = $page;
-        $data->transactions    = $transactions->list;
-        $data->total_pages     = $transactions->total_pages;
-        $data->transaction = $transaction;
-        $data->budgets     = $budgetsModel->get_all( Auth::user_id() );
-        $data->errors      = $validator->errors;
-        $data->success     = $validator->success;
-        
-        if( $data->success ) 
-        {
-            $this->transactionsModel->create( $transaction );
-            
-            Prompt::set('success', 'Transaction added successfully');
-
-            header("Location: /transactions");
-            die();
-        }
-                
-        $this->view('transactions/index', $data);
     }
 
     /**

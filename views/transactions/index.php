@@ -3,7 +3,6 @@ $data->title = 'Transactions';
 $data->h1 = 'Transactions';
 ?>
 
-<!-- <?php q($data) ?> -->
 <section class="md:grid md:grid-cols-2 items-end">
 
     <?php include '_pagination.php'; ?>
@@ -57,6 +56,7 @@ $data->h1 = 'Transactions';
                     type="number" 
                     id="amount"
                     name="amount" 
+                    step="any"
                     class="px-2 border border-primary-150 rounded-lg" 
                     value="<?= @$data->transaction->amount ?>" 
                     required 
@@ -84,7 +84,7 @@ $data->h1 = 'Transactions';
                     <?php 
                         foreach( @$data->budgets as $budget )
                         {
-                            $selected = $budget->name === $data->transaction->budget ? 'selected' : '';
+                            $selected = @$budget->name === $data->transaction->budget ? 'selected' : '';
                             echo "<option value='$budget->name' $selected >$budget->name</option> \n";
                         }
                     ?>
@@ -96,7 +96,7 @@ $data->h1 = 'Transactions';
                 
                 <h3>Date</h3>
         
-                <input type="date" name="date" value="<?= $data->transaction->date ?>" class="bg-transparent" />
+                <input type="date" name="date" value="<?= $data?->transaction?->date ?? $data->date ?>" class="bg-transparent" />
             </label>
 
             <div>

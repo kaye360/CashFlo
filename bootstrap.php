@@ -25,7 +25,7 @@ require_once './config.php';
  * @method Class autoloader function
  * 
  * Note:
- * The strings 'Controller' and 'Model' are removed from namespaced class name,
+ * The strings 'Controller', 'Model', and 'Service' are removed from namespaced class name,
  * but also allows the file to be called Controller.php or Model.php
  * 
  * Example:
@@ -47,6 +47,11 @@ spl_autoload_register( function($class)
     if( $file_name !== 'Model') 
     {
         $file_name = str_replace('Model' , '', $file_name);
+    }
+
+    if( $file_name !== 'Service') 
+    {
+        $file_name = str_replace('Service' , '', $file_name);
     }
 
     $class_array[1] = $file_name;
