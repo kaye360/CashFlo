@@ -7,7 +7,7 @@ $data->h1 = 'Trends';
 
     <a 
         href="trends/budgets"
-        class="btn-trend-grid"
+        class="btn-primary-outlined flex-col py-4"
     >
         Budget Trends <br>
         <span class="text-sm">
@@ -17,7 +17,7 @@ $data->h1 = 'Trends';
 
     <a 
         href="trends/monthly"
-        class="btn-trend-grid"
+        class="btn-primary-outlined flex-col py-4"
     >
         Net Spending <br>
         <span class="text-sm">

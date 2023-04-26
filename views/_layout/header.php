@@ -24,6 +24,7 @@
 </head>
 <body class="bg-gradient-to-tr from-primary-50 via-white to-primary-50 bg-fixed">
 
+
 <div id="app" class="flex flex-col items-stretch min-h-[100vh]">
 
 <header class="text-primary-50">
@@ -81,7 +82,7 @@
 <?php endif; ?>
 
 <div class="
-    w-full max-w-6xl mx-auto px-4 
+    w-full max-w-6xl mx-auto mb-4 px-4 
     <?= Route::path() !== '/' ? 'grid md:grid-cols-[200px_1fr] gap-8' : 'pt-12'; ?>
 ">
     

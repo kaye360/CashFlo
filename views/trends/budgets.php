@@ -13,14 +13,22 @@ $data->h1 = 'Budget Trends';
     Select a budget to view spending over time
 </div>
 
-<section class="grid grid-cols-5 gap-8 text-lg">
+<section class="text-lg w-fit">
 
     <?php foreach ($data->budgets as $budget): ?>
 
-        <a href="/trends/budgets/<?= $budget->id; ?>" class="block py-8 text-center border border-slate-300 bg-slate-50 hover:border-teal-300 hover:bg-teal-50 rounded-xl">
-            <?= $budget->name; ?>
-        </a>
+        <div class="grid grid-cols-[15ch_1fr] gap-4 my-4 border-b-2 border-primary-50">
+            
+            <a href="/trends/budgets/<?= $budget->id; ?>" class="font-bold">
+                <?= $budget->name ?>
+            </a>
+            
+            <span class="text-primary-400">
+                <?= $budget->type === 'income' ? '+' : '-' ?>$<?= $budget->amount ?>
+            </span>
 
+        </div>
+        
     <?php endforeach; ?>
 
 </section>

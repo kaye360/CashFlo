@@ -6,7 +6,10 @@
 
         <img src="/static/img/graph.svg" class="hidden md:block absolute bottom-0 left-0">
 
-        <h1 class="relative text-[3.3rem] leading-[3rem] font-bold max-w-[12ch]">
+        <h1 class="
+            relative text-6xl leading-[3rem] font-extrabold max-w-[12ch] py-4
+            text-transparent bg-clip-text bg-gradient-to-r from-[#79EAD6] to-primary-50
+        ">
             Master Your Money.
         </h1>
 
@@ -16,7 +19,7 @@
 
         <div class="relative">
 
-            <a href="/signup" class="btn-secondary-filled mr-4">Sign Up</a>
+            <a href="/signup" class="btn-secondary-filled ml-0 mr-4">Sign Up</a>
 
             <a href="/about" class="font-bold">Learn more</a>
 
@@ -37,5 +40,7 @@
     <div class="absolute top-[40%] left-[10%] w-36 h-36 bg-teal-200 blur-3xl opacity-30 "></div>
     <div class="absolute top-[0%] left-[40%] w-48 h-16 bg-teal-200 blur-3xl opacity-40 "></div>
     <div class="absolute top-[60%] left-[80%] w-48 h-48 bg-teal-200 blur-3xl opacity-40 "></div>
-
+    
 </div>
+
+<img src="/static/img/logo.svg" class="absolute top-0 left-0 w-96 h-96 opacity-5">

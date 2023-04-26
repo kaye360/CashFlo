@@ -10,7 +10,7 @@
 
     <section id="bar-graph"
         class="
-            relative flex items-center h-[230px] w-fit md:w-full max-w-[calc(100vw-50px)]
+            relative flex items-center h-[230px] w-full max-w-[calc(100vw-50px)]
             overflow-x-auto snap-mandatory snap-x scrollbar-hidden 
             bg-gradient-to-br from-primary-800 to-primary-700
             rounded-lg text-primary-100
@@ -51,7 +51,7 @@
                 <!-- Bar -->
                 <div 
                     class="
-                        absolute left-[0.75rem] right-[0.75rem] rounded-sm min-h-[5px] anim-bar-horizontal
+                        absolute left-[0.75rem] right-[0.75rem] rounded-sm min-h-[5px] anim-bar-vertical
                         <?= $bar_height >= 0 
                             ? 'bottom-[128px] bg-gradient-to-b from-teal-600 to-teal-400'
                             : 'top-[100px]    bg-gradient-to-t from-rose-600  to-rose-400';  
@@ -119,14 +119,14 @@
 
 <script>
 
-window.addEventListener('DOMContentLoaded', () => {
-
+function setbarGraphWidth() {
     const barGraphWidth = document.querySelector('#bar-graph').scrollWidth
-
     const xAxisLine = document.querySelector('#x-axis-line')
     xAxisLine.style.width = barGraphWidth + 'px'
+}
 
-})
+window.addEventListener('DOMContentLoaded', setbarGraphWidth)
+window.addEventListener('resize', setbarGraphWidth)
 
 
 </script>
