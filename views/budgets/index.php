@@ -105,7 +105,7 @@ $data->h1 = 'Monthly Budgets';
             action="/budgets" 
             id="add-budget-form" 
             class=" 
-                flex flex-col gap-4 w-full overflow-hidden rounded-lg drop-shadow-md bg-gradient-to-r from-primary-50 to-transparent
+                flex flex-col gap-4 w-full overflow-hidden rounded-lg drop-shadow-md bg-gradient-to-b from-primary-25 to-transparent
                 <?= $_SERVER['REQUEST_METHOD'] === 'POST' ? 'border max-h-[1000px] p-4' : 'max-h-0'; ?>  
                 transition-all ease-in-out duration-500"
         >
@@ -113,7 +113,7 @@ $data->h1 = 'Monthly Budgets';
             <h2 class="font-bold">Enter budget info:</h2>
 
             <label class="floating-label">
-                <span class="ml-2 px-2 bg-primary-50 ">Budget name:</span>
+                <span class="ml-2 px-2 bg-primary-25 ">Budget name:</span>
                 
                 <input 
                     type="text" 

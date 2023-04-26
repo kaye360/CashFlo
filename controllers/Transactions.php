@@ -17,7 +17,8 @@ use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
 use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
-use lib\services\Transaction\Transaction;
+use lib\types\Transaction\Transaction;
+use lib\utils\Prompt\Prompt;
 use stdClass;
 
 
@@ -110,8 +111,6 @@ class TransactionsController extends Controller {
         
         $budgetsModel = $this->model('Budget');
 
-        $referer = parse_url( $_SERVER['HTTP_REFERER'] ?? '/transactions' , PHP_URL_PATH);
-
         $amount  = (float) Sanitizer::sanitize($_POST['amount']);
         $amount  = (float) number_format( $amount, 2, '.', '' );
 
@@ -125,7 +124,25 @@ class TransactionsController extends Controller {
             user_id: Auth::user_id()
         );
 
+        $page = isset( Route::params()->page )
+            ? (int) Route::params()->page
+            : 1;
+
+        if( $page <= 0)
+        {
+            header('Location: /transactions/1');
+            die();
+        }
+
+        $transactions = $this->transactionsModel->get_all( 
+            page: $page, 
+            per_page: (int) Auth::settings()->transactions_per_page 
+        );
+
         $data              = new stdClass();
+        $data->page            = $page;
+        $data->transactions    = $transactions->list;
+        $data->total_pages     = $transactions->total_pages;
         $data->transaction = $transaction;
         $data->budgets     = $budgetsModel->get_all( Auth::user_id() );
         $data->errors      = $validator->errors;
@@ -133,21 +150,14 @@ class TransactionsController extends Controller {
         
         if( $data->success ) 
         {
-            $new_transaction = $this->transactionsModel->create( $transaction );
+            $this->transactionsModel->create( $transaction );
             
-            if( $new_transaction->error ) 
-            {
-                $data->success       = false;
-                $data->errors->query = true;
+            Prompt::set('success', 'Transaction added successfully');
 
-            } else {
-                header("Location: $referer?prompt=add_transaction");
-                die();
-            }
+            header("Location: /transactions");
+            die();
         }
-        
-        $data->transactions = $this->transactionsModel->get_all();
-        
+                
         $this->view('transactions/index', $data);
     }
 
@@ -189,7 +199,12 @@ class TransactionsController extends Controller {
 
         if ( $data->success )
         {
+            Prompt::set('success', 'Transaction updated successfully');
+            
             $this->transactionsModel->update( $transaction );
+        } else {
+            
+            Prompt::set('error', 'Transaction not updated. Please check your form fields.');
         }
 
         $this->view('transactions/edit', $data);
@@ -213,7 +228,7 @@ class TransactionsController extends Controller {
         $this->transactionsModel->destroy(id: $transaction->id);
 
         // Return to referer
-        header("Location: $referer?prompt=delete_transaction ");
+        header("Location: $referer");
         die();
     }
 

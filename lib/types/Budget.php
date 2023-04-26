@@ -1,32 +1,26 @@
 <?php
 /**
  * 
- * Transaction Service Class
+ * Budget Service Class
  * 
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Used to define and reference any transaction
+ * Used to define and reference any budget
  * 
  */
 declare(strict_types=1);
-namespace lib\services\Transaction;
-
-use DateTimeImmutable;
+namespace lib\types\Budget;
 
 
 
-class Transaction {
+class Budget {
 
     public $id;
     public $name;
-    public $budget;
     public $type;
-    public $date;
-    public $user_id;
     public $amount;
-    public $date_english;
-    public $date_month;
+    public $user_id;
 
 
     /**
@@ -41,22 +35,16 @@ class Transaction {
     public function __construct(
         $id      = null,
         $name    = null,
-        $budget  = null,
         $type    = null,
-        $date    = null,
-        $user_id = null,
-        $amount  = null
+        $amount  = null,
+        $user_id = null
     ) {
 
         $this->id      = (int)    $this->id ?: (int) $id;
 
         $this->name    = (string) $this->name ?: (string) $name;
 
-        $this->budget  = (string) $this->budget ?: (string) $budget;
-
         $this->type    = (string) $this->type ?: (string) $type;
-
-        $this->date    = (string) $this->date ?: $date;
 
         $this->user_id = (int)    $this->user_id ?: (int) $user_id;
 
@@ -67,13 +55,6 @@ class Transaction {
          * Format amount to CAD with decimals
          */
         $this->amount = number_format( (float) $this->amount, 2, '.', '');
-        
-        /**
-         * Format English, Month version of date
-         */
-        $date_obj           = new DateTimeImmutable($this->date);
-        $this->date_english = $date_obj->format('M d Y');
-        $this->date_month   = $date_obj->format('M Y');
     }
 
 }

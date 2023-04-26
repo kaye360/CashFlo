@@ -3,7 +3,7 @@ $data->title = 'Transactions';
 $data->h1 = 'Transactions';
 ?>
 
-
+<!-- <?php q($data) ?> -->
 <section class="md:grid md:grid-cols-2 items-end">
 
     <?php include '_pagination.php'; ?>
@@ -13,17 +13,30 @@ $data->h1 = 'Transactions';
         Add a Transaction
     </button>
 
-    <form method="POST" id="add-transaction-form" action="/transactions" class=" col-span-2 flex items-center gap-12 mb-8 overflow-hidden max-h-0 transition-all duration-500
-    ">
+    <?php if( @!$data->success ): ?>
+        <div class="col-span-2 mt-4">
+            <?= @$data->errors->name->show_error; ?>
+            <?= @$data->errors->amount->show_error; ?>
+            <?= @$data->errors->type->show_error; ?>
+            <?= @$data->errors->budget->show_error; ?>
+            <?= @$data->errors->date->show_error; ?>
+        </div>
+    <?php endif ?>
 
-        <?= @$data->errors->name->show_error; ?>
-        <?= @$data->errors->amount->show_error; ?>
-        <?= @$data->errors->type->show_error; ?>
-        <?= @$data->errors->budget->show_error; ?>
-        <?= @$data->errors->date->show_error; ?>
+    <form 
+        method="POST" 
+        id="add-transaction-form" 
+        action="/transactions" 
+        class="
+            col-span-2 flex items-center gap-12 mb-8 overflow-hidden  transition-all duration-500
+            <?= $_SERVER['REQUEST_METHOD'] === 'POST' 
+                ? 'max-h-[300px] p-4'
+                : 'max-h-0'
+            ?>
+        "
+    >
 
         <div class="grid grid-cols-3 items-center gap-x-2 gap-y-6 w-full p-4 bg-gradient-to-r from-primary-25 to-white rounded-lg">
-
 
             <label class="floating-label">
                 <span class="ml-2 px-2 bg-primary-25 ">Transaction name:</span>
@@ -32,7 +45,7 @@ $data->h1 = 'Transactions';
                     type="text" 
                     name="name" 
                     class="px-2 border border-primary-150 rounded-lg" 
-                    value="<?= @$data->budget->name ?>" 
+                    value="<?= @$data->transaction->name ?>" 
                     required 
                 />
             </label>
@@ -45,7 +58,7 @@ $data->h1 = 'Transactions';
                     id="amount"
                     name="amount" 
                     class="px-2 border border-primary-150 rounded-lg" 
-                    value="<?= @$data->budget->name ?>" 
+                    value="<?= @$data->transaction->amount ?>" 
                     required 
                 />
             </label>
@@ -71,7 +84,7 @@ $data->h1 = 'Transactions';
                     <?php 
                         foreach( @$data->budgets as $budget )
                         {
-                            $selected = $budget->name === $data->budget ? 'selected' : '';
+                            $selected = $budget->name === $data->transaction->budget ? 'selected' : '';
                             echo "<option value='$budget->name' $selected >$budget->name</option> \n";
                         }
                     ?>
@@ -83,7 +96,7 @@ $data->h1 = 'Transactions';
                 
                 <h3>Date</h3>
         
-                <input type="date" name="date" value="{{date}}" class="bg-transparent" />
+                <input type="date" name="date" value="<?= $data->transaction->date ?>" class="bg-transparent" />
             </label>
 
             <div>
@@ -94,7 +107,6 @@ $data->h1 = 'Transactions';
     </form>
 
 </section>
-
 
 
 <section class="flex flex-col gap-4 text-md text-primary-600">

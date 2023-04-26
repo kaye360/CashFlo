@@ -17,7 +17,7 @@ use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
 use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
-use lib\services\Budget\Budget;
+use lib\types\Budget\Budget;
 use lib\utils\Prompt\Prompt;
 use stdClass;
 

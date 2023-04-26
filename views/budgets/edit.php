@@ -9,6 +9,10 @@ $data->h1 = 'Edit Budget: ' . $data->budget->name;
     Back to budgets
 </a>
 
+<?= @$data->errors->name->show_error; ?>
+<?= @$data->errors->amount->show_error; ?>
+<?= @$data->errors->type->show_error; ?>
+
 <section>
 
     <form method="POST" action="/budget/<?= $data->budget->id ?>/edit" class="grid grid-cols-[6ch_1fr] gap-4 items-center">

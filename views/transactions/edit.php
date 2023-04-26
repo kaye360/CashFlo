@@ -9,6 +9,12 @@ $data->h1 = 'Edit Transaction: ' . $data->transaction->name;
     Back to Transactions
 </a>
 
+<?= @$data?->errors?->name?->show_error ?>
+<?= @$data?->errors?->amount?->show_error ?>
+<?= @$data?->errors?->type?->show_error ?>
+<?= @$data?->errors?->budgets?->show_error ?>
+<?= @$data?->errors?->date?->show_error ?>
+
 <section>
 
     <form method="POST" action="/transaction/<?= $data->transaction->id; ?>/edit" class="grid grid-cols-[7ch_1fr] gap-4 items-center">

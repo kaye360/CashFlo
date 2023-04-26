@@ -14,7 +14,7 @@ namespace models\TransactionModel;
 
 use lib\Auth\Auth;
 use lib\Database\Database;
-use lib\services\Transaction\Transaction;
+use lib\types\Transaction\Transaction;
 use lib\utils\Helpers\Helpers;
 use stdClass;
 

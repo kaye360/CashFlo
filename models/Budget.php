@@ -14,7 +14,7 @@ namespace models\BudgetModel;
 
 use lib\Auth\Auth;
 use lib\Database\Database;
-use lib\services\Budget\Budget;
+use lib\types\Budget\Budget;
 use lib\utils\Helpers\Helpers;
 
 class BudgetModel {
