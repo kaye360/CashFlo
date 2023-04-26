@@ -6,12 +6,6 @@ $data->h1 = 'Settings';
 
 <form method="POST" action="/settings" class="flex flex-col gap-8 my-8">
     
-    <?php if( @$data->success ): ?>
-        <section class="block px-8 py-4 w-fit text-green-800 rounded border border-green-600 bg-green-100">
-            Changes saved.
-        </section>
-    <?php endif; ?>
-
     <section class="flex flex-col gap-2 w-fit min-w-[500px]">
 
         <h2 class="text-xl">Change Password</h2>
@@ -20,37 +14,16 @@ $data->h1 = 'Settings';
             <span>
                 New Password:
             </span>
-            <input type="password" name="confirm_password_1" />
+            <input type="password" name="confirm_password_1" class="user-input" />
         </label>
 
         <label class="grid grid-cols-2">
             <span>
                 Confirm New Password:
             </span>
-            <input type="password" name="confirm_password_2" />
+            <input type="password" name="confirm_password_2" class="user-input" />
         </label>
 
-
-        <?php if( @$data->errors->confirm_password_1->has_error ): ?>
-
-            <div class="flex flex-col gap-2 text-red-400">
-
-                <?php if($data->errors->confirm_password_1->min): ?>
-                    <span>
-                        Password must be at least 6 characters.
-                    </span>
-                <?php endif; ?>
-
-                <?php if($data->errors->confirm_password_1->confirm_password): ?>
-                    <span>
-                        Password and confirm password must match.
-                    </span>
-                <?php endif; ?>
-
-            </div>
-
-        <?php endif; ?>
-        
     </section>
 
     <section class="flex flex-col gap-2 w-fit">
@@ -59,7 +32,7 @@ $data->h1 = 'Settings';
             Transactions Per Page
         </h2>
 
-        <select name="transactions_per_page">
+        <select name="transactions_per_page" class="user-input">
 
             <option value="10"  <?= Auth::settings()->transactions_per_page === 10 ? 'selected' : '' ?>>10</option>
             <option value="25"  <?= Auth::settings()->transactions_per_page === 25 ? 'selected' : '' ?>>25</option>
@@ -74,7 +47,7 @@ $data->h1 = 'Settings';
 
         <input type="hidden" name="username" value="<?= Auth::username(); ?>" />
 
-        <input type="submit" value="Update settings" class="<<button_main>>" />
+        <input type="submit" value="Update settings" class="btn-secondary-filled" />
 
     </section>
 

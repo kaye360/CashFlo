@@ -3,13 +3,26 @@ $data->title = 'Monthly Net Spending Trends';
 $data->h1 = 'Monthly Net Spending Trends';
 ?>
 
+<a href="/trends" class="btn-back">
+    <span class="material-icons-round">keyboard_backspace</span>
+    Back to Trends
+</a>
+
 <section class="flex flex-start items-center gap-2 my-4 text-sm">
 
     Showing: 
     
-    <button class="netBtn      font-bold rounded-lg px-2 py-1 border border-slate-300">Net Total</button>
-    <button class="incomeBtn   font-bold rounded-lg px-2 py-1 border border-slate-300">Income</button>
-    <button class="spendingBtn font-bold rounded-lg px-2 py-1 border border-slate-300">Spending</button>
+    <button class="netBtn      font-bold rounded-lg px-2 py-1 border border-slate-300 hover:border-slate-500">
+        Net Total
+    </button>
+
+    <button class="incomeBtn   font-bold rounded-lg px-2 py-1 border border-slate-300 hover:border-slate-500">
+        Income
+    </button>
+
+    <button class="spendingBtn font-bold rounded-lg px-2 py-1 border border-slate-300 hover:border-slate-500">
+        Spending
+    </button>
 
 </section>
 

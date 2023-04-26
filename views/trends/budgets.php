@@ -3,11 +3,10 @@ $data->title = 'Budget Trends';
 $data->h1 = 'Budget Trends';
 ?>
 
-<div class="my-4">
-    <a href="/trends" class="underline">
-        Back to Trends
-    </a>
-</div>
+<a href="/trends" class="btn-back">
+    <span class="material-icons-round">keyboard_backspace</span>
+    Back to Trends
+</a>
 
 <div class="my-4">
     Select a budget to view spending over time

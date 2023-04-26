@@ -157,6 +157,7 @@
         font-weight: bold;
         border-radius: 10px;
         box-shadow: 0 0 5px hsla(0, 0%, 93%, 0.4);
+        transition: all 150ms ease-in-out;
     }
 
     .btn-secondary-filled:hover {
@@ -177,6 +178,7 @@
             #fca5a5,
             #f87171
         );
+        transition: all 150ms ease-in-out;
     }
     
     .btn-delete:hover, .btn-delete:focus {
