@@ -15,10 +15,10 @@ namespace controllers\BudgetsController;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
-use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\types\Budget\Budget;
 use lib\utils\Prompt\Prompt;
+use services\BudgetService\BudgetService;
 use stdClass;
 
 
@@ -56,27 +56,12 @@ class BudgetsController extends Controller {
      */
     public function create() : void
     {
-        $validator = Validator::validate([
-            'name'   => ['required', 'max:20' , 'has_spaces'],
-            'amount' => ['required', 'number'],
-            'type'   => ['required']
-        ]);
-
-        $amount  = Sanitizer::sanitize($_POST['amount']);
-        $amount  = Sanitizer::money($_POST['amount']);
-
-        $budget = new Budget(
-            id:      null,
-            name:    Sanitizer::sanitize($_POST['name']),
-            type:    Sanitizer::sanitize($_POST['type']),
-            amount:  $amount,
-            user_id: Auth::user_id()
-        );
+        $budget = BudgetService::validate_budget();
 
         $data                 = new stdClass();
-        $data->budget         = $budget;
-        $data->errors         = $validator->errors;
-        $data->success        = $validator->success;
+        $data->budget         = $budget->budget;
+        $data->errors         = $budget->validation->errors;
+        $data->success        = $budget->validation->success;
         $data->budgets        = $this->budgetModel->get_all();
         $data->income_total   = $this->get_type_total('income',   $data->budgets);
         $data->spending_total = $this->get_type_total('spending', $data->budgets);
@@ -84,12 +69,7 @@ class BudgetsController extends Controller {
 
         if( $data->success ) 
         {
-            $this->budgetModel->create( $budget );
-            
-            Prompt::set('success', 'Budget created successfully');
-
-            header('Location: /budgets');
-            die();
+            BudgetService::create_budget( $this->budgetModel, $budget->budget );
 
         } else {
             
@@ -129,32 +109,17 @@ class BudgetsController extends Controller {
         $db_budget = $this->budgetModel->get(id: (int) Route::params()->id );
         Auth::authorize($db_budget->user_id);
 
-        $validator = Validator::validate([
-            'name'   => ['required', 'max:20', 'has_spaces'],
-            'amount' => ['required', 'number'],
-            'type'   => ['required']
-        ]);
-
-        $amount = Sanitizer::sanitize($_POST['amount']);
-        $amount = Sanitizer::money($_POST['amount']);
-
-        $budget = new Budget(
-            id:      (int) Route::params()->id,
-            name:    Sanitizer::sanitize($_POST['name']),
-            type:    Sanitizer::sanitize($_POST['type']),
-            amount:  $amount,
-            user_id: Auth::user_id()
-        );
+        $budget = BudgetService::validate_budget( (int) Route::params()->id );
 
         $data          = new stdClass();
-        $data->budget  = $budget;
+        $data->budget  = $budget->budget;
         $data->referer = Sanitizer::sanitize($_POST['referer']);
-        $data->errors  = $validator->errors;
-        $data->success = $validator->success;
+        $data->errors  = $budget->validation->errors;
+        $data->success = $budget->validation->success;
 
         if( $data->success )
         {
-            $this->budgetModel->update( $budget );
+            $this->budgetModel->update( $budget->budget );
 
             Prompt::set('success', 'Budget updated succesfully.');
             

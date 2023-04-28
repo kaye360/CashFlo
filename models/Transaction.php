@@ -88,7 +88,6 @@ class TransactionModel {
     public function get_all( int $page = 1, int $per_page = 10 ) : object
     {
         $start = ($page - 1) * $per_page;
-        // $start = $page * $per_page;
 
         $list = $this->database
             ->table('transactions')

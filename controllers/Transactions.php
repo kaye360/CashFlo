@@ -15,7 +15,6 @@ namespace controllers\TransactionsController;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
-use lib\InputHandler\Validator\Validator;
 use lib\Router\Route\Route;
 use lib\types\Transaction\Transaction;
 use lib\utils\Prompt\Prompt;
