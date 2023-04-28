@@ -43,14 +43,14 @@ class TransactionsController extends Controller {
     {
         $budgetsModel = $this->model('Budget');
 
-        $page = TransactionService::get_current_page();
+        $page = TransactionService::get_current_page_param();
 
         $transactions = $this->transactionsModel->get_all( 
             page: $page, 
             per_page: (int) Auth::settings()->transactions_per_page 
         );
 
-        TransactionService::check_page_exceeds_total($page, $transactions->total_pages );
+        TransactionService::redirect_if_page_exceeds_total($page, $transactions->total_pages );
 
         $data                  = new stdClass();
         $data->page            = $page;
@@ -73,14 +73,14 @@ class TransactionsController extends Controller {
     {
         $budgetsModel = $this->model('Budget');
 
-        $page = TransactionService::get_current_page();
+        $page = TransactionService::get_current_page_param();
 
         $transactions = $this->transactionsModel->get_all( 
             page: $page, 
             per_page: (int) Auth::settings()->transactions_per_page 
         );
 
-        $transaction = TransactionService::prep_transaction();
+        $transaction = TransactionService::validate_transaction();
 
         $data               = new stdClass();
         $data->page         = $page;
@@ -94,6 +94,9 @@ class TransactionsController extends Controller {
         if( $data->success ) 
         {
             TransactionService::create_transaction($this->transactionsModel, $transaction->transaction);
+        } else {
+
+            Prompt::set('error', 'Transaction not created. Please check form for errors');
         }
                 
         $this->view('transactions/index', $data);
@@ -127,39 +130,24 @@ class TransactionsController extends Controller {
     public function update()
     {
         // Authorize Edit Transaction
-        $db_transaction = $this->transactionsModel->get( id: (int) Route::params()->id );
-        Auth::authorize($db_transaction->user_id);
+        $current_transaction = $this->transactionsModel->get( id: (int) Route::params()->id );
+        Auth::authorize($current_transaction->user_id);
 
-        $validator = Validator::validate([
-            'name'    => ['required', 'max:20', 'has_spaces'],
-            'amount'  => ['required', 'number'],
-            'type'    => ['required'],
-            'budgets' => ['required', 'max:20', 'has_spaces'],
-            'date'    => ['required', 'date']
-        ]);
-
-        $transaction = new Transaction(
-            id:      (int)   Route::params()->id,
-            name:            Sanitizer::sanitize( $_POST['name'] ),
-            budget:          Sanitizer::sanitize( $_POST['budgets'] ),
-            type:            Sanitizer::sanitize( $_POST['type'] ),
-            date:            Sanitizer::sanitize( $_POST['date'] ),
-            user_id: (int)   Auth::user_id(),
-            amount:  (float) Sanitizer::sanitize( $_POST['amount'] )
-        );
+        $transaction = TransactionService::validate_transaction( transaction_id: Route::params()->id );
 
         $data              = new stdClass();
-        $data->transaction = $transaction;
+        $data->transaction = $transaction->transaction;
         $data->budgets     = ($this->model('Budget'))->get_all( (int) Auth::user_id() );
         $data->referer     = Sanitizer::sanitize( $_POST['referer'] );
-        $data->errors      = $validator->errors;
-        $data->success     = $validator->success;
+        $data->errors      = $transaction->validation->errors;
+        $data->success     = $transaction->validation->success;
 
         if ( $data->success )
         {
             Prompt::set('success', 'Transaction updated successfully');
             
-            $this->transactionsModel->update( $transaction );
+            $this->transactionsModel->update( $transaction->transaction );
+
         } else {
             
             Prompt::set('error', 'Transaction not updated. Please check your form fields.');
@@ -186,6 +174,7 @@ class TransactionsController extends Controller {
         $this->transactionsModel->destroy(id: $transaction->id);
 
         // Return to referer
+        Prompt::set('success', 'Transaction deleted.');
         header("Location: $referer");
         die();
     }

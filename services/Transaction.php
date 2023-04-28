@@ -27,7 +27,7 @@ class TransactionService {
      * @method Gets the current page
      * 
      */
-    public static function get_current_page()
+    public static function get_current_page_param() : int
     {
         $page = isset( Route::params()->page )
             ? (int) Route::params()->page
@@ -44,14 +44,19 @@ class TransactionService {
 
     /**
      * 
-     * @method Create a transaction
+     * @method Validate a transaction
+     * 
+     * @var transaction_id The ID of the transaction if it has one yet
+     * Should be null if creating a new transaction
+     * Should be Route::params()->id if updating an existing
      * 
      */
-    public static function prep_transaction()
+    public static function validate_transaction( string $transaction_id = null ) : stdClass
     {
         $validation = Validator::validate([
             'name'    => ['required', 'max:20' , 'has_spaces'],
             'amount'  => ['required', 'number'],
+            'type'    => ['required'],
             'budgets' => ['required', 'has_spaces'],
             'date'    => ['required', 'date']
         ]);
@@ -60,13 +65,13 @@ class TransactionService {
         $amount  = (float) number_format( $amount, 2, '.', '' );
 
         $transaction = new Transaction(
-            id:      null,
-            name:    Sanitizer::sanitize($_POST['name']),
-            budget:  Sanitizer::sanitize($_POST['budgets']),
-            type:    Sanitizer::sanitize($_POST['type']),
-            date:    Sanitizer::sanitize($_POST['date']),
-            amount:  $amount,
-            user_id: Auth::user_id()
+            id:      (int) $transaction_id,
+            user_id: (int) Auth::user_id(),
+            name:          Sanitizer::sanitize($_POST['name']),
+            budget:        Sanitizer::sanitize($_POST['budgets']),
+            type:          Sanitizer::sanitize($_POST['type']),
+            date:          Sanitizer::sanitize($_POST['date']),
+            amount:        $amount
         );
 
         $new_transaction              = new stdClass();
@@ -81,7 +86,7 @@ class TransactionService {
      * @method Create a transaction and redirect
      * 
      */
-    public static function create_transaction( $model, Transaction $transaction )
+    public static function create_transaction( object $model, Transaction $transaction ) : void
     {
         $model->create( $transaction );
             
@@ -96,7 +101,7 @@ class TransactionService {
      * @method Redirect to last page if current page is too high
      * 
      */
-    public static function check_page_exceeds_total( int $current, int $total )
+    public static function redirect_if_page_exceeds_total( int $current, int $total ) : void
     {
         if( $current > $total )
         {
