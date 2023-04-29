@@ -91,16 +91,6 @@ class TrendsController extends Controller {
         return $this->view('trends/monthly', $data);
     }
 
-    /**
-     * 
-     * @method Single Monthly Spending Trends
-     * 
-     */
-    public function monthly_single()
-    {
-        return $this->view('trends/month');
-    }
-
 
 
 }

@@ -110,7 +110,7 @@ class Controller {
 
     /**
      * 
-     * @method Make a specific view require authorization
+     * @method Make a specific route require authorization
      * 
      */
     public function auth() : static

@@ -10,7 +10,8 @@
 declare(strict_types=1);
 namespace lib\utils\Helpers;
 
-
+use Exception;
+use InvalidArgumentException;
 
 class Helpers {
 
@@ -27,10 +28,10 @@ class Helpers {
 
     /**
      * 
-     * @method generate budget trend bar graph
+     * @method generate Vertical budget trend bar graph
      * 
      */
-    public static function budget_trend_bar_graph( array $net_totals, int $max_height = 100 )
+    public static function budget_trend_bar_graph( array $net_totals, int $max_height_px = 100 )
     {
         if( empty($net_totals) ) return;
 
@@ -40,7 +41,7 @@ class Helpers {
         $monthly_min_abs = abs($monthly_min);
 
         $monthly_largest_abs = max ($monthly_max_abs, $monthly_min_abs );
-        $monthly_ratio       = $max_height / $monthly_largest_abs;        
+        $monthly_ratio       = $max_height_px / $monthly_largest_abs;        
 
         return $monthly_ratio;
     }
@@ -55,42 +56,32 @@ class Helpers {
      */
     public static function calc_monthly_net_totals( array $transactions_chunked_by_month, string $type = 'net' ) : array
     {
+        /**
+         * /@var monthly_net_totals Container for totals
+         * [ key '2023-04' => value '345.34']
+         */
         $monthly_net_totals = [];
         
+        // Loop through months
         foreach ( $transactions_chunked_by_month as $month )
         {
+            // Loop thru transactions within a month
             foreach ( $month as $transaction)
             {
                 $year_month = substr($transaction->date, 0, -3);
     
+                // Create an array key in container if none exists yet
                 if ( !array_key_exists( $year_month, $monthly_net_totals) )
                 {
                     $monthly_net_totals[ $year_month ] = [];
                 }
     
-                $monthly_net_total = array_reduce( 
-                    $transactions_chunked_by_month[ $year_month ], 
-                    function( $total, $current) use($type)
-                    {
-                        if ( 
-                            ( $type === 'net' || $type === 'income' ) &&
-                            ( $current->type === 'income' )
-                            )   {
-                                $total += $current->amount;
-                            }
-                            
-                        if ( 
-                            ( $type === 'net' || $type === 'spending') &&
-                            ( $current->type === 'spending' )
-                        ) {
-                            $total -= $current->amount;
-                        }
-
-                        return $total;
-                    }
+                $month_net_total = self::calc_net_total( 
+                    transaction_list: $transactions_chunked_by_month[ $year_month ], 
+                    type: $type 
                 );
 
-                $monthly_net_totals[ $year_month ] = number_format( $monthly_net_total ?: 0, 2, '.', '' );
+                $monthly_net_totals[ $year_month ] = number_format( $month_net_total ?: 0, 2, '.', '' );
             }
 
             unset($transaction);
@@ -99,6 +90,41 @@ class Helpers {
         unset($month);
 
         return $monthly_net_totals;
+    }
+
+    /**
+     * 
+     * @method Calculate net (total, income, spending) for a list of transactions
+     * 
+     */
+    public static function calc_net_total( array $transaction_list, string $type ) : ?float
+    {
+        if( !in_array( $type, ['net', 'spending', 'income'] ) ) 
+        {
+            throw new InvalidArgumentException("\$type must be net, income, or spending only. $type given" );
+        }
+
+        return array_reduce( 
+            $transaction_list, 
+            function( $total, $current) use($type)
+            {
+                if ( 
+                    ( $type === 'net' || $type === 'income' ) &&
+                    ( $current->type === 'income' )
+                    )   {
+                        $total += $current->amount;
+                    }
+                    
+                if ( 
+                    ( $type === 'net' || $type === 'spending') &&
+                    ( $current->type === 'spending' )
+                ) {
+                    $total -= $current->amount;
+                }
+
+                return $total;
+            }
+        );
     }
 
     /**
@@ -125,23 +151,6 @@ class Helpers {
         unset($transaction);
         
         return $transactions_chunked_by_month;
-    }
-
-    /**
-     * 
-     * @method Render Exception
-     * 
-     */
-    public static function render_exception($e)
-    {
-        echo <<<EOT
-            <div class="p-4 max-w-3xl m-2 border border-gray-300 bg-gray-50 rounded">
-                Code: {$e->getCode()} <br>
-                Msg:  {$e->getMessage()} <br>
-                File: {$e->getFile()} <br>
-                Line: {$e->getLine()}
-            </div>
-        EOT;
     }
 
 }

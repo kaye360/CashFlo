@@ -156,7 +156,27 @@ class UsersController extends Controller {
     */
    public function dashboard() : void
    {
-       $this->view('users/dashboard');
+
+        $transactionModel = $this->model('Transaction');
+
+        $current_date = date('Y-m');
+        // $transactions = $transactionModel->get_monthly_transaction_trend();
+
+        $transactions = $transactionModel->get_all();
+
+
+        // q($transactions);
+
+        $data = new stdClass;
+        $data->current_month_net_total    = Helpers::calc_net_total($transactions->list, 'net');
+        $data->current_month_net_spending = Helpers::calc_net_total($transactions->list, 'spending');
+        $data->current_month_net_income   = Helpers::calc_net_total($transactions->list, 'income');
+        // $data->current_month_net_spending = $transactions->monthly_net_spending[ $current_date ];
+        // $data->current_month_net_income = $transactions->monthly_net_income[ $current_date ];
+
+        q($data);
+
+        $this->view('users/dashboard', $data);
    }
 
     /**
