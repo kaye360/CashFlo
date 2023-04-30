@@ -71,7 +71,7 @@ class TrendsController extends Controller {
         $data->transactions  = $transactionModel->get_monthly_transaction_trend( $data->budget->name );
 
         // Generate Graph values
-        $data->monthly_ratio = Helpers::budget_trend_bar_graph( $data->transactions->monthly_net_totals );
+        $data->monthly_ratio = Helpers::calc_graph_ratio( $data->transactions->monthly_net_totals );
 
         return $this->view('trends/budget', $data);
     }

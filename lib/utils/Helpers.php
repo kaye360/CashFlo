@@ -28,22 +28,29 @@ class Helpers {
 
     /**
      * 
-     * @method generate Vertical budget trend bar graph
+     * @method generate Vertical budget trend bar graph ratio
+     * 
+     * @var net_totals is an array of positive and negative money amounts
+     * 
+     * @var high_limit is the maximum value of a graph. 
+     * Can be used in the UI as a % or px value, for example
+     * 
+     * @return ratio number to multiply each amount by to fit within a graph
      * 
      */
-    public static function budget_trend_bar_graph( array $net_totals, int $max_height_px = 100 )
+    public static function calc_graph_ratio( array $net_totals, int $high_limit = 100 )
     {
         if( empty($net_totals) ) return;
 
-        $monthly_max     = (float) max( $net_totals );
-        $monthly_max_abs = abs($monthly_max);
-        $monthly_min     = (float) min( $net_totals );
-        $monthly_min_abs = abs($monthly_min);
+        $max     = (float) max( $net_totals );
+        $max_abs = abs($max);
+        $min     = (float) min( $net_totals );
+        $min_abs = abs($min);
 
-        $monthly_largest_abs = max ($monthly_max_abs, $monthly_min_abs );
-        $monthly_ratio       = $max_height_px / $monthly_largest_abs;        
+        $largest_abs = max ($max_abs, $min_abs );
+        $ratio       = $high_limit / $largest_abs;        
 
-        return $monthly_ratio;
+        return $ratio;
     }
 
     /**

@@ -12,7 +12,7 @@
         class="
             relative flex items-center h-[230px] w-full max-w-[calc(100vw-50px)]
             overflow-x-auto snap-mandatory snap-x scrollbar-hidden 
-            bg-gradient-to-br from-primary-800 to-primary-700
+            bg-gradient-to-r from-primary-700 to-primary-900
             rounded-lg text-primary-100
         "
     >

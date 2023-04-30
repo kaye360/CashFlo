@@ -156,25 +156,33 @@ class UsersController extends Controller {
     */
    public function dashboard() : void
    {
+        $current_month = date('Y-m');
 
         $transactionModel = $this->model('Transaction');
 
-        $current_date = date('Y-m');
-        // $transactions = $transactionModel->get_monthly_transaction_trend();
+        $budgetModel = $this->model('Budget');
+        $budgets     = $budgetModel->get_all();
 
-        $transactions = $transactionModel->get_all();
+        $recent_transactions = $transactionModel->get_all();
 
+        $current_month_tranactions  = $transactionModel->get_monthly_transaction_trend();
+        $current_month_net_total    = $current_month_tranactions->monthly_net_totals[ $current_month ] ?? 0;
+        $current_month_net_income   = $current_month_tranactions->monthly_net_income[ $current_month ] ?? 0;
+        $current_month_net_spending = $current_month_tranactions->monthly_net_spending[ $current_month ] ?? 0;
+        
+        $ratio = Helpers::calc_graph_ratio([
+            $current_month_net_total,
+            $current_month_net_income, 
+            $current_month_net_spending
+        ]);
 
-        // q($transactions);
-
-        $data = new stdClass;
-        $data->current_month_net_total    = Helpers::calc_net_total($transactions->list, 'net');
-        $data->current_month_net_spending = Helpers::calc_net_total($transactions->list, 'spending');
-        $data->current_month_net_income   = Helpers::calc_net_total($transactions->list, 'income');
-        // $data->current_month_net_spending = $transactions->monthly_net_spending[ $current_date ];
-        // $data->current_month_net_income = $transactions->monthly_net_income[ $current_date ];
-
-        q($data);
+        $data = new stdClass();
+        $data->recent_transactions        = $recent_transactions->list;
+        $data->ratio                      = $ratio;
+        $data->current_month_net_total    = $current_month_net_total;
+        $data->current_month_net_income   = $current_month_net_income;
+        $data->current_month_net_spending = $current_month_net_spending;
+        $data->budgets                    = $budgets;
 
         $this->view('users/dashboard', $data);
    }

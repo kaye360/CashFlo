@@ -26,7 +26,7 @@ namespace lib\Database;
 
 use PDO;
 use Exception;
-use exceptions\DatabaseException\DatabaseException;
+use lib\exceptions\DatabaseException\DatabaseException;
 use lib\utils\Helpers\Helpers;
 use PDOException;
 
@@ -166,11 +166,12 @@ class Database
      */
     public function single() : object | false
     {
+        
         try 
         {
             if( !$this->select || !$this->table || !$this->where ) 
             {
-                throw DatabaseException::missingQueryMethod('select(), $table(), $where()');
+                throw  DatabaseException::missingQueryMethod('select(), $table(), $where()');
             }
 
             $sql = " SELECT $this->select FROM $this->table ";
@@ -183,6 +184,7 @@ class Database
 
             $row = $this->stmt->fetch(PDO::FETCH_OBJ);
 
+            $this->reset_query_vars();
             return $row;
 
         } catch (Exception $error) {
@@ -229,6 +231,7 @@ class Database
                 ? $this->stmt->fetchAll(PDO::FETCH_CLASS, $class_type)
                 : $this->stmt->fetchAll(PDO::FETCH_OBJ);
 
+            $this->reset_query_vars();
             return $rows;
 
         } catch (PDOException $e) {
@@ -267,11 +270,12 @@ class Database
             $this->stmt->execute();
 
             $new_data = $this->dbh->lastInsertId();
+
+            $this->reset_query_vars();
             return $new_data;
 
         } catch (Exception $e) {
 
-            Helpers::render_exception($e);
             return false;
         }
     }
@@ -299,11 +303,11 @@ class Database
             $this->stmt = $this->dbh->prepare($sql);
             $execute    = $this->stmt->execute();
 
+            $this->reset_query_vars();
             return $execute;
 
         } catch (Exception $e) {
 
-            Helpers::render_exception($e);
             return false;
         }
     }
@@ -332,11 +336,11 @@ class Database
             $this->stmt = $this->dbh->prepare($sql);
             $execute    = $this->stmt->execute();
 
+            $this->reset_query_vars();
             return $execute;
 
         } catch (Exception $e) {
 
-            Helpers::render_exception($e);
             return false;
         }
     }
@@ -371,6 +375,7 @@ class Database
             $this->stmt = $this->dbh->prepare($sql);
             $this->stmt->execute();
 
+            $this->reset_query_vars();
             return $this->stmt->fetchColumn();
 
         } catch (Exception) {
@@ -380,4 +385,15 @@ class Database
         }
     }
 
+    private function reset_query_vars()
+    {
+        $this->select = '*';
+        $this->order  = 'id DESC';
+        $this->table  = null;
+        $this->where  = null;
+        $this->limit  = null;
+        $this->cols   = null;
+        $this->values = null;
+        $this->set    = null;
+    }
 }
