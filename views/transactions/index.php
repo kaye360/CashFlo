@@ -35,13 +35,13 @@ $data->h1 = 'Transactions';
         class="
             col-span-2 flex items-center gap-12 mb-8 overflow-hidden  transition-all duration-500
             <?= $_SERVER['REQUEST_METHOD'] === 'POST' 
-                ? 'max-h-[300px] p-4'
+                ? 'max-h-[1000px] md:max-h-[300px] p-4'
                 : 'max-h-0'
             ?>
         "
     >
 
-        <div class="grid grid-cols-3 items-center gap-x-2 gap-y-6 w-full p-4 bg-gradient-to-r from-primary-25 to-white rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-x-2 gap-y-6 w-full p-4 bg-gradient-to-r from-primary-25 to-white rounded-lg border">
 
             <label class="floating-label">
                 <span class="ml-2 px-2 bg-primary-25 ">Transaction name:</span>
@@ -49,7 +49,7 @@ $data->h1 = 'Transactions';
                 <input 
                     type="text" 
                     name="name" 
-                    class="px-2 border border-primary-150 rounded-lg" 
+                    class="user-input" 
                     value="<?= @$data->transaction->name ?>" 
                     required 
                 />
@@ -63,30 +63,32 @@ $data->h1 = 'Transactions';
                     id="amount"
                     name="amount" 
                     step="any"
-                    class="px-2 border border-primary-150 rounded-lg" 
+                    class="user-input" 
                     value="<?= @$data->transaction->amount ?>" 
                     required 
                 />
             </label>
 
-            <label class="flex items-center gap-2 p-2 border border-primary-150 rounded-lg">
+            <label class="flex items-center gap-2 p-2">
 
-                Type:
+                <div class="w-[8ch] md:w-auto">
+                    Type:
+                </div>
 
-                <select name="type" class="bg-transparent">
+                <select name="type" class="user-input">
                     <option value="spending">Spending</option>
                     <option value="income">Income</option>
                 </select>
 
             </label>
 
-            <label>
+            <label class="flex items-center gap-2 p-2">
                 
-                <div>
+                <div class="w-[8ch] md:w-auto">
                     Budget:
                 </div>
         
-                <select name="budgets" class="bg-transparent">
+                <select name="budgets" class="user-input">
                     <?php 
                         foreach( @$data->budgets as $budget )
                         {
@@ -99,11 +101,11 @@ $data->h1 = 'Transactions';
 
             </label>
 
-            <label>
+            <label class="flex items-center gap-2 p-2">
                 
-                <h3>Date</h3>
+                <div class="w-[8ch] md:w-auto">Date:</div>
         
-                <input type="date" name="date" value="<?= $data?->transaction?->date ?? $data->date ?>" class="bg-transparent" />
+                <input type="date" name="date" value="<?= $data?->transaction?->date ?? $data->date ?>" class="user-input" />
             </label>
 
             <div>
@@ -205,7 +207,8 @@ window.addEventListener('DOMContentLoaded', () =>
     addTransactionBtn.addEventListener('click', () => 
     {
         addTransactionForm.classList.toggle('max-h-0')
-        addTransactionForm.classList.toggle('max-h-[300px]')
+        addTransactionForm.classList.toggle('max-h-[1000px]')
+        addTransactionForm.classList.toggle('md:max-h-[300px]')
         addTransactionForm.classList.toggle('p-4')
     })
 })

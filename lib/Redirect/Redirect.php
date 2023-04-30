@@ -6,7 +6,7 @@
  * @author Josh Kaye
  * https://joshkaye.dev
  * 
- * Allows easier redirecting with prompts
+ * Allows simpler redirecting with prompts
  * 
  */
 declare(strict_types=1);

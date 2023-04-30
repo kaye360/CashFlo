@@ -85,7 +85,7 @@ class Auth {
 
     /**
      * 
-     * @method Echo username in UI
+     * @method Get username in UI
      * To be used in UI when username is needed
      * 
      */
@@ -96,7 +96,7 @@ class Auth {
 
     /**
      * 
-     * @method Echo user ID in UI
+     * @method Get user ID in UI
      * To be used in UI when user ID is needed
      * 
      */
@@ -140,7 +140,7 @@ class Auth {
     {
         if($id !== self::$user_id) 
         {
-            Redirect::to('error/403')->redirect();
+            Redirect::to('error/403')->prompt('error', 'You are not authorized for this action')->redirect();
         }
     }
 }

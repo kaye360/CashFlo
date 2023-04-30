@@ -1178,6 +1178,18 @@ label.floating-label:has( input:focus) span,
   width: min-content !important;
 }
 
+.w-\[10ch\] {
+  width: 10ch !important;
+}
+
+.w-\[8ch\] {
+  width: 8ch !important;
+}
+
+.w-auto {
+  width: auto !important;
+}
+
 .min-w-\[300px\] {
   min-width: 300px !important;
 }
@@ -1189,6 +1201,14 @@ label.floating-label:has( input:focus) span,
 .min-w-max {
   min-width: -moz-max-content !important;
   min-width: max-content !important;
+}
+
+.min-w-\[10ch\] {
+  min-width: 10ch !important;
+}
+
+.min-w-\[8ch\] {
+  min-width: 8ch !important;
 }
 
 .max-w-6xl {
@@ -1290,6 +1310,10 @@ label.floating-label:has( input:focus) span,
 
 .grid-cols-\[14ch_1fr\] {
   grid-template-columns: 14ch 1fr !important;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
 }
 
 .flex-col {
@@ -2150,6 +2174,10 @@ label.floating-label:has( input:focus) span,
 
   .md\:max-h-none {
     max-height: none !important;
+  }
+
+  .md\:max-h-\[300px\] {
+    max-height: 300px !important;
   }
 
   .md\:w-auto {

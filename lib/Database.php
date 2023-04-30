@@ -27,7 +27,6 @@ namespace lib\Database;
 use PDO;
 use Exception;
 use lib\exceptions\DatabaseException\DatabaseException;
-use lib\utils\Helpers\Helpers;
 use PDOException;
 
 class Database

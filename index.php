@@ -18,6 +18,8 @@
  * 
  * App Routes are defined in /routes/routes.php
  * 
+ * App config is in /config.php
+ * 
  */
 declare(strict_types=1);
 

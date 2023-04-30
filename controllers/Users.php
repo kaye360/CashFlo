@@ -124,8 +124,10 @@ class UsersController extends Controller {
             );
 
             setcookie('session', $session, strtotime( '+30 days' ));
+            Redirect::to('/dashboard')->prompt('success', 'Signed in successfully')->redirect();
 
-            Redirect::to('/dashboard')->redirect();
+        } else {
+            Prompt::set('error', 'Sign in unsuccessful');
         }
 
         $this->view('users/signin', $data);

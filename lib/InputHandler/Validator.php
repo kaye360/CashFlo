@@ -68,6 +68,8 @@ class Validator {
                 ? 'Password' 
                 : ucwords($input);
 
+
+                
             /**
              * Default Rules
              */
