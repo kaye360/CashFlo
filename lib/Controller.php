@@ -23,6 +23,7 @@ namespace lib\Controller;
 
 use lib\Auth\Auth;
 use lib\Database\Database;
+use lib\Redirect\Redirect\Redirect;
 use lib\template\Template\Template;
 use stdClass;
 
@@ -89,9 +90,7 @@ class Controller {
             require_once './views/' . $view . '.php';
 
         } else {
-
-            header('Location: /error/404');
-            die();
+            Redirect::to('/error/404')->redirect();
         }
 
         require_once './views/_layout/footer.php';
@@ -117,8 +116,7 @@ class Controller {
     {
         if( !Auth::is_logged_in() )
         {
-            header('Location: /error/401');
-            die();
+            Redirect::to('/error/401')->redirect();
         }
         return $this;
     }

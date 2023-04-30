@@ -14,7 +14,7 @@ $data->username = Auth::username();
 
     <div class="font-bold text-lg">
         <?= date('M Y') ?> <br>
-        <?= $data->current_month_net_total > 0 ? '+$' : '-$' ?><?= abs( $data->current_month_net_total ) ?>
+        <?= $data->current_month_net_total >= 0 ? '+$' : '-$' ?><?= abs( $data->current_month_net_total ) ?>
     </div>
 
     <div class="col-span-2 md:col-span-1">
@@ -26,7 +26,7 @@ $data->username = Auth::username();
             </div>
 
             <div>
-                <?= $data->current_month_net_total > 0 ? '+$' : '-$' ?><?= abs( $data->current_month_net_total ) ?>
+                <?= $data->current_month_net_total >= 0 ? '+$' : '-$' ?><?= abs( $data->current_month_net_total ) ?>
             </div>
 
             <div 
@@ -51,7 +51,7 @@ $data->username = Auth::username();
 
             <div 
                 data-graph="income"
-                class="border-l-2 border-slate-300 py-2"
+                class="border-l-2 border-primary-600 py-2"
             >
                 <div 
                     class="bg-gradient-to-r from-teal-500 to-teal-300 h-8 rounded-r-lg drop-shadow-md anim-bar-horizontal"
@@ -69,7 +69,7 @@ $data->username = Auth::username();
 
             <div 
                 data-graph="spending"
-                class="border-l-2 border-slate-300 py-2"
+                class="border-l-2 border-primary-600 py-2"
             >
                 <div 
                     class="bg-gradient-to-r from-rose-500 to-rose-300 h-8 rounded-r-lg drop-shadow-md anim-bar-horizontal"

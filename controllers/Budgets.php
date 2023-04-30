@@ -15,6 +15,7 @@ namespace controllers\BudgetsController;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
+use lib\Redirect\Redirect\Redirect;
 use lib\Router\Route\Route;
 use lib\types\Budget\Budget;
 use lib\utils\Prompt\Prompt;
@@ -152,8 +153,7 @@ class BudgetsController extends Controller {
         Prompt::set('success', 'Budget was deleted successfully');
 
         // Return to referer
-        header("Location: $referer");
-        die();
+        Redirect::to( $referer )->redirect();
     }
     
     /**

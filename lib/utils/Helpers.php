@@ -48,8 +48,9 @@ class Helpers {
         $min_abs = abs($min);
 
         $largest_abs = max ($max_abs, $min_abs );
+        if(!$largest_abs) return 1;
+        
         $ratio       = $high_limit / $largest_abs;        
-
         return $ratio;
     }
 

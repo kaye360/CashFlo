@@ -87,6 +87,7 @@ $data->h1 = 'Edit Transaction: ' . $data->transaction->name;
                     <?= $budget->name; ?>
                 </option>
             <?php endforeach; ?>
+            <option value="none">None</option>
         </select>
 
         <label for="date">

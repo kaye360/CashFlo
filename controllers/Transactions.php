@@ -15,6 +15,7 @@ namespace controllers\TransactionsController;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
+use lib\Redirect\Redirect\Redirect;
 use lib\Router\Route\Route;
 use lib\types\Transaction\Transaction;
 use lib\utils\Prompt\Prompt;
@@ -173,9 +174,7 @@ class TransactionsController extends Controller {
         $this->transactionsModel->destroy(id: $transaction->id);
 
         // Return to referer
-        Prompt::set('success', 'Transaction deleted.');
-        header("Location: $referer");
-        die();
+        Redirect::to( $referer )->prompt('success', 'Transaction deleted')->redirect();
     }
 
 }

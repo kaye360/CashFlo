@@ -25,7 +25,7 @@
 <body class="bg-gradient-to-tr from-primary-50 via-white to-primary-50 bg-fixed">
 
 
-<div id="app" class="flex flex-col items-stretch min-h-[100vh]">
+<div id="app" class="flex flex-col items-stretch min-h-[100vh] overflow-x-hidden">
 
 <header class="text-primary-50">
 
@@ -40,7 +40,7 @@
         <div class="flex items-center gap-2">
 
             <?php if( !Auth::is_logged_in() ): ?>
-                <a href="/signup" class="btn-secondary-filled">Sign Up</a>
+                <a href="/signup" class="btn-secondary-filled md:hidden">Sign Up</a>
             <?php endif; ?>
 
             <button id="mobile-menu-btn" class="md:hidden">
@@ -62,7 +62,7 @@
             <?php if( Auth::is_logged_in() ): ?>
                 <li><a href="/dashboard" class="btn-secondary-filled">Dashboard</a></li>
             <?php else: ?>
-                <li><a href="/signup">Sign Up</a></li>
+                <li><a href="/signup" class="btn-secondary-filled">Sign Up</a></li>
             <?php endif; ?>
         </ul>
 
@@ -83,14 +83,14 @@
 
 <div class="
     w-full max-w-6xl mx-auto mb-4 px-4 
-    <?= Route::path() !== '/' ? 'grid md:grid-cols-[200px_1fr] gap-8' : 'pt-12'; ?>
+    <?= Auth::is_logged_in() && ( Route::path() !== '/') ? 'grid md:grid-cols-[200px_1fr] gap-8' : 'pt-12'; ?>
 ">
     
     <?php if( Auth::is_logged_in() && ( Route::path() !== '/') ){
         include 'sidebar.php';
     } ?>
 
-    <main>
+    <main class="">
 
         <h1 class="mb-6 pb-2 text-3xl text-primary-800 font-semibold border-b border-primary-100">{{h1}}</h1>
 

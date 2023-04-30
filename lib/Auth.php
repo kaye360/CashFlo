@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace lib\Auth;
 
 use lib\Database\Database;
-
-
+use lib\Redirect\Redirect\Redirect;
 
 class Auth {
 
@@ -141,8 +140,7 @@ class Auth {
     {
         if($id !== self::$user_id) 
         {
-            header('Location: /error/403');
-            die();
+            Redirect::to('error/403')->redirect();
         }
     }
 }

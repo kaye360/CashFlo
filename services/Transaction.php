@@ -15,6 +15,7 @@ namespace services\TransactionService;
 use lib\Auth\Auth;
 use lib\InputHandler\Sanitizer\Sanitizer;
 use lib\InputHandler\Validator\Validator;
+use lib\Redirect\Redirect\Redirect;
 use lib\Router\Route\Route;
 use lib\types\Transaction\Transaction;
 use lib\utils\Prompt\Prompt;
@@ -32,11 +33,10 @@ class TransactionService {
         $page = isset( Route::params()->page )
             ? (int) Route::params()->page
             : 1;
-
+            
         if( $page <= 0)
         {
-            header('Location: /transactions/1');
-            die();
+            Redirect::to('/transactions/1')->redirect();
         }
 
         return $page;
@@ -89,11 +89,7 @@ class TransactionService {
     public static function create_transaction( object $model, Transaction $transaction ) : void
     {
         $model->create( $transaction );
-            
-        Prompt::set('success', 'Transaction added successfully');
-
-        header("Location: /transactions");
-        die();
+        Redirect::to('/transactions')->prompt('success', 'Transaction added successfully')->redirect();
     }
 
     /**
@@ -103,10 +99,11 @@ class TransactionService {
      */
     public static function redirect_if_page_exceeds_total( int $current, int $total ) : void
     {
+        if($total <= 1) return; // This prevents an infinite loop if self::get_current_page_param = 0 or 1
+
         if( $current > $total )
         {
-            header('Location: /transactions/' . $total );
-            die();
+            Redirect::to("/transactions/$total")->redirect();
         }
     }
 

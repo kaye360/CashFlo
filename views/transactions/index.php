@@ -5,7 +5,13 @@ $data->h1 = 'Transactions';
 
 <section class="md:grid md:grid-cols-2 items-end">
 
-    <?php include '_pagination.php'; ?>
+    <?php if( !empty( $data->transactions )): ?>
+        <?php include '_pagination.php'; ?>
+    <?php else: ?>
+        <div>
+            You have no transactions to show.
+        </div>
+    <?php endif ?>
 
     <button id="add-transaction-btn" class="btn-secondary-outlined mt-4 w-full md:w-auto md:ml-auto">
         <span class="material-icons-round">post_add</span>
@@ -88,6 +94,7 @@ $data->h1 = 'Transactions';
                             echo "<option value='$budget->name' $selected >$budget->name</option> \n";
                         }
                     ?>
+                    <option value="none">None</option>
                 </select>
 
             </label>
@@ -110,69 +117,66 @@ $data->h1 = 'Transactions';
 
 
 <section class="flex flex-col gap-4 text-md text-primary-600">
+    
+    <?php if( !empty($data->transactions) ): ?>
+        <table>
+            <thead class="hidden md:table-header-group ">
+                <tr>
+                    <th class="text-left p-2">Name</th>
+                    <th class="text-left p-2">Amount</th>
+                    <th class="text-left p-2">Date</th>
+                    <th class="text-left p-2">Category</th>
+                    <th class="text-left p-2">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $date_counter = null; ?>
+            
+                <?php foreach($data->transactions as $transaction): ?>
 
-    <table>
-        <thead class="hidden md:table-header-group ">
-            <tr>
-                <th class="text-left p-2">Name</th>
-                <th class="text-left p-2">Amount</th>
-                <th class="text-left p-2">Date</th>
-                <th class="text-left p-2">Category</th>
-                <th class="text-left p-2">Edit</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php $date_counter = null; ?>
-        
-            <?php foreach($data->transactions as $transaction): ?>
+                    <?php if ($date_counter !== $transaction->date_month): ?>
 
-                <?php if ($date_counter !== $transaction->date_month): ?>
+                        <tr>
+                            <td colspan="5" class="px-2 pb-4 pt-6 border-b-2 border-primary-100 font-bold rounded-lg">
+                                <?= $transaction->date_month;  ?>
+                            </td>
+                        </tr>
+                        
+                        <?php $date_counter = $transaction->date_month; ?>
+                    <?php endif; ?>
 
-                    <tr>
-                        <td colspan="5" class="px-2 pb-4 pt-6 border-b-2 border-primary-100 font-bold rounded-lg">
-                            <?= $transaction->date_month;  ?>
+                    <tr class="grid grid-cols-3 items-center w-full md:table-row odd:bg-primary-25 hover:bg-primary-50 rounded-lg">
+
+                        <td class=" col-span-2 px-2 pt-2 md:py-2 text-primary-900 font-medium">
+                                <?= $transaction->name; ?>
+                        </td>
+                        
+                        <td class="px-2 ">
+                            <?= $transaction->type === 'spending' ? '-' : '+'; ?>$<?= $transaction->amount; ?>
+                        </td>
+                        
+                        <td class=" col-span-3 px-2 ">
+                            <?= $transaction->date_english; ?>
+                        </td>
+                        
+                        <td class=" col-span-2 px-2 pb-2 md:py-0">
+                            <?= $transaction->budget; ?>
+                        </td>
+                        
+                        <td class="px-2 ">
+                            <a href="/transaction/<?php echo $transaction->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
+                            <span class="material-icons-round">edit_note</span>
+                            </a>
                         </td>
                     </tr>
-                    
-                    <?php $date_counter = $transaction->date_month; ?>
-                <?php endif; ?>
+                <?php endforeach; ?>
 
-                <tr class="grid grid-cols-3 items-center w-full md:table-row odd:bg-primary-25 hover:bg-primary-50 rounded-lg">
+            </tbody>
+        </table>
 
-                    <td class=" col-span-2 px-2 pt-2 md:py-2 text-primary-900 font-medium">
-                            <?= $transaction->name; ?>
-                    </td>
-                    
-                    <td class="px-2 ">
-                        <?= $transaction->type === 'spending' ? '-' : '+'; ?>$<?= $transaction->amount; ?>
-                    </td>
-                    
-                    <td class=" col-span-3 px-2 ">
-                        <?= $transaction->date_english; ?>
-                    </td>
-                    
-                    <td class=" col-span-2 px-2 pb-2 md:py-0">
-                        <?= $transaction->budget; ?>
-                    </td>
-                    
-                    <td class="px-2 ">
-                        <a href="/transaction/<?php echo $transaction->id; ?>/edit" class="text-gray-400 hover:text-gray-600 underline">
-                        <span class="material-icons-round">edit_note</span>
-                        </a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
+        <?php include '_pagination.php'; ?>
 
-        </tbody>
-    </table>
-
-    <?php if( count($data->transactions) === 0): ?>
-        <div class="pl-2">
-            You have no transactions to show.
-        </div>
-    <?php endif; ?>
-
-    <?php include '_pagination.php'; ?>
+    <?php endif ?>
 
 </section>
 

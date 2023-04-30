@@ -14,6 +14,7 @@ namespace controllers\TrendsController;
 
 use lib\Auth\Auth;
 use lib\Controller\Controller;
+use lib\Redirect\Redirect\Redirect;
 use lib\Router\Route\Route;
 use lib\utils\Helpers\Helpers;
 use stdClass;
@@ -62,8 +63,7 @@ class TrendsController extends Controller {
 
         if ( !$data->budget )
         {
-            header('Location: /error/404'); 
-            die();
+            Redirect::to('/error/404')->redirect();
         }
 
         $data->title         = 'Budget Trends: ' . ucwords($data->budget->name);
@@ -87,6 +87,14 @@ class TrendsController extends Controller {
 
         $data = new stdClass();
         $data->transactions = $transactionModel->get_monthly_transaction_trend();
+
+        $all_net_totals = array_merge(
+            array_values( $data->transactions->monthly_net_totals ),
+            array_values( $data->transactions->monthly_net_spending ),
+            array_values( $data->transactions->monthly_net_income )
+        );
+
+        $data->ratio = Helpers::calc_graph_ratio( $all_net_totals );
 
         return $this->view('trends/monthly', $data);
     }

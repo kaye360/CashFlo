@@ -42,7 +42,7 @@ $data->h1 = 'Monthly Net Spending Trends';
 
             <div class="col-span-2 md:col-span-1">
 
-                <div class="grid grid-cols-[auto_auto] gap-x-2 w-min">
+                <div class="grid grid-cols-[auto_1fr] gap-x-2">
 
                     <div data-graph="net">
                         Net:
@@ -54,7 +54,7 @@ $data->h1 = 'Monthly Net Spending Trends';
                     >
                         <div 
                             class="bg-gradient-to-r from-violet-500 to-violet-300 h-8 rounded-r-lg drop-shadow-md anim-bar-horizontal"
-                            style="width: <?= abs($data->transactions->monthly_net_totals[$month]) /10; ?>px"
+                            style="width: <?= abs($data->transactions->monthly_net_totals[$month]) * $data->ratio; ?>%"
                         >
                         </div>
                                 
@@ -70,7 +70,7 @@ $data->h1 = 'Monthly Net Spending Trends';
                     >
                         <div 
                             class="bg-gradient-to-r from-teal-500 to-teal-300 h-8 rounded-r-lg drop-shadow-md anim-bar-horizontal"
-                            style="width: <?= abs($data->transactions->monthly_net_income[$month]) /10; ?>px"
+                            style="width: <?= abs($data->transactions->monthly_net_income[$month]) * $data->ratio; ?>%"
                         ></div>
                     </div>
 
@@ -84,7 +84,7 @@ $data->h1 = 'Monthly Net Spending Trends';
                     >
                         <div 
                             class="bg-gradient-to-r from-rose-500 to-rose-300 h-8 rounded-r-lg drop-shadow-md anim-bar-horizontal"
-                            style="width: <?= abs($data->transactions->monthly_net_spending[$month]) /10; ?>px"
+                            style="width: <?= abs($data->transactions->monthly_net_spending[$month]) * $data->ratio; ?>%"
                         ></div>
                     </div>
             

@@ -18,6 +18,7 @@ use lib\types\Budget\Budget;
 use lib\utils\Prompt\Prompt;
 use lib\InputHandler\Sanitizer\Sanitizer;
 use lib\InputHandler\Validator\Validator;
+use lib\Redirect\Redirect\Redirect;
 
 class BudgetService {
 
@@ -63,10 +64,6 @@ class BudgetService {
     public static function create_budget( object $model, Budget $budget ) : void
     {
         $model->create( $budget );
-            
-        Prompt::set('success', 'Budget created successfully');
-
-        header('Location: /budgets');
-        die();
+        Redirect::to('/budgets')->prompt('success', 'Budget created successfully')->redirect();
     }
 }

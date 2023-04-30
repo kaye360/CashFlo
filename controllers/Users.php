@@ -16,8 +16,10 @@ use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
 use lib\InputHandler\Validator\Validator;
+use lib\Redirect\Redirect\Redirect;
 use lib\Router\Route\Route;
 use lib\utils\Helpers\Helpers;
+use lib\utils\Prompt\Prompt;
 use stdClass;
 
 
@@ -72,10 +74,12 @@ class UsersController extends Controller {
             {
                 $data->success       = false;
                 $data->errors->query = true;
-
+                
             } else {
                 $data->success = true;
+                Redirect::to('/signin')->prompt('success', 'Account created. You may now sign in.')->redirect();
             }
+            Prompt::set('error', 'Something went wrong. Please try again.');
         }
 
         $this->view('users/signup', $data);
@@ -99,8 +103,7 @@ class UsersController extends Controller {
     public function authenticate() : void
     {
         $validator = Validator::validate([
-            'username' => ['required'],
-            'password' => ['required', 'user_pass_verify']
+            'password' => ['user_pass_verify']
         ]);
         
         $data           = new stdClass();
@@ -122,8 +125,7 @@ class UsersController extends Controller {
 
             setcookie('session', $session, strtotime( '+30 days' ));
 
-            header('Location: /dashboard');
-            die();
+            Redirect::to('/dashboard')->redirect();
         }
 
         $this->view('users/signin', $data);
@@ -142,12 +144,14 @@ class UsersController extends Controller {
 
         if( $_SERVER['REQUEST_METHOD'] === 'POST' ) 
         {
-            $data->success = true;
             $this->userModel->destroy_session();
+            Redirect::to('/')->prompt('success', 'Sign out successful')->redirect();
         }
-
+        
         $this->view('users/signout', $data);
     }    
+
+    
     
     /**
     * 
@@ -231,7 +235,11 @@ class UsersController extends Controller {
             
             $this->userModel->update_settings($settings);
 
-            header("Location: /settings?prompt=success");
+            Redirect::to('/settings')->prompt('success', 'Settings saved.')->redirect();
+            
+        } else {
+            Prompt::set('error', 'Something went wrong.');
+            
         }
 
         $this->view('users/settings', $data);
@@ -240,6 +248,7 @@ class UsersController extends Controller {
     /**
      * 
      * @method update a single users setting
+     * Used when this setting is changed from outside the settings page
      * 
      */
     public function update_setting()
@@ -250,11 +259,9 @@ class UsersController extends Controller {
         {
             $value = Sanitizer::sanitize( Route::params()->value );
             $this->userModel->update_setting('transactions_per_page', (int) $value );
-            header("Location: $referer");
-            return;
+            Redirect::to($referer)->redirect();
         }
-
-        header('Location: /error/404');
+        Redirect::to('/error/404')->redirect();
     }
 
 }

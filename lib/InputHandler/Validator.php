@@ -64,7 +64,9 @@ class Validator {
             $validator->errors->$input->show_error = '';
 
             // This is used for show_error html rendering
-            $input_name = ucwords($input);
+            $input_name = $input === 'confirm_password_1' 
+                ? 'Password' 
+                : ucwords($input);
 
             /**
              * Default Rules

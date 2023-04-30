@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace lib\Router\Router;
 
 use Exception;
+use lib\Redirect\Redirect\Redirect;
 use stdClass;
 
 
@@ -34,7 +35,7 @@ class Router {
 
 	/**
 	 * 
-	 * @var error_404_route
+	 * /@var error_404_route
 	 * 
 	 * This sets the route to call if a request is made that is not registered.
 	 * If not set, this will throw an error
@@ -252,8 +253,7 @@ class Router {
 	{
 		if( is_null($this->resolved_path_key) ) 
 		{
-			header('Location: ' . $this->error_404_route);
-			die();
+			Redirect::to($this->error_404_route);
 		}
 
 		($this->routes[$this->resolved_path_key]->method)();
