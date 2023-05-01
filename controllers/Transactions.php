@@ -15,6 +15,7 @@ namespace controllers\TransactionsController;
 use lib\Auth\Auth;
 use lib\Controller\Controller;
 use lib\InputHandler\Sanitizer\Sanitizer;
+use lib\InputHandler\Validator\Validator;
 use lib\Redirect\Redirect\Redirect;
 use lib\Router\Route\Route;
 use lib\types\Transaction\Transaction;
@@ -66,10 +67,10 @@ class TransactionsController extends Controller {
     
     /**
      * 
-     * @method Create a Transaction
+     * @method Store a Transaction
      * 
      */
-    public function create() : void
+    public function store() : void
     {
         $budgetsModel = $this->model('Budget');
 
@@ -93,13 +94,59 @@ class TransactionsController extends Controller {
         
         if( $data->success ) 
         {
-            TransactionService::create_transaction($this->transactionsModel, $transaction->transaction);
+            TransactionService::store_transaction($this->transactionsModel, $transaction->transaction);
         } else {
 
             Prompt::set('error', 'Transaction not created. Please check form for errors');
         }
                 
         $this->view('transactions/index', $data);
+    }
+
+    /**
+     * 
+     * @method Create many transactions
+     * 
+     */
+    public function create_many() : void
+    {
+        $budgetsModel = $this->model('Budget');
+
+        $data               = new stdClass;
+        $data->budgets      = $budgetsModel->get_all( Auth::user_id() );
+        $data->transactions = [];
+
+        // Set default input values
+        for($i = 1; $i <= 10; $i++)
+        {
+            $data->transactions[$i]                    = new stdClass;
+            $data->transactions[$i]->transaction       = new stdClass;
+            $data->transactions[$i]->transaction->type = 'spending';
+            $data->transactions[$i]->transaction->date = date('Y-m-d');
+        }
+
+        $this->view('transactions/create-many', $data);
+    }
+
+    public function store_many() : void
+    {
+        $budgetsModel = $this->model('Budget');
+
+        $data               = new stdClass;
+        $data->budgets      = $budgetsModel->get_all( Auth::user_id() );
+        $data->transactions = TransactionService::validate_multiple();
+        $data->errors       = TransactionService::extract_errors_from_multiple( $data->transactions );
+        $data->success      = TransactionService::multiple_has_no_errors( $data->errors );
+
+        if( $data->success )
+        {
+            TransactionService::store_multiple_transactions( $this->transactionsModel, $data->transactions );
+
+        } else {
+            Prompt::set('error', 'Transactions not saved. Please check for errors');
+        }
+
+        $this->view('transactions/create-many', $data);
     }
     
     /**

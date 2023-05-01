@@ -51,26 +51,37 @@ class TransactionService {
      * Should be Route::params()->id if updating an existing
      * 
      */
-    public static function validate_transaction( string $transaction_id = null ) : stdClass
+    public static function validate_transaction( string $transaction_id = null, object $input_names = null) : stdClass
     {
+        if( !$input_names )
+        { 
+            $input_names = (object) [
+                'name'    => 'name',
+                'amount'  => 'amount',
+                'type'    => 'type',
+                'budgets' => 'budgets',
+                'date'    => 'date'
+            ];
+        }
+
         $validation = Validator::validate([
-            'name'    => ['required', 'max:20' , 'has_spaces'],
-            'amount'  => ['required', 'number'],
-            'type'    => ['required'],
-            'budgets' => ['required', 'has_spaces'],
-            'date'    => ['required', 'date']
+            $input_names->name    => ['required', 'max:20' , 'has_spaces'],
+            $input_names->amount  => ['required', 'number'],
+            $input_names->type    => ['required'],
+            $input_names->budgets => ['required', 'has_spaces'],
+            $input_names->date    => ['required', 'date']
         ]);
 
-        $amount  = (float) Sanitizer::sanitize($_POST['amount']);
+        $amount  = (float) Sanitizer::sanitize($_POST[$input_names->amount]);
         $amount  = (float) number_format( $amount, 2, '.', '' );
 
         $transaction = new Transaction(
             id:      (int) $transaction_id,
             user_id: (int) Auth::user_id(),
-            name:          Sanitizer::sanitize($_POST['name']),
-            budget:        Sanitizer::sanitize($_POST['budgets']),
-            type:          Sanitizer::sanitize($_POST['type']),
-            date:          Sanitizer::sanitize($_POST['date']),
+            name:          Sanitizer::sanitize($_POST[$input_names->name]),
+            budget:        Sanitizer::sanitize($_POST[$input_names->budgets]),
+            type:          Sanitizer::sanitize($_POST[$input_names->type]),
+            date:          Sanitizer::sanitize($_POST[$input_names->date]),
             amount:        $amount
         );
 
@@ -83,10 +94,96 @@ class TransactionService {
 
     /**
      * 
+     * @method Validate multiple Transactions
+     * 
+     */
+    public static function validate_multiple() : array
+    {
+        $transactions = [];
+
+        for($i = 1; $i <= 10; $i++ )
+        {
+            $input_names = (object) [
+                'name'    => 'name-'   . $i,
+                'amount'  => 'amount-'  . $i,
+                'type'    => 'type-'    . $i,
+                'budgets' => 'budgets-' . $i,
+                'date'    => 'date-'    . $i
+            ];
+
+            // Validate only if amount is not 0, otherwise ignore
+            if( empty( (int) $_POST[ $input_names->amount]) ) 
+            {
+                $transactions[$i] = null;
+            } else {
+                $transactions[$i] = TransactionService::validate_transaction(null, $input_names);
+            }
+        }
+
+        return $transactions;
+    }
+
+    /**
+     * 
+     * @method Extract errors from multiple validated Transactions
+     * 
+     */
+    public static function extract_errors_from_multiple( array $transactions ) : array
+    {
+        $errors = [];
+
+        foreach ($transactions as $transaction)
+        {
+            $errors[] = $transaction ? $transaction->validation : null;
+        }
+
+        // Start array with index 1
+        array_unshift($errors, "");
+        unset($errors[0]);
+
+        return $errors;
+    }
+
+    /**
+     * 
+     * @method Check if errors on multiple transactions
+     * 
+     */
+    public static function multiple_has_no_errors( array $transactions ) : bool
+    {
+        return empty(
+            array_filter( $transactions, function($transaction)
+            {
+                if( $transaction )
+                {
+                    return $transaction->success === false;
+                }
+            })
+        );
+
+    }
+
+    /**
+     * 
+     * @method Store multiple transactions and redirect
+     * 
+     */
+    public static function store_multiple_transactions( object $model, array $transactions ) : void
+    {
+        foreach( $transactions as $transaction )
+        {
+            if( !$transaction ) continue;
+            $model->create( $transaction->transaction );
+        }
+        Redirect::to('/transactions')->prompt('success', 'Transactions added successfully')->redirect();
+    }
+
+    /**
+     * 
      * @method Create a transaction and redirect
      * 
      */
-    public static function create_transaction( object $model, Transaction $transaction ) : void
+    public static function store_transaction( object $model, Transaction $transaction ) : void
     {
         $model->create( $transaction );
         Redirect::to('/transactions')->prompt('success', 'Transaction added successfully')->redirect();

@@ -94,17 +94,21 @@ Route::post('/budget/:id/delete', fn() => (new BudgetsController())->auth()->des
  * Transaction Routes (Authorized)
  * 
  */
-Route::get('/transactions',            fn() => (new TransactionsController())->auth()->index() );
+Route::get('/transactions',               fn() => (new TransactionsController())->auth()->index() );
 
-Route::get('/transactions/:page',      fn() => (new TransactionsController())->auth()->index() );
+Route::get('/transactions/:page',         fn() => (new TransactionsController())->auth()->index() );
 
-Route::post('/transactions',           fn() => (new TransactionsController())->auth()->create() );
+Route::post('/transactions',              fn() => (new TransactionsController())->auth()->store() );
 
-Route::get('/transaction/:id/edit',    fn() => (new TransactionsController())->auth()->edit() );
+Route::get('/transaction/:id/edit',       fn() => (new TransactionsController())->auth()->edit() );
 
-Route::post('/transaction/:id/edit',   fn() => (new TransactionsController())->auth()->update() );
+Route::post('/transaction/:id/edit',      fn() => (new TransactionsController())->auth()->update() );
 
-Route::post('/transaction/:id/delete', fn() => (new TransactionsController())->auth()->destroy() );
+Route::post('/transaction/:id/delete',    fn() => (new TransactionsController())->auth()->destroy() );
+
+Route::get('/transactions/add-multiple',  fn() => (new TransactionsController())->auth()->create_many() );
+
+Route::post('/transactions/add-multiple', fn() => (new TransactionsController())->auth()->store_many() );
 
 /**
  * 
@@ -118,7 +122,3 @@ Route::get('/trends/budgets',        fn () => (new TrendsController())->auth()->
 Route::get('/trends/budgets/:id',    fn () => (new TrendsController())->auth()->budgets_single() );
 
 Route::get('/trends/monthly',        fn () => (new TrendsController())->auth()->monthly_index() );
-
-Route::get('/trends/monthly/:month', fn () => (new TrendsController())->auth()->monthly_single() );
-
-

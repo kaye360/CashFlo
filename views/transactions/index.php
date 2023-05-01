@@ -13,10 +13,18 @@ $data->h1 = 'Transactions';
         </div>
     <?php endif ?>
 
-    <button id="add-transaction-btn" class="btn-secondary-outlined mt-4 w-full md:w-auto md:ml-auto">
-        <span class="material-icons-round">post_add</span>
-        Add a Transaction
-    </button>
+    <div class="flex flex-col">
+
+        <button id="add-transaction-btn" class="btn-secondary-outlined mt-4 w-full md:w-auto md:ml-auto">
+            <span class="material-icons-round">post_add</span>
+            Add a Transaction
+        </button>
+        
+        <a href="/transactions/add-multiple" class="btn-primary-outlined mt-4 w-full md:w-auto md:ml-auto hover:no-underline">
+            <span class="material-icons-round">view_list</span>
+            Add Multiple
+        </a>
+    </div>
 
     <?php if( @!$data->success ): ?>
         <div class="col-span-2 mt-4">

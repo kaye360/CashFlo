@@ -66,8 +66,7 @@ class Validator {
             // This is used for show_error html rendering
             $input_name = $input === 'confirm_password_1' 
                 ? 'Password' 
-                : ucwords($input);
-
+                : ucwords( (string) $input);
 
                 
             /**
