@@ -1,4 +1,8 @@
+<?php
 
+use lib\Auth\Auth;
+
+?>
 
 <div class="relative md:grid md:grid-cols-2 max-w-6xl mx-auto p-4">
 
@@ -17,11 +21,27 @@
             Easily track and manage your expenses using CashFlo: the personal finance web app.
         </p>
 
-        <div class="relative">
+        <div class="relative flex items-center gap-4">
 
-            <a href="/signup" class="btn-secondary-filled ml-0 mr-4">Sign Up</a>
+            <?php if( Auth::is_logged_in() ): ?>
 
-            <a href="/about" class="font-bold">Learn more</a>
+                <a href="/dashboard" class="btn-secondary-filled inline-flex items-center gap-2 ml-0 hover:no-underline">
+                    <span class="material-icons-round">dashboard</span>
+                    View Dashboard
+                </a>
+                
+            <?php else: ?>
+                    
+                <a href="/signup" class="btn-secondary-filled inline-flex items-center gap-2 ml-0 hover:no-underline">
+                    <span class="material-icons-round">person_add</span>
+                    Sign Up
+                </a>
+                
+            <?php endif ?>
+                
+            <a href="/about" class="inline-flex items-center gap-2 font-bold">
+                Learn more
+            </a>
 
         </div>
     </div>

@@ -1,10 +1,19 @@
 <?php
 use lib\Auth\Auth;
 $data->title = 'Dashboard';
-$data->h1 = 'Dashboard: ' . Auth::username();
-$data->username = Auth::username();
+$data->h1 = 'Dashboard';
 ?>
 
+
+<section class="mb-6 p-4 border-2 border-secondary-100 bg-secondary-25 rounded-xl">
+    <h2 class="w-fit text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-secondary-400 to-pink-600">
+        Welcome, <?= Auth::username() ?> 
+    </h2>
+
+    <p>
+        Here are your finances at a glance.
+    </p>
+</section>
 
 <section class="grid grid-cols-2 md:grid-cols-[9ch_1fr] gap-4 items-center p-4 rounded-lg bg-gradient-to-r from-primary-700 to-primary-900 text-primary-100 overflow-x-auto">
     

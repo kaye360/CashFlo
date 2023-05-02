@@ -171,10 +171,10 @@ class UsersController extends Controller {
 
         $recent_transactions = $transactionModel->get_all();
 
-        $current_month_tranactions  = $transactionModel->get_monthly_transaction_trend();
-        $current_month_net_total    = $current_month_tranactions->monthly_net_totals[ $current_month ] ?? 0;
-        $current_month_net_income   = $current_month_tranactions->monthly_net_income[ $current_month ] ?? 0;
-        $current_month_net_spending = $current_month_tranactions->monthly_net_spending[ $current_month ] ?? 0;
+        $current_month_transactions  = $transactionModel->get_monthly_transaction_trend();
+        $current_month_net_total    = $current_month_transactions->monthly_net_totals[ $current_month ] ?? 0;
+        $current_month_net_income   = $current_month_transactions->monthly_net_income[ $current_month ] ?? 0;
+        $current_month_net_spending = $current_month_transactions->monthly_net_spending[ $current_month ] ?? 0;
         
         $ratio = Helpers::calc_graph_ratio([
             $current_month_net_total,

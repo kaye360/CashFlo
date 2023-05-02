@@ -24,7 +24,7 @@ namespace lib\Controller;
 use lib\Auth\Auth;
 use lib\Database\Database;
 use lib\Redirect\Redirect\Redirect;
-use lib\template\Template\Template;
+use lib\Template\Template\Template;
 use stdClass;
 
 class Controller {

@@ -16,8 +16,6 @@
 declare(strict_types=1);
 namespace lib\Template\Template;
 
-use lib\Template\CSSComponents\CSSComponents;
-
 
 
 class Template

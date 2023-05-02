@@ -211,6 +211,9 @@
         color : #666;
     }
 
+
+
+
     label.floating-label {
         position: relative;
         display : block;
@@ -222,7 +225,7 @@
         z-index : 10;
         top : 50%;
         left : 0;
-        translate : 0 -50%;
+        transform: translateX(0) translateY(-50%);
         transition: all 250ms ease-in-out;
     }
     
@@ -238,6 +241,9 @@
         top : 0;
     }
 
+
+
+
     .user-input {
         padding : 0.5rem;
         background-color: hsl( var(--color-primary) 97%);
@@ -251,19 +257,21 @@
         border-color : hsl( var(--color-primary) 60%);
     }
 
+
+
+
     .prompt {
         position: fixed;
         z-index: 9999;
-        inset : 0 auto auto 50%;
+        inset : 0 5px auto 5px;
 
         display : flex;
         align-items: center;
         gap : 0.75rem;
 
-        width : 100%;
+        width : calc(100% - 10px);
         max-width : 500px;
         padding : 1rem;
-        translate : -50% 0;
 
         border-left : 3px solid transparent;
         background-color: hsl( var(--color-primary) 95% );
@@ -272,6 +280,35 @@
         letter-spacing: 0.05rem;
 
         animation : prompt 8s ease-in-out both;
+    }
+
+    @keyframes prompt {
+        0%, 100% {
+            transform: translateX(0) translateY(-100%);
+        }
+        
+        5%, 95% {
+            transform: translateX(0) translateY(0%);
+        }
+    }
+
+    @media screen and (min-width: 768px) {
+
+        .prompt {
+            inset : 0 auto auto 50%;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes prompt {
+            0%, 100% {
+                transform: translateX(-50%) translateY(-100%);
+            }
+            
+            5%, 95% {
+                transform: translateX(-50%) translateY(0%);
+            }
+        }
+    
     }
 
     .prompt-success {
@@ -284,15 +321,8 @@
         border-color: #f43f5e;
     }
 
-    @keyframes prompt {
-        0%, 100% {
-            translate : -50% -100%;
-        }
-        
-        5%, 95% {
-            translate : -50% 0;
-        }
-    }
+
+
 
     .sidebar-nav-link {
         display : flex;

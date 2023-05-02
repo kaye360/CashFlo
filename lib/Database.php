@@ -358,7 +358,7 @@ class Database
      * where()
      * 
      */
-    public function count() : int
+    public function count() : int | string
     {
         try {
 

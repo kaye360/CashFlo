@@ -10,14 +10,14 @@ $data->h1 = 'Settings';
 
         <h2 class="text-xl">Change Password</h2>
 
-        <label class="grid grid-cols-2">
+        <label class="grid md:grid-cols-2">
             <span>
                 New Password:
             </span>
             <input type="password" name="confirm_password_1" class="user-input" />
         </label>
 
-        <label class="grid grid-cols-2">
+        <label class="grid md:grid-cols-2">
             <span>
                 Confirm New Password:
             </span>

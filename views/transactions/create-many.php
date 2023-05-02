@@ -12,7 +12,7 @@ $data->title = 'Add multiple transactions';
 <form method="post" action="/transactions/add-multiple">
     <table class="w-full text-left">
 
-        <thead>
+        <thead class="hidden md:table-header-group">
             <tr>
                 <th class="pl-2">#</th>
                 <th class="pl-2">Name</th>
@@ -27,23 +27,26 @@ $data->title = 'Add multiple transactions';
 
             <?php for($i = 1; $i <= 10; $i++): ?>
 
-                <tr class="<?= $i % 2 !== 0 ? 'bg-primary-50' : '' ?>" >
+                <tr class="<?= $i % 2 !== 0 ? 'bg-primary-50' : '' ?>  flex flex-col gap-2 justify-stretch px-2 py-12 md:py-0 md:table-row" >
 
-                    <td class="pl-4 rounded-l-xl">
+                    <td class="hidden md:table-cell pl-4 rounded-l-xl">
                         <?= $i ?>.
                     </td>
 
-                    <td class="py-4">
-                        <input type="text" name="name-<?= $i ?>" class="user-input" value="<?= @$data->transactions[$i]->transaction->name ?>">
+                    <td class="py-4 block md:table-cell">
+                        <span class="inline-block md:hidden w-[10ch]">Name:</span>
+                        <input type="text" name="name-<?= $i ?>" class="user-input w-full" value="<?= @$data->transactions[$i]->transaction->name ?>">
                     </td>
 
-                    <td>
-                        <input type="number" name="amount-<?= $i ?>" class="user-input" value="<?= @$data->transactions[$i]->transaction->amount ?: '' ?>">
+                    <td class="block md:table-cell">
+                        <span class="inline-block md:hidden w-[10ch]">Amount:</span>
+                        <input type="number" name="amount-<?= $i ?>" class="user-input w-full" value="<?= @$data->transactions[$i]->transaction->amount ?: '' ?>">
                     </td>
 
-                    <td class="px-2">
-                        <div class="flex flex-col justify-center text-sm">
-                            <label>
+                    <td class="px-2 flex md:table-cell">
+                        <span class="inline-block md:hidden w-[10ch]">Type:</span>
+                        <div class="flex md:flex-col md:justify-center gap-4 md:gap-0 md:text-sm">
+                            <label class=" w-max">
                                 <input type="radio" name="type-<?= $i ?>" value="spending" 
                                     <?= @$data->transactions[$i]->transaction->type ==='spending' ||
                                         @!$data->transactions[$i]
@@ -54,20 +57,22 @@ $data->title = 'Add multiple transactions';
                                 Spending
                             </label>
                             
-                            <label>
+                            <label class=" w-max">
                                 <input type="radio" name="type-<?= $i ?>" value="income" <?= @$data->transactions[$i]->transaction->type ==='income' ? 'checked' : '' ?> /> 
                                 Income
                             </label>
                         </div>
                     </td>
 
-                    <td class="px-2">
+                    <td class="px-2 block md:table-cell">
+                        <span class="inline-block md:hidden w-[10ch]">Budget:</span>
                         <select name="budgets-<?= $i ?>" class="user-input">
                             <?php include '_select_budget.php' ?>
                         </select>
                     </td>
 
-                    <td class="px-2 rounded-r-xl">
+                    <td class="px-2 block md:table-cell rounded-r-xl">
+                        <span class="inline-block md:hidden w-[10ch]">Date:</span>
                         <input type="date" name="date-<?= $i ?>" class="user-input" value="<?= @$data->transactions[$i]->transaction->date ?: date('Y-m-d'); ?>" />
                     </td>
 

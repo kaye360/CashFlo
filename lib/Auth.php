@@ -66,7 +66,7 @@ class Auth {
             isset($user->id) 
         ) {
             self::$username     = $user->username;
-            self::$user_id      = $user->id;
+            self::$user_id      = (int) $user->id;
             self::$is_logged_in = true;
             self::$settings     = $user->settings;
         }
