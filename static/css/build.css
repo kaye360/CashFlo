@@ -2244,6 +2244,11 @@ label.floating-label:has( input:focus) span,
     border-bottom-left-radius: 0.5rem !important;
   }
 
+  .md\:bg-primary-50 {
+    --tw-bg-opacity: 1 !important;
+    background-color: hsl( var(--color-primary) 95% / var(--tw-bg-opacity) ) !important;
+  }
+
   .md\:py-0 {
     padding-top: 0px !important;
     padding-bottom: 0px !important;

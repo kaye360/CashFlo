@@ -5,7 +5,7 @@
 </div>
 
 
-<footer class="mt-auto mb-16 md:mb-0 py-24 text-center bg-primary-800 text-slate-100 rounded-t-lg">
+<footer class="mt-auto mb-16 md:mb-0 py-12 text-center bg-primary-800 text-slate-100 rounded-t-lg">
 
     <span>
         Made by <a href="https://joshkaye.dev" class="underline">Josh Kaye</a>

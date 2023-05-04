@@ -57,9 +57,9 @@ use lib\Auth\Auth;
         
     </div>
 
-    <div class="absolute top-[40%] left-[10%] w-36 h-36 bg-teal-200 blur-3xl opacity-30 "></div>
-    <div class="absolute top-[0%]  left-[40%] w-48 h-16 bg-teal-200 blur-3xl opacity-40 "></div>
-    <div class="hidden md:block absolute top-[60%] left-[80%] w-48 h-48 bg-teal-200 blur-3xl opacity-40 "></div>
+    <div class="                absolute top-[40%] left-[10%] w-36 h-36 bg-teal-200 blur-3xl opacity-30 pointer-events-none "></div>
+    <div class="                absolute top-[0%]  left-[40%] w-48 h-16 bg-teal-200 blur-3xl opacity-40 pointer-events-none "></div>
+    <div class="hidden md:block absolute top-[60%] left-[80%] w-48 h-48 bg-teal-200 blur-3xl opacity-40 pointer-events-none "></div>
     
 </div>
 

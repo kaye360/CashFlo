@@ -4,7 +4,7 @@
     fixed bottom-[-3px] left-0 right-0 z-50
     md:relative
     p-4 
-    bg-primary-50 shadow-lg rounded-b-none md:rounded-b-lg rounded-lg font-bold text-primary-800
+    bg-primary-100 md:bg-primary-50 shadow-lg rounded-b-none md:rounded-b-lg rounded-lg font-bold text-primary-800
 ">
     <ul class="flex justify-evenly md:justify-normal md:flex-col gap-2 h-full">
         <li>
